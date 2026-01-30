@@ -1,154 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quaternionic | Engineering Packages</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* ---------------- Global Style ---------------- */
-    :root {
-      --primary: #0d0d0d;
-      --accent: #4b7bec;
-      --bg: #ffffff;
-      --pill: #f7f8fa;
-      --text: #222;
-      --radius: 50px;
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quaternionic | Engineering Packages</title>
+<meta name="description" content="Quaternionic delivers engineering packages following the V-model. Pay per phase and bring your product from concept to production.">
+<meta name="author" content="Quaternionic">
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:"Inter", sans-serif; }
+<!-- Preload Fonts -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=BricolageGrotesque:wght@400;700&display=swap" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=MartianMono:wght@400;700&display=swap" as="style">
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-    }
+<!-- Preload Hero Images -->
+<link rel="preload" as="image" href="https://a.storyblok.com/f/287159/5554x3086/8bb052b73c/1_org-vtx-combo-for-homepage-blue.webp">
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2rem 4rem;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 10;
-    }
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="Quaternionic | Engineering Packages">
+<meta property="og:description" content="From concept to prototype, Quaternionic brings your product to life using the V-model.">
+<meta property="og:image" content="https://a.storyblok.com/f/287159/5554x3086/8bb052b73c/1_org-vtx-combo-for-homepage-blue.webp">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quaternionic | Engineering Packages">
+<meta name="twitter:description" content="From concept to prototype, Quaternionic brings your product to life using the V-model.">
+<meta name="twitter:image" content="https://a.storyblok.com/f/287159/5554x3086/8bb052b73c/1_org-vtx-combo-for-homepage-blue.webp">
 
-    .logo { font-size:1.8rem; font-weight:800; color: var(--primary); }
-    nav a { margin-left:2rem; text-decoration:none; color: var(--text); font-weight:500; transition:0.2s; }
-    nav a:hover { color: var(--accent); }
+<link rel="icon" href="/icon.png" sizes="192x192" type="image/png">
 
-    /* ---------------- Hero Section ---------------- */
-    .hero {
-      text-align:center;
-      padding:8rem 2rem;
-      position: relative;
-      overflow:hidden;
-    }
-    .hero h1 { font-size:3rem; font-weight:800; margin-bottom:1rem; }
-    .hero p { max-width:600px; margin:0 auto; font-size:1.1rem; color:#555; }
-    .pill-button {
-      display:inline-block;
-      margin-top:2rem;
-      background:var(--accent);
-      color:#fff;
-      padding:1rem 2rem;
-      border-radius:var(--radius);
-      font-weight:600;
-      text-decoration:none;
-      box-shadow: var(--shadow);
-      transition: all 0.3s ease;
-    }
-    .pill-button:hover { transform: translateY(-3px); background:#3c6fe0; }
+<style>
+  /* Global */
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Raleway', sans-serif; background:#fff; color:#111; overflow-x:hidden; scroll-behavior:smooth; }
+  a { text-decoration:none; color:inherit; }
+  h1,h2,h3 { font-family:'BricolageGrotesque', sans-serif; }
+  .container { max-width:1200px; margin:0 auto; padding:0 2rem; }
 
-    /* Quaternion floating shapes */
-    .quaternion-bg {
-      position:absolute;
-      width: 400px; height:400px;
-      background: radial-gradient(circle, rgba(75,123,236,0.15) 0%, transparent 70%);
-      border-radius:50%;
-      animation: rotate 35s linear infinite;
-      top:-150px; left:-100px;
-      z-index:0;
-    }
-    .quaternion-bg:nth-child(2){ top:200px; right:-150px; animation-duration:45s; }
-    @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+  /* Header */
+  header { display:flex; justify-content:space-between; align-items:center; padding:2rem 0; position:sticky; top:0; background:#fff; z-index:10; box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .logo { font-size:2rem; font-weight:700; letter-spacing:1px; color:#0d0d0d; }
+  nav a { margin-left:2rem; font-weight:600; transition:0.2s; }
+  nav a:hover { color:#4b7bec; }
 
-    /* ---------------- Packages Section ---------------- */
-    .packages {
-      padding:6rem 2rem;
-      text-align:center;
-      position: relative;
-    }
-    .packages h2 { font-size:2.5rem; margin-bottom:3rem; }
+  /* Hero */
+  .hero { height:90vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; background:url('https://a.storyblok.com/f/287159/5554x3086/8bb052b73c/1_org-vtx-combo-for-homepage-blue.webp') center/cover no-repeat; }
+  .hero h1 { font-size:3rem; margin-bottom:1rem; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,0.4); }
+  .hero p { font-size:1.2rem; max-width:650px; margin-bottom:2rem; color:#fff; text-shadow:0 3px 15px rgba(0,0,0,0.3); }
+  .pill-button { background:#4b7bec; color:#fff; padding:1rem 2rem; border-radius:50px; font-weight:700; box-shadow:0 8px 20px rgba(0,0,0,0.2); transition:all 0.3s ease; }
+  .pill-button:hover { transform:translateY(-3px); background:#3c6fe0; }
 
-    .v-shape {
-      display:flex;
-      justify-content:center;
-      flex-wrap: wrap;
-      gap:2rem;
-      max-width: 1200px;
-      margin:0 auto;
-      position:relative;
-    }
+  /* Packages V-Shape */
+  .packages { padding:6rem 2rem; position:relative; text-align:center; }
+  .packages h2 { font-size:2.5rem; margin-bottom:3rem; }
+  .v-shape { display:flex; justify-content:center; flex-wrap:wrap; gap:2rem; max-width:1000px; margin:0 auto; }
+  .package { background:#f7f8fa; border-radius:50px; padding:2rem; width:220px; box-shadow:0 4px 20px rgba(0,0,0,0.05); transition:all 0.3s ease; text-align:center; }
+  .package:hover { transform:translateY(-5px) scale(1.05); box-shadow:0 6px 25px rgba(0,0,0,0.08); }
+  .package h3 { color:#4b7bec; margin-bottom:1rem; }
+  .package p { font-size:0.95rem; margin-bottom:1.2rem; color:#555; }
+  .price { font-weight:700; font-size:1.3rem; color:#0d0d0d; }
 
-    .package {
-      background: var(--pill);
-      border-radius: var(--radius);
-      padding: 2rem;
-      width: 220px;
-      box-shadow: var(--shadow);
-      transition: all 0.3s ease;
-      text-align:center;
-      position: relative;
-    }
-    .package:hover { transform: translateY(-5px) scale(1.05); box-shadow:0 6px 25px rgba(0,0,0,0.08); }
-    .package h3 { font-size:1.3rem; margin-bottom:1rem; color:var(--accent); }
-    .package p { font-size:0.95rem; color:#555; margin-bottom:1.2rem; }
-    .price { font-size:1.3rem; font-weight:700; color:var(--primary); }
+  /* V-shape offsets */
+  .package:nth-child(1){ transform:translateY(0);}
+  .package:nth-child(2){ transform:translateY(40px);}
+  .package:nth-child(3){ transform:translateY(80px);}
+  .package:nth-child(4){ transform:translateY(40px);}
+  .package:nth-child(5){ transform:translateY(0); }
 
-    /* Arrange V-Shape */
-    .package:nth-child(1){ transform: translateY(0px);}
-    .package:nth-child(2){ transform: translateY(40px);}
-    .package:nth-child(3){ transform: translateY(80px);}
-    .package:nth-child(4){ transform: translateY(40px);}
-    .package:nth-child(5){ transform: translateY(0px);}
+  /* About */
+  .about { padding:6rem 2rem; background:#f7f8fa; text-align:center; }
+  .about h2 { font-size:2.2rem; margin-bottom:1.5rem; }
+  .about p { max-width:800px; margin:0 auto; font-size:1rem; line-height:1.6; color:#555; }
 
-    /* ---------------- About Section ---------------- */
-    .about {
-      padding:6rem 2rem;
-      background:#f7f8fa;
-      text-align:center;
-    }
-    .about h2 { font-size:2.2rem; margin-bottom:1.5rem; }
-    .about p { max-width:800px; margin:0 auto; color:#555; font-size:1rem; line-height:1.6; }
+  /* Contact */
+  .contact { padding:6rem 2rem; text-align:center; }
+  .contact h2 { font-size:2.2rem; margin-bottom:2rem; }
+  .contact a { background:#4b7bec; color:#fff; padding:1rem 2rem; border-radius:50px; font-weight:700; box-shadow:0 8px 20px rgba(0,0,0,0.2); transition:0.3s; }
+  .contact a:hover { transform:translateY(-3px); background:#3c6fe0; }
 
-    /* ---------------- Contact Section ---------------- */
-    .contact {
-      padding:6rem 2rem;
-      text-align:center;
-    }
-    .contact h2 { font-size:2.2rem; margin-bottom:2rem; }
-    .contact a { background:var(--accent); color:#fff; padding:1rem 2rem; border-radius:var(--radius); text-decoration:none; font-weight:600; box-shadow: var(--shadow); transition:0.3s;}
-    .contact a:hover { transform:translateY(-3px); background:#3c6fe0; }
-
-    /* ---------------- Footer ---------------- */
-    footer {
-      background:var(--primary);
-      color:#fff;
-      text-align:center;
-      padding:2rem;
-      font-size:0.9rem;
-      letter-spacing:0.5px;
-    }
-    footer a { color:#fff; text-decoration:underline; }
-  </style>
+  /* Footer */
+  footer { background:#0d0d0d; color:#fff; text-align:center; padding:2rem; font-size:0.9rem; letter-spacing:0.5px; }
+  footer a { color:#fff; text-decoration:underline; }
+</style>
 </head>
+
 <body>
-  <header>
+  <header class="container">
     <div class="logo">Quaternionic</div>
     <nav>
       <a href="#packages">Packages</a>
@@ -158,10 +93,8 @@
   </header>
 
   <section class="hero">
-    <div class="quaternion-bg"></div>
-    <div class="quaternion-bg"></div>
-    <h1>Engineering Packages Built on the V-Model</h1>
-    <p>From concept to prototype, Quaternionic transforms your engineering vision into reality. Pay per phase — no material cost included.</p>
+    <h1>Engineering Packages on the V-Model</h1>
+    <p>From concept to prototype, Quaternionic brings your engineering vision to life. Pay per phase — material costs excluded.</p>
     <a href="#packages" class="pill-button">Explore Packages</a>
   </section>
 
@@ -169,28 +102,28 @@
     <h2>Our V-Model Packages</h2>
     <div class="v-shape">
       <div class="package">
-        <h3>Concept Phase</h3>
-        <p>Requirement analysis, feasibility studies, and system concept definition.</p>
+        <h3>Concept</h3>
+        <p>Requirement analysis and system concept definition.</p>
         <div class="price">€499</div>
       </div>
       <div class="package">
-        <h3>Design Phase</h3>
-        <p>Mechanical, electrical, and software design with CAD, circuits, and simulations.</p>
+        <h3>Design</h3>
+        <p>Mechanical, electrical, and software design with simulations.</p>
         <div class="price">€899</div>
       </div>
       <div class="package">
         <h3>Implementation</h3>
-        <p>Integration and rapid prototyping using agile iteration and testing.</p>
+        <p>System integration and rapid prototyping.</p>
         <div class="price">€1,299</div>
       </div>
       <div class="package">
         <h3>Verification</h3>
-        <p>Performance validation, risk assessment, and stakeholder alignment.</p>
+        <p>Performance validation and risk assessment.</p>
         <div class="price">€699</div>
       </div>
       <div class="package">
         <h3>Production Support</h3>
-        <p>Guidance in scaling, industrialization, and continuous improvement.</p>
+        <p>Guidance in scaling and industrialization.</p>
         <div class="price">€599</div>
       </div>
     </div>
@@ -198,12 +131,7 @@
 
   <section id="about" class="about">
     <h2>About Quaternionic</h2>
-    <p>
-      Founded by engineers passionate about automation, design, and sustainability,
-      Quaternionic merges mechatronic expertise with quaternion-inspired precision —
-      multidimensional thinking for real-world engineering challenges. We deliver
-      adaptable systems across robotics, high-tech, and sustainable applications.
-    </p>
+    <p>We merge mechatronic expertise with quaternion-inspired precision — multidimensional thinking for real-world engineering challenges. Delivering adaptable systems across robotics, high-tech, and sustainable applications.</p>
   </section>
 
   <section id="contact" class="contact">
