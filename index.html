@@ -1,58 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quaternionic Engineering</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
 
-    <!-- Header Section -->
-    <header>
-      <div class="header-content">
-        <h1>Quaternionic Engineering</h1>
-        <p>Innovative solutions in mechatronics, automation, and advanced engineering systems.</p>
-        <a href="#projects" class="cta-button">View Our Projects</a>
+    <!-- Header -->
+    <header class="hero">
+      <nav class="navbar">
+        <h1 class="logo">Quaternionic Engineering</h1>
+        <a href="#projects" class="nav-button">Projects</a>
+      </nav>
+
+      <div class="hero-content">
+        <h2>Innovating the Future of Mechatronics</h2>
+        <p>Delivering intelligent solutions in automation, sustainability, and advanced system design.</p>
+        <a href="#projects" class="cta-button">Explore Our Work</a>
       </div>
     </header>
 
-    <!-- Projects Section -->
+    <!-- Projects -->
     <section id="projects" class="projects">
       <h2>Our Projects</h2>
       <div class="project-grid">
-        <div class="project-card">
-          <img src="projects/project1.jpg" alt="Project 1">
+        <article class="project-card">
+          <img src="projects/project1.jpg" alt="Autonomous Underwater Vehicle" loading="lazy">
           <div class="project-info">
             <h3>Autonomous Underwater Vehicle</h3>
-            <p>Full system design, prototyping, and testing for underwater exploration.</p>
+            <p>Designed and tested a fully autonomous system for underwater exploration and data collection.</p>
           </div>
-        </div>
-        <div class="project-card">
-          <img src="projects/project2.jpg" alt="Project 2">
+        </article>
+
+        <article class="project-card">
+          <img src="projects/project2.jpg" alt="Gas Recycling Module" loading="lazy">
           <div class="project-info">
             <h3>Gas Recycling Module</h3>
-            <p>High-efficiency nanoparticle printer gas recycling system.</p>
+            <p>Developed a high-efficiency nanoparticle printer gas recycling system achieving 88% reuse.</p>
           </div>
-        </div>
-        <div class="project-card">
-          <img src="projects/project3.jpg" alt="Project 3">
+        </article>
+
+        <article class="project-card">
+          <img src="projects/project3.jpg" alt="Machine Learning Activity Detection" loading="lazy">
           <div class="project-info">
-            <h3>Activity Machine learning</h3>
-            <p>Machine Learning code for detecting type of motion.</p>
+            <h3>Activity Recognition with Machine Learning</h3>
+            <p>Developed real-time motion classification algorithms using Random Forest and SVM models.</p>
           </div>
-        </div>
+        </article>
       </div>
     </section>
 
     <!-- Footer -->
     <footer>
-      <p>&copy; 2026 Quaternionic Engineering. All rights reserved.</p>
+      <p>&copy; 2026 Quaternionic Engineering — Empowering Ideas Through Innovation.</p>
+      <div class="socials">
+        <a href="#">LinkedIn</a> • <a href="#">GitHub</a> • <a href="#">Contact</a>
+      </div>
     </footer>
   </div>
 </body>
