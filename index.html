@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quaternionic | Engineering Packages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* ---------------- Global Style ---------------- */
     :root {
@@ -16,12 +17,7 @@
       --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Inter", sans-serif;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Inter", sans-serif; }
 
     body {
       background: var(--bg);
@@ -35,171 +31,120 @@
       justify-content: space-between;
       align-items: center;
       padding: 2rem 4rem;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
     }
 
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--primary);
-    }
-
-    nav a {
-      margin-left: 2rem;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-    }
+    .logo { font-size:1.8rem; font-weight:800; color: var(--primary); }
+    nav a { margin-left:2rem; text-decoration:none; color: var(--text); font-weight:500; transition:0.2s; }
+    nav a:hover { color: var(--accent); }
 
     /* ---------------- Hero Section ---------------- */
     .hero {
-      text-align: center;
-      padding: 8rem 2rem;
-      background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
+      text-align:center;
+      padding:8rem 2rem;
       position: relative;
-      overflow: hidden;
+      overflow:hidden;
     }
-
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      max-width: 600px;
-      margin: 0 auto;
-      font-size: 1.1rem;
-      color: #555;
-    }
-
+    .hero h1 { font-size:3rem; font-weight:800; margin-bottom:1rem; }
+    .hero p { max-width:600px; margin:0 auto; font-size:1.1rem; color:#555; }
     .pill-button {
-      display: inline-block;
-      margin-top: 2rem;
-      background: var(--accent);
-      color: #fff;
-      padding: 1rem 2rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      text-decoration: none;
+      display:inline-block;
+      margin-top:2rem;
+      background:var(--accent);
+      color:#fff;
+      padding:1rem 2rem;
+      border-radius:var(--radius);
+      font-weight:600;
+      text-decoration:none;
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
     }
+    .pill-button:hover { transform: translateY(-3px); background:#3c6fe0; }
 
-    .pill-button:hover {
-      transform: translateY(-3px);
-      background: #3c6fe0;
-    }
-
-    /* Quaternion background */
+    /* Quaternion floating shapes */
     .quaternion-bg {
-      position: absolute;
-      top: -100px;
-      left: -100px;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(75,123,236,0.2) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: rotate 30s linear infinite;
-      z-index: 0;
+      position:absolute;
+      width: 400px; height:400px;
+      background: radial-gradient(circle, rgba(75,123,236,0.15) 0%, transparent 70%);
+      border-radius:50%;
+      animation: rotate 35s linear infinite;
+      top:-150px; left:-100px;
+      z-index:0;
     }
-
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+    .quaternion-bg:nth-child(2){ top:200px; right:-150px; animation-duration:45s; }
+    @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
 
     /* ---------------- Packages Section ---------------- */
     .packages {
-      padding: 6rem 2rem;
-      text-align: center;
+      padding:6rem 2rem;
+      text-align:center;
+      position: relative;
     }
+    .packages h2 { font-size:2.5rem; margin-bottom:3rem; }
 
-    .packages h2 {
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .package-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
+    .v-shape {
+      display:flex;
+      justify-content:center;
+      flex-wrap: wrap;
+      gap:2rem;
+      max-width: 1200px;
+      margin:0 auto;
+      position:relative;
     }
 
     .package {
       background: var(--pill);
       border-radius: var(--radius);
       padding: 2rem;
+      width: 220px;
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
+      text-align:center;
       position: relative;
-      z-index: 1;
     }
+    .package:hover { transform: translateY(-5px) scale(1.05); box-shadow:0 6px 25px rgba(0,0,0,0.08); }
+    .package h3 { font-size:1.3rem; margin-bottom:1rem; color:var(--accent); }
+    .package p { font-size:0.95rem; color:#555; margin-bottom:1.2rem; }
+    .price { font-size:1.3rem; font-weight:700; color:var(--primary); }
 
-    .package:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    .package h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-    }
-
-    .package p {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 1.2rem;
-    }
-
-    .price {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
+    /* Arrange V-Shape */
+    .package:nth-child(1){ transform: translateY(0px);}
+    .package:nth-child(2){ transform: translateY(40px);}
+    .package:nth-child(3){ transform: translateY(80px);}
+    .package:nth-child(4){ transform: translateY(40px);}
+    .package:nth-child(5){ transform: translateY(0px);}
 
     /* ---------------- About Section ---------------- */
     .about {
-      padding: 6rem 2rem;
-      background: #f7f8fa;
-      text-align: center;
+      padding:6rem 2rem;
+      background:#f7f8fa;
+      text-align:center;
     }
+    .about h2 { font-size:2.2rem; margin-bottom:1.5rem; }
+    .about p { max-width:800px; margin:0 auto; color:#555; font-size:1rem; line-height:1.6; }
 
-    .about h2 {
-      font-size: 2.2rem;
-      margin-bottom: 1.5rem;
+    /* ---------------- Contact Section ---------------- */
+    .contact {
+      padding:6rem 2rem;
+      text-align:center;
     }
+    .contact h2 { font-size:2.2rem; margin-bottom:2rem; }
+    .contact a { background:var(--accent); color:#fff; padding:1rem 2rem; border-radius:var(--radius); text-decoration:none; font-weight:600; box-shadow: var(--shadow); transition:0.3s;}
+    .contact a:hover { transform:translateY(-3px); background:#3c6fe0; }
 
-    .about p {
-      max-width: 800px;
-      margin: 0 auto;
-      color: #555;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    /* ---------------- Footer dsdassa---------------- */
+    /* ---------------- Footer ---------------- */
     footer {
-      background: var(--primary);
-      color: #fff;
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
+      background:var(--primary);
+      color:#fff;
+      text-align:center;
+      padding:2rem;
+      font-size:0.9rem;
+      letter-spacing:0.5px;
     }
-
-    footer a {
-      color: #fff;
-      text-decoration: underline;
-    }
+    footer a { color:#fff; text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -214,6 +159,7 @@
 
   <section class="hero">
     <div class="quaternion-bg"></div>
+    <div class="quaternion-bg"></div>
     <h1>Engineering Packages Built on the V-Model</h1>
     <p>From concept to prototype, Quaternionic transforms your engineering vision into reality. Pay per phase — no material cost included.</p>
     <a href="#packages" class="pill-button">Explore Packages</a>
@@ -221,30 +167,30 @@
 
   <section id="packages" class="packages">
     <h2>Our V-Model Packages</h2>
-    <div class="package-grid">
+    <div class="v-shape">
       <div class="package">
         <h3>Concept Phase</h3>
-        <p>Requirement analysis, feasibility studies, and system concept definition to shape your product vision.</p>
+        <p>Requirement analysis, feasibility studies, and system concept definition.</p>
         <div class="price">€499</div>
       </div>
       <div class="package">
         <h3>Design Phase</h3>
-        <p>Mechanical, electrical, and software design with 3D CAD, circuit design, and simulation deliverables.</p>
+        <p>Mechanical, electrical, and software design with CAD, circuits, and simulations.</p>
         <div class="price">€899</div>
       </div>
       <div class="package">
-        <h3>Implementation Phase</h3>
-        <p>System integration and rapid prototyping using agile iteration and quality-controlled testing.</p>
+        <h3>Implementation</h3>
+        <p>Integration and rapid prototyping using agile iteration and testing.</p>
         <div class="price">€1,299</div>
       </div>
       <div class="package">
-        <h3>Verification & Validation</h3>
-        <p>Performance validation, risk assessment, and stakeholder alignment for reliable final systems.</p>
+        <h3>Verification</h3>
+        <p>Performance validation, risk assessment, and stakeholder alignment.</p>
         <div class="price">€699</div>
       </div>
       <div class="package">
         <h3>Production Support</h3>
-        <p>Guidance in industrialization, scaling, and continuous improvement following Lean and DMAIC principles.</p>
+        <p>Guidance in scaling, industrialization, and continuous improvement.</p>
         <div class="price">€599</div>
       </div>
     </div>
@@ -253,16 +199,20 @@
   <section id="about" class="about">
     <h2>About Quaternionic</h2>
     <p>
-      Founded by engineers passionate about automation, design, and sustainability, Quaternionic merges
-      mechatronic expertise with mathematical precision inspired by quaternion logic — multidimensional thinking
-      for real-world engineering challenges. We deliver adaptable systems across robotics, high-tech, and sustainable applications.
+      Founded by engineers passionate about automation, design, and sustainability,
+      Quaternionic merges mechatronic expertise with quaternion-inspired precision —
+      multidimensional thinking for real-world engineering challenges. We deliver
+      adaptable systems across robotics, high-tech, and sustainable applications.
     </p>
   </section>
 
-  <footer id="contact">
-    <p>Contact us at <a href="mailto:info@quaternionic.net">info@quaternionic.net</a> • © 2026 Quaternionic</p>
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <a href="mailto:info@quaternionic.net">Get in Touch</a>
+  </section>
+
+  <footer>
+    <p>© 2026 Quaternionic • <a href="mailto:info@quaternionic.net">info@quaternionic.net</a></p>
   </footer>
 </body>
 </html>
-
-
