@@ -552,18 +552,36 @@
     </div>
 
     <!-- decorative polaroids, draggable, purely aesthetic -->
-  <div class="win proj" id="p2" style="left:930px; top:270px; width:230px;">
-    <div class="titlebar"><div class="dots"><div class="dot close" onclick="handleClose('p2')"></div></div><div class="name">project_2</div></div>
-    <div class="body proj-body">
-      <div class="thumb" onclick="openProject('p2')">[photo / render — click to open]</div>
-      <div>
-        <h4><span class="ph">[Project Title]</span></h4>
-        <div><span class="tag">robotics</span><span class="tag">python</span></div>
-        <p><span class="ph">[description placeholder]</span></p>
-        <div class="links"><a href="#">[github]</a><a href="#">[demo]</a></div>
+    <!-- ============ FEATURED PROJECT PHOTOS ============ -->
+    <div class="window" id="win-featured-1" style="top:290px; left:660px; width:240px;">
+      <div class="win-titlebar">
+        <div class="win-c ontrols">
+          <button class="win-btn close" aria-label="Close Project 1"></button>
+          <button class="win-btn min" aria-label="Minimize Project 1"></button>
+          <button class="win-btn max" aria-label="Maximize Project 1"></button>
+        </div>
+        <div class="win-title">project_1</div>
+      </div>
+      
+      <div class="win-body">
+        <!-- Clickable Preview Area -->
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px;" id="trigger-p1">
+          [ photo / render — click ]
+        </div>
+        
+        <div class="project-card" style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+          <h4 class="pc-title">[Project Title]</h4>
+          <div class="pc-tags" style="margin-bottom: 6px;">mechatronics · c++</div>
+          <p style="font-size:12px; margin-bottom: 10px;">
+            [one-paragraph description: what it does, why you built it, what's hard about it]
+          </p>
+          <div class="pill-row" style="margin-top:0;">
+            <a class="pill-link" href="#">[ GitHub ]</a>
+            <a class="pill-link" href="#">[ Demo ]</a>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
     <div class="polaroid" id="polaroid-2" style="top:730px; left:72%; transform:rotate(3deg);">
       <div class="polaroid-img">[ project photo ]</div>
