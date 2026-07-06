@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F — Mechatronics Engineer</title>
+<title>Felix Douven — Mechatronics Engineer</title>
 <meta name="description" content="Portfolio of Felix Douven, a mechatronics engineer. Robotics, embedded systems, PCB design, controls, and C++/Python projects.">
 
 <!--
@@ -318,7 +318,7 @@
       <span class="menu-item">Help</span>
     </div>
     <div class="menubar-right">
-      <span>[Your Name]</span>
+      <span>Felix Douven</span>
       <span class="divider">·</span>
       <span id="menu-date">—</span>
       <span id="menu-clock">--:--</span>
@@ -402,7 +402,7 @@
  _| |_</div>
           <div class="fetch-rows">
             <div><b>OS:</b> Mechatronics Engineer</div>
-            <div><b>Host:</b> [Your Name]</div>
+            <div><b>Host:</b> Felix Douven</div>
             <div><b>Languages:</b> C++, Python, MATLAB</div>
             <div><b>Tools:</b> SolidWorks, Altium, ROS</div>
             <div><b>Focus:</b> Controls · Embedded · Robotics</div>
@@ -824,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const commands = {
     help: () => 'Available commands:\n  whoami     -- about me\n  projects   -- open ~/projects\n  skills     -- open skills.monitor\n  contact    -- get in touch\n  resume     -- open resume\n  ls         -- list windows\n  date       -- current date/time\n  clear      -- clear the screen\n  sudo hire-me',
-    whoami: () => '[Your Name] -- Mechatronics Engineer\n// building things that move, sense, and (mostly) behave.',
+    whoami: () => 'Felix Douven -- Mechatronics Engineer\n// building things that move, sense, and (mostly) behave.',
     projects: () => { const w = document.getElementById('win-projects'); w.style.display = 'flex'; bringToFront(w); return 'Opening ~/projects ...'; },
     skills: () => { const w = document.getElementById('win-skills'); w.style.display = 'flex'; bringToFront(w); return 'Opening skills.monitor ...'; },
     contact: () => 'Email: [your@email.com]\nLinkedIn: [linkedin.com/in/you]\nGitHub: [github.com/you]',
@@ -832,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ls: () => Array.from(document.querySelectorAll('.window')).map(w => w.id.replace('win-', '')).join('  '),
     date: () => new Date().toString(),
     clear: () => { termOutput.innerHTML = ''; return null; },
-    'sudo hire-me': () => 'Permission granted. [Your Name] is open to opportunities.'
+    'sudo hire-me': () => 'Permission granted. Felix Douven is open to opportunities.'
   };
 
   function printLine(html){
@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
   termInput.addEventListener('focus', scrollTermToBottom);
 
   /* typewriter welcome message */
-  const welcome = "Welcome to [Your Name]'s terminal.\nType 'help' to get started.";
+  const welcome = "Welcome to Felix Douven's terminal.\nType 'help' to get started.";
   let i = 0;
   const welcomeLine = document.createElement('div');
   termOutput.appendChild(welcomeLine);
