@@ -396,7 +396,7 @@
     </div>
 
     <!-- ============ NEOFETCH ============ -->
-    <div class="window" id="win-neofetch" style="top:28px; left:66%; width:23%; height:300px;">
+    <div class="window" id="win-neofetch" style="top:28px; left:66%; width:20%; height:265px;">
       <div class="win-titlebar">
         <div class="win-controls">
           <button class="win-btn close" aria-label="Close neofetch"></button>
@@ -433,6 +433,24 @@
           <span style="background:var(--border)"></span>
         </div>
       </div>
+    </div>  
+
+    <!-- ============ MASCOT WINDOW ============ -->
+    <div class="window win-autosize" id="win-mascot" style="top:110px; left:52%; width:170px; height:auto;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close mascot"></button>
+          <button class="win-btn min" aria-label="Minimize mascot"></button>
+          <button class="win-btn max" aria-label="Maximize mascot"></button>
+        </div>
+        <div class="win-title">mascot</div>
+      </div>
+      <div class="win-body" style="font-family:var(--font-mono); white-space:pre; font-size:11px; line-height:1.25; padding:10px; color:var(--rust-dark); text-align:center; overflow:hidden;">
+   .|||||||||.
+  |||||||||||||
+ /. `|||||||||||
+o__,_||||||||||'
+      </div>
     </div>
 
     <!-- ============ SKILLS MONITOR ============ -->
@@ -458,7 +476,7 @@
     </div>
 
     <!-- ============ PROJECTS ============ -->
-    <div class="window win-autosize" id="win-projects" style="top:316px; left:1%; width:46%; height:auto;">
+    <div class="window win-autosize" id="win-projects" style="top:316px; left:1%; width:40%; height:auto;">
       <div class="win-titlebar">
         <div class="win-controls">
           <button class="win-btn close" aria-label="Close projects"></button>
@@ -483,6 +501,9 @@
           </div>
           <div class="project-card" data-title="Containerised Home Server" data-tags="Docker · Linux" data-desc="Built a Linux server running multiple Dockerized services. Automated home data collection for renting houses, ad-blocking, and NAS integration using docker containers">
             <div class="pc-title">▸ 10" Containerised Home Server</div><div class="pc-tags">Docker · Linux</div>
+          </div>
+          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
+            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
           </div>
           <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
             <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
@@ -534,7 +555,7 @@
     </div>
 
     <!-- ============ EXPERIENCE LOG ============ -->
-    <div class="window" id="win-log" style="top:564px; left:27%; width:26%; height:260px;">
+    <div class="window" id="win-log" style="top:564px; left:27%; width:33%; height:210px;">
       <div class="win-titlebar">
         <div class="win-controls">
           <button class="win-btn close" aria-label="Close experience.log"></button>
@@ -544,10 +565,11 @@
         <div class="win-title">experience.log</div>
       </div>
       <div class="win-body">
-        <div class="log-line"><span class="log-time">[Now]</span><span class="log-lvl ok">OK</span><span>Technical Support Engineer @ ASML Holding N.V., Eindhoven</span></div>
-        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl info">INFO</span><span>Prototype Eng. & System Designer @ VSParticle B.V., Delft (Internship)</span></div>
-        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl info">INFO</span><span>Global Management minor @ Chuo University, Tokyo</span></div>
-        <div class="log-line"><span class="log-time">[2022]</span><span class="log-lvl warn">WARN</span><span>Prototype Engineer, Innovation dept. @ Philips N.V., Best (Internship)</span></div>
+        <div class="log-line"><span class="log-time">[2026]</span><span class="log-lvl ok">OK</span><span>Competence Engineer - Electrical Systems @ ASML Holding N.V., Eindhoven</span></div>
+        <div class="log-line"><span class="log-time">[2024]</span><span class="log-lvl info">INFO</span><span>Technical Support Engineer @ ASML Holding N.V., Eindhoven</span></div>
+        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl info">INFO</span><span>System Designer @ VSParticle B.V., Delft (Internship)</span></div>
+        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl warn">WARN</span><span>Global Management minor @ Chuo University, Tokyo</span></div>
+        <div class="log-line"><span class="log-time">[2022]</span><span class="log-lvl info">INFO</span><span>Prototype Engineer, Innovation dept. @ Philips N.V., Best (Internship)</span></div>
         <div class="log-line"><span class="log-time">[2019]</span><span class="log-lvl info">INFO</span><span>Started B.S. Mechatronics Engineering @ Fontys University, Eindhoven</span></div>
       </div>
     </div>
@@ -665,7 +687,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ---------- EDIT THIS ONE LINE to update what you're currently building/tinkering with ---------- */
   const CURRENTLY_BUILDING = "10\" Homelab";
-  document.getElementById('now-building').textContent = "Physical setup for my " + CURRENTLY_BUILDING;
+  document.getElementById('now-building').textContent = "Physical setup; " + CURRENTLY_BUILDING;
   document.getElementById('now-tinkering').textContent =  CURRENTLY_BUILDING;
 
   /* ---------- z-index / focus ---------- */
