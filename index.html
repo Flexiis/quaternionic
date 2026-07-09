@@ -118,6 +118,11 @@
       radial-gradient(circle at 1px 1px, rgba(59,44,30,0.07) 1px, transparent 0) 0 0/22px 22px,
       linear-gradient(160deg, var(--desktop-bg-1), var(--desktop-bg-2));
   }
+  /* desktop-canvas holds all windows. Above DESKTOP_MIN it just fills #desktop (fluid %).
+     Below DESKTOP_MIN (but above the mobile breakpoint) it's forced to a fixed min-width
+     instead of shrinking — this stops window text from reflowing/growing taller and
+     overlapping neighbours; the user gets a horizontal scrollbar on #desktop instead. */
+  #desktop-canvas{ position:relative; min-height:100%; }
 
   /* decorative, non-interactive */
   .doodle{ position:absolute; pointer-events:none; opacity:.16; color:var(--ink); }
@@ -277,6 +282,14 @@
   .statusbar span{ margin-right:16px; }
 
   /* ============ RESPONSIVE ============ */
+  /* "Tablet zone": too narrow for the fluid % layout to stay readable, but not yet
+     mobile-stacked. Lock the canvas to its design width so windows can't reflow/grow
+     into each other — scroll horizontally instead. */
+  @media (min-width: 881px) and (max-width: 1650px){
+    #desktop{ overflow-x:auto; overflow-y:hidden; }
+    #desktop-canvas{ width:1600px; min-width:1600px; }
+  }
+
   @media (max-width: 880px){
     .dock{
       top:var(--menubar-h); left:0; right:0; bottom:auto; width:100%; height:var(--dock-mobile-h);
@@ -338,6 +351,7 @@
 
   <!-- ============ DESKTOP ============ -->
   <main id="desktop">
+   <div id="desktop-canvas">
 
     <!-- decorative doodle, purely aesthetic -->
     <svg class="doodle doodle-gear" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -358,7 +372,7 @@
     </svg>
 
     <!-- ============ WHOAMI ============ -->
-    <div class="window" id="win-whoami" style="top:20px; left:1%; width:24%; height:280px;">
+    <div class="window" id="win-whoami" style="top:20px; left:1%; width:24%; height:295px;">
       <div class="win-titlebar">
         <div class="win-controls">
           <button class="win-btn close" aria-label="Close whoami.sh"></button>
@@ -368,16 +382,15 @@
         <div class="win-title">whoami.sh</div>
       </div>
       <div class="win-body">
-        <!-- IMAGE PLACEHOLDER: replace this div with <img src="your-photo.jpg" style="width:76px;height:76px;border-radius:8px;object-fit:cover;float:left;margin:0 12px 8px 0;"> -->
         <img src="pictures/headshot.jpg" style="width:76px;height:76px;border-radius:8px;object-fit:cover;float:left;margin:0 12px 8px 0;">
         <div class="who-name">Felix Douven</div>
         <div class="who-role">// Mechatronics Engineer</div>
         <div class="who-bio">Highly ambitious engineer who doesn't back down easily. I research everything I can and love to keep learning. Strongest in system design, CAD (SolidWorks), embedded engineering and data analysis.</div>
         <div class="pill-row">
-          <a class="pill-link" href="#">[ GitHub ]</a>
-          <a class="pill-link" href="#">[ LinkedIn ]</a>
+          <a class="pill-link" href="https://github.com/Flexiis">[ GitHub ]</a>
+          <a class="pill-link" href="https://www.linkedin.com/in/felixdouven/">[ LinkedIn ]</a>
           <a class="pill-link" href="mailto:felixdouven@planet.nl">[ Email ]</a>
-          <a class="pill-link" href="#">[ Resume ]</a>
+          <a class="pill-link" href="cv/">[ Resume ]</a>
         </div>
       </div>
     </div>
@@ -408,7 +421,7 @@
             <div><b>Focus:</b> System Design · Embedded</div>
             <div><b>Location:</b> Eindhoven, Netherlands</div>
             <div><b>Uptime:</b> Since Sept 2024 @ ASML</div>
-            <div><b>Building:</b> 10" Homelab</div>
+            <div><b>Building:</b> <span id="now-building"></span></div>
           </div>
         </div>
         <div class="swatches">
@@ -469,22 +482,10 @@
             <div class="pc-title">▸ Sensor Data Classification</div><div class="pc-tags">TensorFlow · Python</div>
           </div>
           <div class="project-card" data-title="Containerised Home Server" data-tags="Docker · Linux" data-desc="Built a Linux server running multiple Dockerized services. Automated home data collection for renting houses, ad-blocking, and NAS integration using docker containers">
-            <div class="pc-title">▸ Containerised Home Server</div><div class="pc-tags">Docker · Linux</div>
+            <div class="pc-title">▸ 10" Containerised Home Server</div><div class="pc-tags">Docker · Linux</div>
           </div>
-          <div class="project-card" data-title="CSWA — Mechanical Design (SolidWorks)" data-tags="Certification" data-desc="Certified SolidWorks Associate — Mechanical Design.">
-            <div class="pc-title">▸ CSWA Mechanical Design</div><div class="pc-tags">SolidWorks</div>
-          </div>
-          <div class="project-card" data-title="CSWP — Sheet Metal (SolidWorks)" data-tags="Certification" data-desc="Certified SolidWorks Professional — Sheet Metal.">
-            <div class="pc-title">▸ CSWP Sheet Metal</div><div class="pc-tags">SolidWorks</div>
-          </div>
-          <div class="project-card" data-title="Lean Manufacturing Yellow Belt — ASML" data-tags="Certification" data-desc="Lean Manufacturing Yellow Belt, obtained at ASML Holding N.V.">
-            <div class="pc-title">▸ Lean Mfg. Yellow Belt</div><div class="pc-tags">ASML</div>
-          </div>
-          <div class="project-card" data-title="Problem Solving — Kepner Tregoe" data-tags="Certification" data-desc="Problem Solving certification, Kepner Tregoe methodology.">
-            <div class="pc-title">▸ Kepner Tregoe Problem Solving</div><div class="pc-tags">Certification</div>
-          </div>
-          <div class="project-card" data-title="Holland Scholarship Award" data-tags="Award" data-desc="Awarded the Holland Scholarship for academic merit.">
-            <div class="pc-title">▸ Holland Scholarship Award</div><div class="pc-tags">Award</div>
+          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
+            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
           </div>
         </div>
       </div>
@@ -522,13 +523,13 @@
       </div>
       <div class="win-body">
         <div class="md-h4">#### about.md</div>
-        <div class="md-quote">"I don't back down easily — I research until complex challenges feel structured and lightweight."</div>
+        <div class="md-quote">"What is happening"</div>
         <ul class="md-list">
           <li>Building things that get used, not just demoed</li>
-          <li>The mechanical / electrical / software boundary — that's where the interesting bugs live</li>
+          <li>Structural improvements to existing systems</li>
           <li>Positive attitude + critical thinking > raw hours</li>
         </ul>
-        <div class="md-italic">Currently tinkering with: Physical setup for my 10" Homelab</div>
+        <div class="md-italic">Currently tinkering with: <span id="now-tinkering"></span></div>
       </div>
     </div>
 
@@ -555,7 +556,7 @@
     <!-- ============ FEATURED PROJECT PHOTOS ============ -->
     <div class="window" id="win-featured-1" style="top:374px; left:50%; width:240px;">
       <div class="win-titlebar">
-        <div class="win-c ontrols">
+        <div class="win-controls">
           <button class="win-btn close" aria-label="Close Project 1"></button>
           <button class="win-btn min" aria-label="Minimize Project 1"></button>
           <button class="win-btn max" aria-label="Maximize Project 1"></button>
@@ -566,13 +567,11 @@
       <div class="win-body">
         <!-- Clickable Preview Area -->
         <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Philips_IGT-System.jpg') center/cover; border-style:solid;" id="trigger-p1"></div>
-        </div>
         
-        <div class="project-card" style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+        <div class="project-card" data-title="Image Guided Therapy System — Philips N.V." data-tags="solidworks · matlab · fem" data-image="pictures/Philips_IGT-System.jpg" data-desc="First mockup of a next-gen Image Guided Therapy System at Philips, optimized for manufacturability with FEM and cost-effective parts. Led CAD assembly and MATLAB simulations to secure early-stage stakeholder funding." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
           <h4 class="pc-title">Image Guided Therapy System</h4>
           <div class="pc-tags" style="margin-bottom: 6px;">solidworks · matlab · fem</div>
           <p style="font-size:12px; margin-bottom: 10px;">
-            First mockup of a next-gen Image Guided Therapy System at Philips, optimized for manufacturability with FEM and cost-effective parts. Led CAD assembly and MATLAB simulations to secure early-stage stakeholder funding.
           </p>
           <div class="pill-row" style="margin-top:0;">
             <a class="pill-link" href="#">[ GitHub ]</a>
@@ -582,26 +581,24 @@
       </div>
     </div>
 
-    <div class="window" id="win-featured-1" style="top:28px; left:51%; width:240px;">
+    <div class="window" id="win-featured-2" style="top:28px; left:51%; width:240px;">
       <div class="win-titlebar">
-        <div class="win-c ontrols">
-          <button class="win-btn close" aria-label="Close Project 1"></button>
-          <button class="win-btn min" aria-label="Minimize Project 1"></button>
-          <button class="win-btn max" aria-label="Maximize Project 1"></button>
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close Project 2"></button>
+          <button class="win-btn min" aria-label="Minimize Project 2"></button>
+          <button class="win-btn max" aria-label="Maximize Project 2"></button>
         </div>
         <div class="win-title">project_2</div>
       </div>
       
       <div class="win-body">
         <!-- Clickable Preview Area -->
-        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/VSParticle_Gas-Recycler.jpg') center/cover; border-style:solid;" id="trigger-p1"></div>
-        </div>
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/VSParticle_Gas-Recycler.jpg') center/cover; border-style:solid;" id="trigger-p2"></div>
 
-        <div class="project-card" style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+        <div class="project-card" data-title="Gas Recycler for Nanoprinter — VSParticle B.V." data-tags="python · c++ · pcb" data-image="pictures/VSParticle_Gas-Recycler.jpg" data-desc="Working prototype at VSParticle integrating Python, C++, PCB design and system architecture. Boosted gas reuse from 0% to 88%, saving €70K/year per unit, with EMC-proof electrical design." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
           <h4 class="pc-title">Gas Recycler for Nanoprinter</h4>
           <div class="pc-tags" style="margin-bottom: 6px;">python · c++ · pcb</div>
           <p style="font-size:12px; margin-bottom: 10px;">
-            Working prototype at VSParticle integrating Python, C++, PCB design and system architecture. Boosted gas reuse from 0% to 88%, saving €70K/year per unit, with EMC-proof electrical design.
           </p>
           <div class="pill-row" style="margin-top:0;">
             <a class="pill-link" href="#">[ GitHub ]</a>
@@ -611,26 +608,24 @@
       </div>
     </div>
 
-    <div class="window" id="win-featured-1" style="top:296px; left:65%; width:240px;">
+    <div class="window" id="win-featured-3" style="top:296px; left:65%; width:240px;">
       <div class="win-titlebar">
-        <div class="win-c ontrols">
-          <button class="win-btn close" aria-label="Close Project 1"></button>
-          <button class="win-btn min" aria-label="Minimize Project 1"></button>
-          <button class="win-btn max" aria-label="Maximize Project 1"></button>
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close Project 3"></button>
+          <button class="win-btn min" aria-label="Minimize Project 3"></button>
+          <button class="win-btn max" aria-label="Maximize Project 3"></button>
         </div>
         <div class="win-title">project_3</div>
       </div>
       
       <div class="win-body">
         <!-- Clickable Preview Area -->
-                <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Data_Scatterplot.jpg') center/cover; border-style:solid;" id="trigger-p1"></div>
-        </div>
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Data_Scatterplot.jpg') center/cover; border-style:solid;" id="trigger-p3"></div>
         
-        <div class="project-card" style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+        <div class="project-card" data-title="Autonomous Underwater Vehicle" data-tags="pcb · electrical · systems" data-image="pictures/Data_Scatterplot.jpg" data-desc="Led the AUV’s electrical & system design, defining the constraints, and developed the PCB for leak detection, power electronics and sensor processing." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
           <h4 class="pc-title">Autonomous Underwater Vehicle</h4>
           <div class="pc-tags" style="margin-bottom: 6px;">pcb · electrical · systems</div>
           <p style="font-size:12px; margin-bottom: 10px;">
-            Led the AUV's electrical & system design, defining the constraints, and developed the PCB for leak detection, power electronics and sensor processing.
           </p>
           <div class="pill-row" style="margin-top:0;">
             <a class="pill-link" href="#">[ GitHub ]</a>
@@ -640,6 +635,9 @@
       </div>
     </div>
 
+    </div>
+
+   </div>
   </main>
 
   <!-- ============ PROJECT MODAL ============ -->
@@ -648,7 +646,7 @@
       <button class="modal-close" id="modal-close" aria-label="Close project details">✕</button>
       <h3 id="modal-title"></h3>
       <p class="modal-tags" id="modal-tags"></p>
-      <div class="modal-image">[ project image / diagram ]</div>
+      <div class="modal-image" id="modal-image">[ project image / diagram ]</div>
       <p id="modal-desc"></p>
       <div class="modal-links">
         <a class="pill-link" href="#">[ View Code ↗ ]</a>
@@ -665,6 +663,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  /* ---------- EDIT THIS ONE LINE to update what you're currently building/tinkering with ---------- */
+  const CURRENTLY_BUILDING = "10\" Homelab";
+  document.getElementById('now-building').textContent = "Physical setup for my " + CURRENTLY_BUILDING;
+  document.getElementById('now-tinkering').textContent =  CURRENTLY_BUILDING;
 
   /* ---------- z-index / focus ---------- */
   let zTop = 10;
@@ -795,12 +797,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- project modal ---------- */
   const modal = document.getElementById('project-modal');
+  const modalImage = document.getElementById('modal-image');
+
+  function openProjectModal(card){
+    document.getElementById('modal-title').textContent = card.dataset.title;
+    document.getElementById('modal-tags').textContent = card.dataset.tags;
+    document.getElementById('modal-desc').textContent = card.dataset.desc;
+    if (card.dataset.image){
+      modalImage.style.backgroundImage = `url('${card.dataset.image}')`;
+      modalImage.style.backgroundSize = 'cover';
+      modalImage.style.backgroundPosition = 'center';
+      modalImage.style.borderStyle = 'solid';
+      modalImage.textContent = '';
+    } else {
+      modalImage.style.backgroundImage = 'none';
+      modalImage.style.borderStyle = 'dashed';
+      modalImage.textContent = '[ project image / diagram ]';
+    }
+    modal.style.display = 'flex';
+  }
+
   document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.getElementById('modal-title').textContent = card.dataset.title;
-      document.getElementById('modal-tags').textContent = card.dataset.tags;
-      document.getElementById('modal-desc').textContent = card.dataset.desc;
-      modal.style.display = 'flex';
+    card.addEventListener('click', () => openProjectModal(card));
+  });
+
+  document.querySelectorAll('.modal-image[id^="trigger-p"]').forEach(tile => {
+    tile.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = tile.parentElement.querySelector('.project-card');
+      if (card) openProjectModal(card);
     });
   });
   document.getElementById('modal-close').addEventListener('click', () => {
