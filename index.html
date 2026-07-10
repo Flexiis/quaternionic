@@ -124,6 +124,7 @@
      overlapping neighbours; the user gets a horizontal scrollbar on #desktop instead. */
   #desktop-canvas{ position:relative; min-height:100%; }
 
+
   /* decorative, non-interactive */
   .doodle{ position:absolute; pointer-events:none; opacity:.16; color:var(--ink); }
   .doodle-gear{ top:18px; right:24px; width:130px; height:130px; animation:spin 70s linear infinite; }
@@ -335,6 +336,24 @@
       <span class="divider">·</span>
       <span id="menu-date">—</span>
       <span id="menu-clock">--:--</span>
+    </div>
+  </div>
+
+  <!-- ============ RICKROLL (hidden until triggered) ============ -->
+  <div class="window" id="win-rickroll" style="display:none; top:200px; left:35%; width:400px; z-index:9999;">
+    <div class="win-titlebar">
+      <div class="win-controls">
+        <button class="win-btn close" aria-label="Close video.exe"></button>
+        <button class="win-btn min" aria-label="Minimize video.exe"></button>
+        <button class="win-btn max" aria-label="Maximize video.exe"></button>
+      </div>
+      <div class="win-title">video.exe — never_gonna.mp4</div>
+    </div>
+    <div class="win-body" style="padding:0;">
+      <div style="position:relative; padding-bottom:56.25%; height:0;">
+        <iframe id="rickroll-frame" style="position:absolute; top:0; left:0; width:100%; height:100%;"
+          src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
     </div>
   </div>
 
@@ -876,6 +895,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ls: () => Array.from(document.querySelectorAll('.window')).map(w => w.id.replace('win-', '')).join('  '),
     date: () => new Date().toString(),
     clear: () => { termOutput.innerHTML = ''; return null; },
+    rick: () => {
+      const win = document.getElementById('win-rickroll');
+      const frame = document.getElementById('rickroll-frame');
+      frame.src = 'https://www.youtube.com/embed/QDia3e12czc?autoplay=1';
+      win.style.display = 'flex';
+      bringToFront(win);
+      makeDraggable(win, win.querySelector('.win-titlebar'));
+      return "You've been rick rolled.";
+    },
+    'sudo rm -rf': () => 'nice try',
     'sudo hire-me': () => 'Permission granted. Felix Douven is open to opportunities.'
   };
 
