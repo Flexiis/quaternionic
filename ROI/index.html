@@ -204,6 +204,32 @@
 
       <div class="verdict" id="verdict"></div>
 
+      <div class="chartbox" style="margin-top:20px;">
+        <div class="eyebrow" style="margin-bottom:8px;">Sell after <span id="sellYearsLabel">1</span> year — leverage snapshot</div>
+        <p class="sub" style="margin-bottom:14px;">Appreciation applies to the full house price, not just your down payment — that's leverage. This shows the naive version of that math next to what's left once mortgage interest, maintenance, and closing/selling costs are subtracted, compared with just investing your down payment instead.</p>
+        <div class="grid" style="grid-template-columns:200px; margin:0 0 16px;">
+          <div class="field">
+            <label>Sell after</label>
+            <div class="inputrow"><input id="sellYears" type="number" step="1" min="1" value="1"><span class="suffix">yrs</span></div>
+          </div>
+        </div>
+        <div class="summary" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="stat">
+            <div class="lbl">Naive leveraged gain</div>
+            <div class="val" id="y1naive">€0</div>
+          </div>
+          <div class="stat buy">
+            <div class="lbl">Realistic leveraged gain</div>
+            <div class="val" id="y1real">€0</div>
+          </div>
+          <div class="stat rent">
+            <div class="lbl">Invest down payment instead</div>
+            <div class="val" id="y1invest">€0</div>
+          </div>
+        </div>
+        <div class="autocalc" id="y1breakdown" style="margin-top:14px;"></div>
+      </div>
+
       <div class="autocalc">
         <div class="row"><span>Closing costs (auto)</span><span class="v" id="closing">€0</span></div>
         <div class="note" id="closingNote"></div>
@@ -229,6 +255,7 @@
   const STARTER_THRESHOLD = 555000;
   const FIXED_BUY_COSTS_PCT = 1.5;
   const LOAN_TERM_YEARS = 30;
+  const SELLING_COSTS_PCT = 2; // % of sale price - agent + notary on the sale side, rough NL average
 
   const els = {
     rent: document.getElementById('rent'),
@@ -238,6 +265,7 @@
     appr: document.getElementById('appr'),
     years: document.getElementById('years'),
     starter: document.getElementById('starter'),
+    sellYears: document.getElementById('sellYears'),
   };
 
   const fmtEUR = n => new Intl.NumberFormat('nl-NL', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format(n);
@@ -355,6 +383,56 @@
     svg.innerHTML = svgParts.join('');
   }
 
+  function computeSellSnapshot(){
+    const price = parseFloat(els.price.value) || 0;
+    const downPct = parseFloat(els.down.value) || 0;
+    const rate = parseFloat(els.rate.value) || 0;
+    const appr = parseFloat(els.appr.value) || 0;
+    const isStarter = els.starter.checked;
+    const sellYears = Math.max(1, parseInt(els.sellYears.value) || 1);
+
+    const downPayment = price * (downPct/100);
+    const closing = closingCosts(price, isStarter);
+    const initialCash = downPayment + closing;
+    const loanAmount = price - downPayment;
+
+    const monthlyRate = rate/100/12;
+    const nPayments = LOAN_TERM_YEARS * 12;
+    const mortgagePayment = monthlyRate === 0
+      ? loanAmount / nPayments
+      : (loanAmount * monthlyRate * Math.pow(1+monthlyRate, nPayments)) / (Math.pow(1+monthlyRate, nPayments) - 1);
+    const monthlyAppr = Math.pow(1 + appr/100, 1/12) - 1;
+
+    let loanBalance = loanAmount;
+    let homeValue = price;
+    let interestPaid = 0;
+    let maintenancePaid = 0;
+
+    const totalMonths = sellYears * 12;
+    for (let m=1; m<=totalMonths; m++){
+      const interestPortion = loanBalance * monthlyRate;
+      if (loanBalance > 0 && m <= nPayments){
+        const principalPortion = Math.min(mortgagePayment - interestPortion, loanBalance);
+        loanBalance -= principalPortion;
+        interestPaid += interestPortion;
+      }
+      homeValue *= (1 + monthlyAppr);
+      maintenancePaid += (homeValue * (MAINTENANCE_PCT/100)) / 12;
+    }
+
+    const naiveGain = price * (Math.pow(1 + appr/100, sellYears) - 1);
+
+    const sellingCosts = homeValue * (SELLING_COSTS_PCT/100);
+    const equity = homeValue - loanBalance;
+    const netProceeds = equity - sellingCosts;
+    const realisticGain = netProceeds - initialCash - interestPaid - maintenancePaid;
+
+    const investGain = initialCash * (Math.pow(1 + INVEST_RETURN/100, sellYears) - 1);
+
+    return { initialCash, naiveGain, realisticGain, investGain, interestPaid, maintenancePaid, sellingCosts, closing, sellYears };
+  }
+
+
   function render(){
     const r = compute();
     drawChart(r.points, r.crossover);
@@ -378,6 +456,21 @@
       (r.isStarter && r.price <= STARTER_THRESHOLD)
         ? '0% transfer tax (starter exemption applies) + ~1.5% notary/valuation/advisor fees.'
         : '2% transfer tax + ~1.5% notary/valuation/advisor fees.';
+
+    const y1 = computeSellSnapshot();
+    document.getElementById('sellYearsLabel').textContent = y1.sellYears;
+    document.getElementById('y1naive').textContent = (y1.naiveGain >= 0 ? '+' : '') + fmtEUR(y1.naiveGain);
+    const realEl = document.getElementById('y1real');
+    realEl.textContent = (y1.realisticGain >= 0 ? '+' : '') + fmtEUR(y1.realisticGain);
+    realEl.style.color = y1.realisticGain >= 0 ? 'var(--olive)' : 'var(--brick)';
+    document.getElementById('y1invest').textContent = '+' + fmtEUR(y1.investGain);
+    document.getElementById('y1breakdown').innerHTML = `
+      <div class="row"><span>Cash you put in (down payment + closing)</span><span class="v">${fmtEUR(y1.initialCash)}</span></div>
+      <div class="row"><span>Mortgage interest paid, over ${y1.sellYears} ${y1.sellYears === 1 ? 'year' : 'years'}</span><span class="v">−${fmtEUR(y1.interestPaid)}</span></div>
+      <div class="row"><span>Maintenance + tax paid, over ${y1.sellYears} ${y1.sellYears === 1 ? 'year' : 'years'}</span><span class="v">−${fmtEUR(y1.maintenancePaid)}</span></div>
+      <div class="row"><span>Selling costs on exit (${SELLING_COSTS_PCT}%)</span><span class="v">−${fmtEUR(y1.sellingCosts)}</span></div>
+      <div class="note">The naive figure only counts appreciation on the full house price. The realistic figure also nets out the interest, upkeep, and selling costs paid over that period — the true cost of that leverage.</div>
+    `;
   }
 
   Object.values(els).forEach(el => el.addEventListener('input', render));
