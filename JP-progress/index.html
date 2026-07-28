@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N3 Progress — Felix Douven</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ TOKENS (matches main site) ============ */
+  :root{
+    --desktop-bg-1:#ecdfc4;
+    --desktop-bg-2:#ddc99c;
+    --window-bg:#f6efdc;
+    --window-header:#e2ce9d;
+    --border:#a9885a;
+    --border-soft:#c7ad81;
+    --ink:#3b2c1e;
+    --ink-soft:#7d6a4e;
+    --rust:#c1623d;
+    --rust-dark:#a84f2f;
+    --olive:#6f7d4a;
+    --brick:#ab4a41;
+    --gold:#c69a3a;
+    --paper:#fbf6ea;
+
+    --menubar-h:36px;
+    --radius:10px;
+    --font-mono:'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:var(--font-mono);
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 1px 1px, rgba(59,44,30,0.07) 1px, transparent 0) 0 0/22px 22px,
+      linear-gradient(160deg, var(--desktop-bg-1), var(--desktop-bg-2));
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:var(--rust-dark); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+  h1,h2,h3,h4,p,ul{ margin:0; }
+  button{ font-family:inherit; cursor:pointer; }
+  :focus-visible{ outline:2px solid var(--rust); outline-offset:2px; }
+  *{ scrollbar-width:thin; scrollbar-color:var(--border-soft) transparent; }
+  *::-webkit-scrollbar{ width:8px; height:8px; }
+  *::-webkit-scrollbar-thumb{ background:var(--border-soft); border-radius:4px; }
+
+  /* ============ TOP BAR ============ */
+  .menubar{
+    position:fixed; top:0; left:0; right:0; height:var(--menubar-h);
+    background:var(--window-header); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 14px; z-index:1000; font-size:12.5px;
+  }
+  .menubar-left{ display:flex; align-items:center; gap:14px; }
+  .menu-dots{ display:flex; gap:6px; margin-right:6px; }
+  .menu-dots span{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .menu-dots span:nth-child(1){ background:var(--brick); }
+  .menu-dots span:nth-child(2){ background:var(--gold); }
+  .menu-dots span:nth-child(3){ background:var(--olive); }
+  .back-link{ color:var(--ink-soft); }
+  .back-link:hover{ color:var(--rust-dark); }
+  .menubar-right{ display:flex; align-items:center; gap:10px; color:var(--ink); }
+  .menubar-right .divider{ color:var(--border); }
+
+  /* ============ LAYOUT ============ */
+  main{
+    max-width:920px; margin:0 auto; padding:calc(var(--menubar-h) + 26px) 16px 60px;
+  }
+
+  .window{
+    background:var(--window-bg); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:0 12px 26px rgba(59,44,30,.20);
+    margin-bottom:20px; overflow:hidden;
+  }
+  .win-titlebar{
+    display:flex; align-items:center; gap:10px;
+    height:34px; min-height:34px; padding:0 12px;
+    background:var(--window-header); border-bottom:1px solid var(--border);
+  }
+  .win-controls{ display:flex; gap:7px; }
+  .win-btn{ width:11px; height:11px; border-radius:50%; border:none; padding:0; }
+  .win-btn.close{ background:var(--brick); }
+  .win-btn.min{ background:var(--gold); }
+  .win-btn.max{ background:var(--olive); }
+  .win-title{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+  .win-body{ padding:18px; }
+
+  /* ============ HEADER ============ */
+  .hero-title{ font-size:22px; font-weight:800; letter-spacing:.2px; }
+  .hero-sub{ color:var(--rust-dark); font-style:italic; font-size:12.5px; margin-top:4px; }
+
+  /* ============ PROGRESS BARS ============ */
+  .bar-row{ margin-bottom:16px; }
+  .bar-label{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; }
+  .bar-label b{ color:var(--ink); }
+  .bar-track{ height:14px; border-radius:7px; background:rgba(59,44,30,.12); overflow:hidden; border:1px solid var(--border-soft); }
+  .bar-fill{ height:100%; width:0%; border-radius:7px; transition:width 1s ease; }
+  .bar-note{ font-size:10.5px; color:var(--ink-soft); margin-top:4px; }
+
+  /* ============ STAT GRID ============ */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px;
+  }
+  .stat-box{
+    background:var(--paper); border:1px solid var(--border-soft); border-radius:8px;
+    padding:10px; text-align:center;
+  }
+  .stat-num{ font-size:20px; font-weight:800; color:var(--rust-dark); }
+  .stat-label{ font-size:10px; color:var(--ink-soft); margin-top:2px; text-transform:uppercase; letter-spacing:.03em; }
+
+  /* ============ PHASES ============ */
+  .phase-row{ margin-bottom:14px; }
+  .phase-head{ display:flex; justify-content:space-between; align-items:baseline; font-size:12px; margin-bottom:5px; }
+  .phase-name{ font-weight:700; }
+  .phase-name.current::before{ content:"▸ "; color:var(--rust); }
+  .phase-weeks{ color:var(--ink-soft); font-size:11px; }
+  .phase-track{ height:9px; border-radius:5px; background:rgba(59,44,30,.12); overflow:hidden; }
+  .phase-fill{ height:100%; border-radius:5px; transition:width .8s ease; }
+
+  /* ============ CURRENT WEEK CARD ============ */
+  .week-card{
+    background:var(--paper); border:1px solid var(--border-soft); border-radius:8px;
+    padding:14px;
+  }
+  .week-card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px; }
+  .week-tag{ font-size:11px; color:var(--rust-dark); font-weight:700; }
+  .week-date{ font-size:11px; color:var(--ink-soft); }
+  .week-focus{ font-size:13px; line-height:1.5; margin-bottom:10px; }
+  .week-targets{ display:flex; gap:14px; font-size:11px; color:var(--ink-soft); margin-bottom:12px; }
+  .week-targets b{ color:var(--ink); }
+  .lesson-chips{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .lesson-chip{
+    border:1px solid var(--border); border-radius:6px; padding:4px 8px;
+    font-size:10.5px; color:var(--ink); background:var(--window-bg);
+  }
+  .check-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .check-item{ display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer; user-select:none; }
+  .check-item input{ width:15px; height:15px; accent-color:var(--olive); cursor:pointer; }
+
+  /* ============ WEEK LIST ============ */
+  .week-list{ max-height:420px; overflow-y:auto; border:1px solid var(--border-soft); border-radius:8px; background:var(--paper); }
+  .wl-row{
+    display:grid; grid-template-columns:34px 70px 1fr 60px 60px;
+    align-items:center; gap:8px; padding:7px 10px; font-size:11px;
+    border-bottom:1px solid rgba(169,136,90,.25);
+  }
+  .wl-row:last-child{ border-bottom:none; }
+  .wl-row.current{ background:rgba(193,98,61,.12); }
+  .wl-row.past-incomplete{ background:rgba(171,74,65,.08); }
+  .wl-week{ color:var(--ink-soft); font-weight:700; }
+  .wl-date{ color:var(--ink-soft); }
+  .wl-focus{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .wl-check{ display:flex; justify-content:center; }
+  .wl-check input{ width:13px; height:13px; accent-color:var(--olive); cursor:pointer; }
+  .wl-legend{ display:flex; gap:16px; font-size:10.5px; color:var(--ink-soft); padding:8px 10px; border-top:1px solid var(--border-soft); flex-wrap:wrap; }
+  .wl-legend span{ display:flex; align-items:center; gap:5px; }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  .win-footer{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 18px; font-size:10.5px; color:var(--ink-soft);
+    border-top:1px solid var(--border-soft); background:var(--paper); flex-wrap:wrap;
+  }
+  .reset-btn{
+    border:1px solid var(--border); border-radius:6px; padding:5px 10px;
+    font-size:10.5px; color:var(--ink); background:var(--window-bg);
+  }
+  .reset-btn:hover{ background:var(--brick); color:var(--paper); border-color:var(--brick); }
+
+  @media (max-width: 700px){
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+    .wl-row{ grid-template-columns:28px 1fr 50px 50px; }
+    .wl-date{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="menubar">
+    <div class="menubar-left">
+      <div class="menu-dots"><span></span><span></span><span></span></div>
+      <a class="back-link" href="../">← portfolio</a>
+    </div>
+    <div class="menubar-right">
+      <span>progress.tracker</span>
+      <span class="divider">·</span>
+      <span id="menu-date">—</span>
+      <span id="menu-clock">--:--</span>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ============ HEADER / OVERALL PROGRESS ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
+        </div>
+        <div class="win-title">n3_progress.monitor</div>
+      </div>
+      <div class="win-body">
+        <div class="hero-title">JLPT N3 Progress Tracker</div>
+        <div class="hero-sub">Exam: Sunday, 4 July 2027 · Leiden — <span id="days-remaining">—</span> days to go</div>
+
+        <div style="margin-top:18px;">
+          <div class="bar-row">
+            <div class="bar-label"><span>Time elapsed</span><b id="time-pct">0%</b></div>
+            <div class="bar-track"><div class="bar-fill" id="time-bar" style="background:var(--gold);"></div></div>
+            <div class="bar-note">Automatic — moves forward with the calendar regardless of what you've done.</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Weeks completed</span><b id="done-pct">0%</b></div>
+            <div class="bar-track"><div class="bar-fill" id="done-bar" style="background:var(--olive);"></div></div>
+            <div class="bar-note">Manual — only moves when you check off a week below. This is the one that matters.</div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-num" id="stat-week">—</div><div class="stat-label">Current week</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-kanji">0</div><div class="stat-label">Kanji earned</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-vocab">0</div><div class="stat-label">Vocab earned</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Weeks behind</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ THIS WEEK ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
+        </div>
+        <div class="win-title">this_week.focus</div>
+      </div>
+      <div class="win-body" id="this-week-slot">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ============ PHASES ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
+        </div>
+        <div class="win-title">phases.monitor</div>
+      </div>
+      <div class="win-body" id="phases-slot">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ============ FULL WEEK LIST ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
+        </div>
+        <div class="win-title">schedule.log — all 48 weeks</div>
+      </div>
+      <div class="win-body">
+        <div class="week-list" id="week-list"><!-- filled by JS --></div>
+        <div class="wl-legend">
+          <span><span class="dot" style="background:var(--olive);"></span> done</span>
+          <span><span class="dot" style="background:var(--rust);"></span> current week</span>
+          <span><span class="dot" style="background:var(--brick);"></span> past &amp; not done</span>
+          <span>G = grammar/textbook &nbsp; K/V = kanji &amp; vocab review</span>
+        </div>
+      </div>
+      <div class="win-footer">
+        <span>Saved locally in this browser only — no account, no server.</span>
+        <button class="reset-btn" id="reset-btn">reset all progress</button>
+      </div>
+    </div>
+
+  </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const START_DATE = new Date('2026-08-03T00:00:00');
+  const EXAM_DATE   = new Date('2027-07-04T00:00:00');
+  const STORAGE_KEY = 'n3-progress-v1';
+
+  const SCHEDULE = [
+  {w:1,d:'2026-08-03',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.11 — close out grammar points',k:10,v:25},
+  {w:2,d:'2026-08-10',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.12 — close out grammar points',k:10,v:25},
+  {w:3,d:'2026-08-17',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.13 — both grammar points',k:18,v:65},
+  {w:4,d:'2026-08-24',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.14 — both grammar points',k:18,v:65},
+  {w:5,d:'2026-08-31',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.15 — both grammar points',k:18,v:65},
+  {w:6,d:'2026-09-07',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.16 — both grammar points',k:18,v:65},
+  {w:7,d:'2026-09-14',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.17 — both grammar points',k:18,v:65},
+  {w:8,d:'2026-09-21',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.18 — both grammar points',k:18,v:65},
+  {w:9,d:'2026-09-28',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.19 — both grammar points',k:18,v:65},
+  {w:10,d:'2026-10-05',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.20 — both grammar points',k:18,v:65},
+  {w:11,d:'2026-10-12',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.21 — both grammar points',k:18,v:65},
+  {w:12,d:'2026-10-19',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.22 — both grammar points',k:18,v:65},
+  {w:13,d:'2026-10-26',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.23 — both grammar points',k:18,v:65},
+  {w:14,d:'2026-11-02',ph:'Phase 2: Review buffer',f:'Full Genki I+II grammar review + self-test (mock N4)',k:0,v:0},
+  {w:15,d:'2026-11-09',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 1 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:16,d:'2026-11-16',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 2 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:17,d:'2026-11-23',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 3 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:18,d:'2026-11-30',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 4 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:19,d:'2026-12-07',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 5 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:20,d:'2026-12-14',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 6 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:21,d:'2026-12-21',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 7 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:22,d:'2026-12-28',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 8 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:23,d:'2027-01-04',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 9 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:24,d:'2027-01-11',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 10 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:25,d:'2027-01-18',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 11 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:26,d:'2027-01-25',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 12 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:27,d:'2027-02-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 13 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:28,d:'2027-02-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 14 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:29,d:'2027-02-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 15 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:30,d:'2027-02-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 16 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:31,d:'2027-03-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 17 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:32,d:'2027-03-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 18 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:33,d:'2027-03-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 19 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:34,d:'2027-03-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 20 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
+  {w:35,d:'2027-03-29',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:36,d:'2027-04-05',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:37,d:'2027-04-12',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:38,d:'2027-04-19',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:39,d:'2027-04-26',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:40,d:'2027-05-03',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:41,d:'2027-05-10',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:42,d:'2027-05-17',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
+  {w:43,d:'2027-05-24',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
+  {w:44,d:'2027-05-31',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
+  {w:45,d:'2027-06-07',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
+  {w:46,d:'2027-06-14',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
+  {w:47,d:'2027-06-21',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
+  {w:48,d:'2027-06-28',ph:'Phase 6: Final taper',f:'Light review only — weak points, no new material',k:0,v:0}
+  ];
+
+  const PHASE_COLOR = {
+    'Phase 1: Finish Genki I':'var(--gold)',
+    'Phase 2: Genki II (accelerated)':'var(--rust)',
+    'Phase 2: Review buffer':'var(--gold)',
+    'Phase 3: N3 core textbook':'var(--olive)',
+    'Phase 4: N3 drilling + skills':'var(--rust-dark)',
+    'Phase 5: Mock exams':'var(--brick)',
+    'Phase 6: Final taper':'var(--ink-soft)'
+  };
+
+  /* ---------- state ---------- */
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveState(state){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+  let state = loadState(); // { [weekNum]: { g:bool, kv:bool } }
+
+  function getEntry(w){ return state[w] || { g:false, kv:false }; }
+  function setEntry(w, patch){
+    state[w] = Object.assign(getEntry(w), patch);
+    saveState(state);
+    renderAll();
+  }
+
+  /* ---------- date helpers ---------- */
+  function dayDiff(a, b){ return Math.round((b - a) / 86400000); }
+
+  function currentWeekIndex(){
+    const today = new Date();
+    let idx = 0;
+    for (let i = 0; i < SCHEDULE.length; i++){
+      const wd = new Date(SCHEDULE[i].d + 'T00:00:00');
+      if (wd <= today) idx = i; else break;
+    }
+    return idx;
+  }
+
+  /* ---------- render: header bars + stats ---------- */
+  function renderHeader(){
+    const today = new Date();
+    const totalDays = dayDiff(START_DATE, EXAM_DATE);
+    const elapsedDays = Math.min(Math.max(dayDiff(START_DATE, today), 0), totalDays);
+    const remaining = Math.max(dayDiff(today, EXAM_DATE), 0);
+    const timePct = totalDays > 0 ? Math.round((elapsedDays / totalDays) * 100) : 0;
+
+    document.getElementById('days-remaining').textContent = remaining;
+    document.getElementById('time-pct').textContent = timePct + '%';
+    document.getElementById('time-bar').style.width = timePct + '%';
+
+    let doneWeeks = 0;
+    let behindWeeks = 0;
+    let kanjiEarned = 0, vocabEarned = 0;
+    const curIdx = currentWeekIndex();
+
+    SCHEDULE.forEach((wk, i) => {
+      const e = getEntry(wk.w);
+      const complete = e.g && e.kv;
+      if (complete) doneWeeks++;
+      if (complete){ kanjiEarned += wk.k; vocabEarned += wk.v; }
+      if (i < curIdx && !complete) behindWeeks++;
+    });
+
+    const donePct = Math.round((doneWeeks / SCHEDULE.length) * 100);
+    document.getElementById('done-pct').textContent = donePct + '%';
+    document.getElementById('done-bar').style.width = donePct + '%';
+
+    document.getElementById('stat-week').textContent = (curIdx + 1) + ' / ' + SCHEDULE.length;
+    document.getElementById('stat-kanji').textContent = kanjiEarned;
+    document.getElementById('stat-vocab').textContent = vocabEarned;
+    document.getElementById('stat-streak').textContent = behindWeeks;
+  }
+
+  /* ---------- render: this week card ---------- */
+  function renderThisWeek(){
+    const idx = currentWeekIndex();
+    const wk = SCHEDULE[idx];
+    const e = getEntry(wk.w);
+    const wd = new Date(wk.d + 'T00:00:00');
+    const wed = new Date(wd); wed.setDate(wd.getDate() + 2);
+    const sat = new Date(wd); sat.setDate(wd.getDate() + 5);
+    const fmt = (d) => d.toLocaleDateString([], { weekday:'short', month:'short', day:'numeric' });
+
+    const slot = document.getElementById('this-week-slot');
+    slot.innerHTML = `
+      <div class="week-card">
+        <div class="week-card-top">
+          <div class="week-tag">Week ${wk.w} of ${SCHEDULE.length} — ${wk.ph.replace(/^Phase \\d+: /, '')}</div>
+          <div class="week-date">week of ${fmt(wd)}</div>
+        </div>
+        <div class="week-focus">${wk.f}</div>
+        <div class="week-targets">
+          <span>Kanji target: <b>${wk.k}</b></span>
+          <span>Vocab target: <b>${wk.v}</b></span>
+        </div>
+        <div class="lesson-chips">
+          <span class="lesson-chip">Lesson 1 — ${fmt(wed)}</span>
+          <span class="lesson-chip">Lesson 2 — ${fmt(sat)}</span>
+        </div>
+        <div class="check-row">
+          <label class="check-item">
+            <input type="checkbox" id="cw-grammar" ${e.g ? 'checked' : ''}>
+            Grammar / textbook done
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="cw-kv" ${e.kv ? 'checked' : ''}>
+            Kanji &amp; vocab reviews done
+          </label>
+        </div>
+      </div>
+    `;
+    document.getElementById('cw-grammar').addEventListener('change', (ev) => setEntry(wk.w, { g: ev.target.checked }));
+    document.getElementById('cw-kv').addEventListener('change', (ev) => setEntry(wk.w, { kv: ev.target.checked }));
+  }
+
+  /* ---------- render: phases ---------- */
+  function renderPhases(){
+    const order = [];
+    SCHEDULE.forEach(wk => { if (!order.includes(wk.ph)) order.push(wk.ph); });
+    const curIdx = currentWeekIndex();
+    const curPhase = SCHEDULE[curIdx].ph;
+
+    const slot = document.getElementById('phases-slot');
+    slot.innerHTML = '';
+    order.forEach(phaseName => {
+      const weeksInPhase = SCHEDULE.filter(wk => wk.ph === phaseName);
+      const doneInPhase = weeksInPhase.filter(wk => { const e = getEntry(wk.w); return e.g && e.kv; }).length;
+      const pct = Math.round((doneInPhase / weeksInPhase.length) * 100);
+      const first = weeksInPhase[0].w, last = weeksInPhase[weeksInPhase.length - 1].w;
+      const color = PHASE_COLOR[phaseName] || 'var(--rust)';
+      const isCurrent = phaseName === curPhase;
+
+      const row = document.createElement('div');
+      row.className = 'phase-row';
+      row.innerHTML = `
+        <div class="phase-head">
+          <span class="phase-name ${isCurrent ? 'current' : ''}">${phaseName}</span>
+          <span class="phase-weeks">wk ${first}${last !== first ? '–' + last : ''} · ${pct}%</span>
+        </div>
+        <div class="phase-track"><div class="phase-fill" style="width:${pct}%; background:${color};"></div></div>
+      `;
+      slot.appendChild(row);
+    });
+  }
+
+  /* ---------- render: week list ---------- */
+  function renderWeekList(){
+    const curIdx = currentWeekIndex();
+    const list = document.getElementById('week-list');
+    list.innerHTML = '';
+    SCHEDULE.forEach((wk, i) => {
+      const e = getEntry(wk.w);
+      const complete = e.g && e.kv;
+      const wd = new Date(wk.d + 'T00:00:00');
+      const dateStr = wd.toLocaleDateString([], { month:'short', day:'numeric' });
+
+      const row = document.createElement('div');
+      row.className = 'wl-row' + (i === curIdx ? ' current' : (i < curIdx && !complete ? ' past-incomplete' : ''));
+      row.innerHTML = `
+        <div class="wl-week">${wk.w}</div>
+        <div class="wl-date">${dateStr}</div>
+        <div class="wl-focus" title="${wk.f.replace(/"/g, '&quot;')}">${wk.f}</div>
+        <div class="wl-check"><input type="checkbox" data-week="${wk.w}" data-field="g" ${e.g ? 'checked' : ''} title="Grammar done"></div>
+        <div class="wl-check"><input type="checkbox" data-week="${wk.w}" data-field="kv" ${e.kv ? 'checked' : ''} title="Kanji/vocab done"></div>
+      `;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('input[type="checkbox"]').forEach(box => {
+      box.addEventListener('change', (ev) => {
+        const w = parseInt(ev.target.dataset.week, 10);
+        const field = ev.target.dataset.field;
+        setEntry(w, { [field]: ev.target.checked });
+      });
+    });
+  }
+
+  function renderAll(){
+    renderHeader();
+    renderThisWeek();
+    renderPhases();
+    renderWeekList();
+  }
+
+  renderAll();
+
+  /* ---------- reset ---------- */
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (confirm('Reset all checked progress? This cannot be undone.')) {
+      state = {};
+      saveState(state);
+      renderAll();
+    }
+  });
+
+  /* ---------- clock/date ---------- */
+  function updateClock(){
+    const now = new Date();
+    document.getElementById('menu-clock').textContent =
+      now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    document.getElementById('menu-date').textContent =
+      now.toLocaleDateString([], { month:'short', day:'numeric' });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+});
+</script>
+</body>
+</html>
