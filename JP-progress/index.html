@@ -47,6 +47,7 @@
   a:hover{ text-decoration:underline; }
   h1,h2,h3,h4,p,ul{ margin:0; }
   button{ font-family:inherit; cursor:pointer; }
+  input{ font-family:inherit; }
   :focus-visible{ outline:2px solid var(--rust); outline-offset:2px; }
   *{ scrollbar-width:thin; scrollbar-color:var(--border-soft) transparent; }
   *::-webkit-scrollbar{ width:8px; height:8px; }
@@ -71,9 +72,7 @@
   .menubar-right .divider{ color:var(--border); }
 
   /* ============ LAYOUT ============ */
-  main{
-    max-width:920px; margin:0 auto; padding:calc(var(--menubar-h) + 26px) 16px 60px;
-  }
+  main{ max-width:960px; margin:0 auto; padding:calc(var(--menubar-h) + 26px) 16px 60px; }
 
   .window{
     background:var(--window-bg); border:1px solid var(--border);
@@ -92,6 +91,7 @@
   .win-btn.max{ background:var(--olive); }
   .win-title{ font-size:12px; color:var(--ink-soft); font-weight:600; }
   .win-body{ padding:18px; }
+  .win-sub{ font-size:11px; color:var(--ink-soft); margin-bottom:14px; }
 
   /* ============ HEADER ============ */
   .hero-title{ font-size:22px; font-weight:800; letter-spacing:.2px; }
@@ -106,15 +106,10 @@
   .bar-note{ font-size:10.5px; color:var(--ink-soft); margin-top:4px; }
 
   /* ============ STAT GRID ============ */
-  .stat-grid{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px;
-  }
-  .stat-box{
-    background:var(--paper); border:1px solid var(--border-soft); border-radius:8px;
-    padding:10px; text-align:center;
-  }
-  .stat-num{ font-size:20px; font-weight:800; color:var(--rust-dark); }
-  .stat-label{ font-size:10px; color:var(--ink-soft); margin-top:2px; text-transform:uppercase; letter-spacing:.03em; }
+  .stat-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:16px; }
+  .stat-box{ background:var(--paper); border:1px solid var(--border-soft); border-radius:8px; padding:10px 6px; text-align:center; }
+  .stat-num{ font-size:18px; font-weight:800; color:var(--rust-dark); }
+  .stat-label{ font-size:9.5px; color:var(--ink-soft); margin-top:2px; text-transform:uppercase; letter-spacing:.02em; }
 
   /* ============ PHASES ============ */
   .phase-row{ margin-bottom:14px; }
@@ -126,30 +121,69 @@
   .phase-fill{ height:100%; border-radius:5px; transition:width .8s ease; }
 
   /* ============ CURRENT WEEK CARD ============ */
-  .week-card{
-    background:var(--paper); border:1px solid var(--border-soft); border-radius:8px;
-    padding:14px;
-  }
+  .week-card{ background:var(--paper); border:1px solid var(--border-soft); border-radius:8px; padding:14px; }
   .week-card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px; }
   .week-tag{ font-size:11px; color:var(--rust-dark); font-weight:700; }
   .week-date{ font-size:11px; color:var(--ink-soft); }
   .week-focus{ font-size:13px; line-height:1.5; margin-bottom:10px; }
-  .week-targets{ display:flex; gap:14px; font-size:11px; color:var(--ink-soft); margin-bottom:12px; }
+  .week-targets{ display:flex; gap:14px; font-size:11px; color:var(--ink-soft); margin-bottom:12px; flex-wrap:wrap; }
   .week-targets b{ color:var(--ink); }
   .lesson-chips{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-  .lesson-chip{
-    border:1px solid var(--border); border-radius:6px; padding:4px 8px;
-    font-size:10.5px; color:var(--ink); background:var(--window-bg);
-  }
-  .check-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .lesson-chip{ border:1px solid var(--border); border-radius:6px; padding:4px 8px; font-size:10.5px; color:var(--ink); background:var(--window-bg); }
+  .check-row{ display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
   .check-item{ display:flex; align-items:center; gap:6px; font-size:12px; cursor:pointer; user-select:none; }
   .check-item input{ width:15px; height:15px; accent-color:var(--olive); cursor:pointer; }
+  .listen-row{ display:flex; align-items:center; gap:8px; font-size:12px; }
+  .listen-row input[type="number"]{
+    width:64px; padding:4px 6px; border:1px solid var(--border-soft); border-radius:6px;
+    background:var(--window-bg); color:var(--ink); font-size:12px;
+  }
+
+  /* ============ CHARTS ============ */
+  .chart-block{ margin-bottom:22px; }
+  .chart-title{ font-size:12px; font-weight:700; margin-bottom:2px; }
+  .chart-sub{ font-size:10.5px; color:var(--ink-soft); margin-bottom:8px; }
+  .chart-svg{ width:100%; height:auto; display:block; }
+  .chart-legend{ display:flex; gap:14px; font-size:10.5px; color:var(--ink-soft); margin-top:6px; }
+  .chart-legend span{ display:flex; align-items:center; gap:5px; }
+  .legend-line{ width:14px; height:0; border-top:2px solid; display:inline-block; }
+  .legend-line.dashed{ border-top-style:dashed; }
+
+  /* ============ MOCK EXAM LOG ============ */
+  .mock-form{ display:grid; grid-template-columns:1fr 1fr 90px 90px 90px auto; gap:8px; align-items:end; margin-bottom:16px; }
+  .mock-field label{ display:block; font-size:10px; color:var(--ink-soft); margin-bottom:3px; text-transform:uppercase; letter-spacing:.02em; }
+  .mock-field input{
+    width:100%; padding:6px 7px; border:1px solid var(--border-soft); border-radius:6px;
+    background:var(--paper); color:var(--ink); font-size:12px;
+  }
+  .mock-add-btn{
+    border:1px solid var(--border); border-radius:6px; padding:7px 12px;
+    font-size:11.5px; background:var(--olive); color:var(--paper); border-color:var(--olive);
+    height:32px;
+  }
+  .mock-add-btn:hover{ opacity:.85; }
+  .mock-list{ border:1px solid var(--border-soft); border-radius:8px; overflow:hidden; background:var(--paper); }
+  .mock-row{
+    display:grid; grid-template-columns:80px 1fr 50px 50px 50px 56px 60px 24px;
+    gap:8px; align-items:center; padding:8px 10px; font-size:11px;
+    border-bottom:1px solid rgba(169,136,90,.25);
+  }
+  .mock-row.head{ font-size:9.5px; text-transform:uppercase; color:var(--ink-soft); font-weight:700; background:var(--window-header); }
+  .mock-row:last-child{ border-bottom:none; }
+  .mock-total{ font-weight:700; }
+  .pass-badge{ font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:4px; text-align:center; }
+  .pass-badge.pass{ background:rgba(111,125,74,.25); color:var(--olive); }
+  .pass-badge.fail{ background:rgba(171,74,65,.2); color:var(--brick); }
+  .mock-del{ border:none; background:none; color:var(--ink-soft); font-size:13px; cursor:pointer; }
+  .mock-del:hover{ color:var(--brick); }
+  .mock-empty{ padding:16px; text-align:center; color:var(--ink-soft); font-size:11.5px; }
+  .pass-rule-note{ font-size:10.5px; color:var(--ink-soft); margin-top:8px; }
 
   /* ============ WEEK LIST ============ */
-  .week-list{ max-height:420px; overflow-y:auto; border:1px solid var(--border-soft); border-radius:8px; background:var(--paper); }
+  .week-list{ max-height:440px; overflow-y:auto; border:1px solid var(--border-soft); border-radius:8px; background:var(--paper); }
   .wl-row{
-    display:grid; grid-template-columns:34px 70px 1fr 60px 60px;
-    align-items:center; gap:8px; padding:7px 10px; font-size:11px;
+    display:grid; grid-template-columns:30px 60px 1fr 30px 30px 56px;
+    align-items:center; gap:6px; padding:7px 10px; font-size:11px;
     border-bottom:1px solid rgba(169,136,90,.25);
   }
   .wl-row:last-child{ border-bottom:none; }
@@ -160,6 +194,10 @@
   .wl-focus{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .wl-check{ display:flex; justify-content:center; }
   .wl-check input{ width:13px; height:13px; accent-color:var(--olive); cursor:pointer; }
+  .wl-listen input{
+    width:52px; padding:3px 4px; border:1px solid var(--border-soft); border-radius:5px;
+    background:var(--window-bg); color:var(--ink); font-size:10.5px; text-align:center;
+  }
   .wl-legend{ display:flex; gap:16px; font-size:10.5px; color:var(--ink-soft); padding:8px 10px; border-top:1px solid var(--border-soft); flex-wrap:wrap; }
   .wl-legend span{ display:flex; align-items:center; gap:5px; }
   .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
@@ -169,16 +207,16 @@
     padding:10px 18px; font-size:10.5px; color:var(--ink-soft);
     border-top:1px solid var(--border-soft); background:var(--paper); flex-wrap:wrap;
   }
-  .reset-btn{
-    border:1px solid var(--border); border-radius:6px; padding:5px 10px;
-    font-size:10.5px; color:var(--ink); background:var(--window-bg);
-  }
+  .reset-btn{ border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:10.5px; color:var(--ink); background:var(--window-bg); }
   .reset-btn:hover{ background:var(--brick); color:var(--paper); border-color:var(--brick); }
 
-  @media (max-width: 700px){
-    .stat-grid{ grid-template-columns:repeat(2,1fr); }
-    .wl-row{ grid-template-columns:28px 1fr 50px 50px; }
+  @media (max-width: 760px){
+    .stat-grid{ grid-template-columns:repeat(3,1fr); }
+    .wl-row{ grid-template-columns:24px 1fr 26px 26px 50px; }
     .wl-date{ display:none; }
+    .mock-form{ grid-template-columns:1fr 1fr; }
+    .mock-row{ grid-template-columns:1fr 40px 40px 40px 50px 50px 20px; font-size:10px; }
+    .mock-row .mock-date{ display:none; }
   }
 </style>
 </head>
@@ -202,9 +240,7 @@
     <!-- ============ HEADER / OVERALL PROGRESS ============ -->
     <div class="window">
       <div class="win-titlebar">
-        <div class="win-controls">
-          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
-        </div>
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
         <div class="win-title">n3_progress.monitor</div>
       </div>
       <div class="win-body">
@@ -218,17 +254,24 @@
             <div class="bar-note">Automatic — moves forward with the calendar regardless of what you've done.</div>
           </div>
           <div class="bar-row">
-            <div class="bar-label"><span>Weeks completed</span><b id="done-pct">0%</b></div>
+            <div class="bar-label"><span>Weeks completed (grammar + kanji/vocab)</span><b id="done-pct">0%</b></div>
             <div class="bar-track"><div class="bar-fill" id="done-bar" style="background:var(--olive);"></div></div>
-            <div class="bar-note">Manual — only moves when you check off a week below. This is the one that matters.</div>
+            <div class="bar-note">Manual — only moves when you check off a week below.</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Listening pace (minutes logged vs. target-to-date)</span><b id="listen-pct">0%</b></div>
+            <div class="bar-track"><div class="bar-fill" id="listen-bar" style="background:var(--rust);"></div></div>
+            <div class="bar-note" id="listen-note">Compares your logged listening minutes to the target for weeks elapsed so far.</div>
           </div>
         </div>
 
         <div class="stat-grid">
-          <div class="stat-box"><div class="stat-num" id="stat-week">—</div><div class="stat-label">Current week</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-week">—</div><div class="stat-label">Week</div></div>
           <div class="stat-box"><div class="stat-num" id="stat-kanji">0</div><div class="stat-label">Kanji earned</div></div>
           <div class="stat-box"><div class="stat-num" id="stat-vocab">0</div><div class="stat-label">Vocab earned</div></div>
-          <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Weeks behind</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-listen">0</div><div class="stat-label">Listen hrs</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Weeks behind</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-mock">—</div><div class="stat-label">Latest mock</div></div>
         </div>
       </div>
     </div>
@@ -236,35 +279,84 @@
     <!-- ============ THIS WEEK ============ -->
     <div class="window">
       <div class="win-titlebar">
-        <div class="win-controls">
-          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
-        </div>
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
         <div class="win-title">this_week.focus</div>
       </div>
-      <div class="win-body" id="this-week-slot">
-        <!-- filled by JS -->
-      </div>
+      <div class="win-body" id="this-week-slot"><!-- filled by JS --></div>
     </div>
 
     <!-- ============ PHASES ============ -->
     <div class="window">
       <div class="win-titlebar">
-        <div class="win-controls">
-          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
-        </div>
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
         <div class="win-title">phases.monitor</div>
       </div>
-      <div class="win-body" id="phases-slot">
-        <!-- filled by JS -->
+      <div class="win-body" id="phases-slot"><!-- filled by JS --></div>
+    </div>
+
+    <!-- ============ CHARTS ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
+        <div class="win-title">charts.svg — planned vs. actual</div>
+      </div>
+      <div class="win-body">
+        <div class="win-sub">Dashed = planned cumulative target. Solid = what you've actually logged, week by week.</div>
+        <div class="chart-block">
+          <div class="chart-title">Kanji</div>
+          <div class="chart-sub" id="kanji-chart-sub"></div>
+          <div id="kanji-chart"></div>
+        </div>
+        <div class="chart-block">
+          <div class="chart-title">Vocabulary</div>
+          <div class="chart-sub" id="vocab-chart-sub"></div>
+          <div id="vocab-chart"></div>
+        </div>
+        <div class="chart-block" style="margin-bottom:4px;">
+          <div class="chart-title">Listening minutes</div>
+          <div class="chart-sub" id="listen-chart-sub"></div>
+          <div id="listen-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MOCK EXAM LOG ============ -->
+    <div class="window">
+      <div class="win-titlebar">
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
+        <div class="win-title">mock_exams.log</div>
+      </div>
+      <div class="win-body">
+        <div class="win-sub">N3 pass rule: total ≥ 95/180 <b>and</b> every section ≥ 19/60. One weak section fails the exam even with a high total.</div>
+
+        <div class="mock-form">
+          <div class="mock-field"><label>Date</label><input type="date" id="mock-date"></div>
+          <div class="mock-field"><label>Source / name</label><input type="text" id="mock-name" placeholder="e.g. Shin Kanzen practice test 1"></div>
+          <div class="mock-field"><label>Vocab/Gram /60</label><input type="number" id="mock-voc" min="0" max="60"></div>
+          <div class="mock-field"><label>Reading /60</label><input type="number" id="mock-read" min="0" max="60"></div>
+          <div class="mock-field"><label>Listening /60</label><input type="number" id="mock-lis" min="0" max="60"></div>
+          <button class="mock-add-btn" id="mock-add-btn">+ add</button>
+        </div>
+
+        <div class="mock-list" id="mock-list-head">
+          <div class="mock-row head">
+            <div>date</div><div>source</div><div>voc</div><div>read</div><div>list</div><div>total</div><div>result</div><div></div>
+          </div>
+          <div id="mock-list-body"></div>
+        </div>
+
+        <div class="chart-block" style="margin-top:18px; margin-bottom:0;">
+          <div class="chart-title">Total score trend</div>
+          <div class="chart-sub">Red dashed line marks the 95-point overall pass mark.</div>
+          <div id="mock-chart"></div>
+        </div>
       </div>
     </div>
 
     <!-- ============ FULL WEEK LIST ============ -->
     <div class="window">
       <div class="win-titlebar">
-        <div class="win-controls">
-          <span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span>
-        </div>
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
         <div class="win-title">schedule.log — all 48 weeks</div>
       </div>
       <div class="win-body">
@@ -273,11 +365,11 @@
           <span><span class="dot" style="background:var(--olive);"></span> done</span>
           <span><span class="dot" style="background:var(--rust);"></span> current week</span>
           <span><span class="dot" style="background:var(--brick);"></span> past &amp; not done</span>
-          <span>G = grammar/textbook &nbsp; K/V = kanji &amp; vocab review</span>
+          <span>G = grammar/textbook &nbsp; K/V = kanji &amp; vocab &nbsp; min = listening minutes logged</span>
         </div>
       </div>
       <div class="win-footer">
-        <span>Saved locally in this browser only — no account, no server.</span>
+        <span>Everything here is saved locally in this browser only — no account, no server.</span>
         <button class="reset-btn" id="reset-btn">reset all progress</button>
       </div>
     </div>
@@ -290,56 +382,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const START_DATE = new Date('2026-08-03T00:00:00');
   const EXAM_DATE   = new Date('2027-07-04T00:00:00');
   const STORAGE_KEY = 'n3-progress-v1';
+  const MOCK_KEY    = 'n3-mock-exams-v1';
+  const N3_PASS_TOTAL = 95;
+  const N3_SECTION_MIN = 19;
 
   const SCHEDULE = [
-  {w:1,d:'2026-08-03',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.11 — close out grammar points',k:10,v:25},
-  {w:2,d:'2026-08-10',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.12 — close out grammar points',k:10,v:25},
-  {w:3,d:'2026-08-17',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.13 — both grammar points',k:18,v:65},
-  {w:4,d:'2026-08-24',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.14 — both grammar points',k:18,v:65},
-  {w:5,d:'2026-08-31',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.15 — both grammar points',k:18,v:65},
-  {w:6,d:'2026-09-07',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.16 — both grammar points',k:18,v:65},
-  {w:7,d:'2026-09-14',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.17 — both grammar points',k:18,v:65},
-  {w:8,d:'2026-09-21',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.18 — both grammar points',k:18,v:65},
-  {w:9,d:'2026-09-28',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.19 — both grammar points',k:18,v:65},
-  {w:10,d:'2026-10-05',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.20 — both grammar points',k:18,v:65},
-  {w:11,d:'2026-10-12',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.21 — both grammar points',k:18,v:65},
-  {w:12,d:'2026-10-19',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.22 — both grammar points',k:18,v:65},
-  {w:13,d:'2026-10-26',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.23 — both grammar points',k:18,v:65},
-  {w:14,d:'2026-11-02',ph:'Phase 2: Review buffer',f:'Full Genki I+II grammar review + self-test (mock N4)',k:0,v:0},
-  {w:15,d:'2026-11-09',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 1 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:16,d:'2026-11-16',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 2 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:17,d:'2026-11-23',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 3 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:18,d:'2026-11-30',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 4 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:19,d:'2026-12-07',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 5 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:20,d:'2026-12-14',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 6 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:21,d:'2026-12-21',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 7 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:22,d:'2026-12-28',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 8 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:23,d:'2027-01-04',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 9 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:24,d:'2027-01-11',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 10 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:25,d:'2027-01-18',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 11 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:26,d:'2027-01-25',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 12 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:27,d:'2027-02-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 13 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:28,d:'2027-02-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 14 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:29,d:'2027-02-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 15 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:30,d:'2027-02-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 16 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:31,d:'2027-03-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 17 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:32,d:'2027-03-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 18 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:33,d:'2027-03-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 19 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:34,d:'2027-03-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 20 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115},
-  {w:35,d:'2027-03-29',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:36,d:'2027-04-05',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:37,d:'2027-04-12',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:38,d:'2027-04-19',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:39,d:'2027-04-26',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:40,d:'2027-05-03',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:41,d:'2027-05-10',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:42,d:'2027-05-17',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50},
-  {w:43,d:'2027-05-24',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
-  {w:44,d:'2027-05-31',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
-  {w:45,d:'2027-06-07',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
-  {w:46,d:'2027-06-14',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
-  {w:47,d:'2027-06-21',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0},
-  {w:48,d:'2027-06-28',ph:'Phase 6: Final taper',f:'Light review only — weak points, no new material',k:0,v:0}
+  {w:1,d:'2026-08-03',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.11 — close out grammar points',k:10,v:25,l:20},
+  {w:2,d:'2026-08-10',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.12 — close out grammar points',k:10,v:25,l:20},
+  {w:3,d:'2026-08-17',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.13 — both grammar points',k:18,v:65,l:30},
+  {w:4,d:'2026-08-24',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.14 — both grammar points',k:18,v:65,l:30},
+  {w:5,d:'2026-08-31',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.15 — both grammar points',k:18,v:65,l:30},
+  {w:6,d:'2026-09-07',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.16 — both grammar points',k:18,v:65,l:30},
+  {w:7,d:'2026-09-14',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.17 — both grammar points',k:18,v:65,l:30},
+  {w:8,d:'2026-09-21',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.18 — both grammar points',k:18,v:65,l:30},
+  {w:9,d:'2026-09-28',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.19 — both grammar points',k:18,v:65,l:30},
+  {w:10,d:'2026-10-05',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.20 — both grammar points',k:18,v:65,l:30},
+  {w:11,d:'2026-10-12',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.21 — both grammar points',k:18,v:65,l:30},
+  {w:12,d:'2026-10-19',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.22 — both grammar points',k:18,v:65,l:30},
+  {w:13,d:'2026-10-26',ph:'Phase 2: Genki II (accelerated)',f:'Genki II Ch.23 — both grammar points',k:18,v:65,l:30},
+  {w:14,d:'2026-11-02',ph:'Phase 2: Review buffer',f:'Full Genki I+II grammar review + self-test (mock N4)',k:0,v:0,l:30},
+  {w:15,d:'2026-11-09',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 1 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:16,d:'2026-11-16',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 2 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:17,d:'2026-11-23',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 3 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:18,d:'2026-11-30',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 4 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:19,d:'2026-12-07',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 5 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:20,d:'2026-12-14',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 6 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:21,d:'2026-12-21',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 7 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:22,d:'2026-12-28',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 8 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:23,d:'2027-01-04',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 9 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:24,d:'2027-01-11',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 10 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:25,d:'2027-01-18',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 11 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:26,d:'2027-01-25',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 12 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:27,d:'2027-02-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 13 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:28,d:'2027-02-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 14 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:29,d:'2027-02-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 15 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:30,d:'2027-02-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 16 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:31,d:'2027-03-01',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 17 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:32,d:'2027-03-08',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 18 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:33,d:'2027-03-15',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 19 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:34,d:'2027-03-22',ph:'Phase 3: N3 core textbook',f:'N3 Grammar Block 20 (Try! N3 or Shin Kanzen Master N3, ~5-6 pts)',k:18,v:115,l:45},
+  {w:35,d:'2027-03-29',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:36,d:'2027-04-05',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:37,d:'2027-04-12',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:38,d:'2027-04-19',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:39,d:'2027-04-26',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:40,d:'2027-05-03',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:41,d:'2027-05-10',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:42,d:'2027-05-17',ph:'Phase 4: N3 drilling + skills',f:'Shin Kanzen Master N3 (grammar/vocab/kanji) + reading & listening practice',k:8,v:50,l:75},
+  {w:43,d:'2027-05-24',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0,l:60},
+  {w:44,d:'2027-05-31',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0,l:60},
+  {w:45,d:'2027-06-07',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0,l:60},
+  {w:46,d:'2027-06-14',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0,l:60},
+  {w:47,d:'2027-06-21',ph:'Phase 5: Mock exams',f:'Full timed JLPT N3 past paper, review every mistake',k:0,v:0,l:60},
+  {w:48,d:'2027-06-28',ph:'Phase 6: Final taper',f:'Light review only — weak points, no new material',k:0,v:0,l:30}
   ];
 
   const PHASE_COLOR = {
@@ -351,29 +446,41 @@ document.addEventListener('DOMContentLoaded', () => {
     'Phase 5: Mock exams':'var(--brick)',
     'Phase 6: Final taper':'var(--ink-soft)'
   };
+  const PHASE_HEX = {
+    'Phase 1: Finish Genki I':'#c69a3a',
+    'Phase 2: Genki II (accelerated)':'#c1623d',
+    'Phase 2: Review buffer':'#c69a3a',
+    'Phase 3: N3 core textbook':'#6f7d4a',
+    'Phase 4: N3 drilling + skills':'#a84f2f',
+    'Phase 5: Mock exams':'#ab4a41',
+    'Phase 6: Final taper':'#7d6a4e'
+  };
 
-  /* ---------- state ---------- */
+  /* ---------- weekly state ---------- */
   function loadState(){
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch(e){ return {}; }
+    try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }
+    catch(e){ return {}; }
   }
-  function saveState(state){
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
-  }
-  let state = loadState(); // { [weekNum]: { g:bool, kv:bool } }
+  function saveState(state){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){} }
+  let state = loadState(); // { [weekNum]: { g:bool, kv:bool, lMin:number } }
 
-  function getEntry(w){ return state[w] || { g:false, kv:false }; }
+  function getEntry(w){ return Object.assign({ g:false, kv:false, lMin:0 }, state[w] || {}); }
   function setEntry(w, patch){
     state[w] = Object.assign(getEntry(w), patch);
     saveState(state);
     renderAll();
   }
 
+  /* ---------- mock exam state ---------- */
+  function loadMocks(){
+    try { const raw = localStorage.getItem(MOCK_KEY); return raw ? JSON.parse(raw) : []; }
+    catch(e){ return []; }
+  }
+  function saveMocks(list){ try { localStorage.setItem(MOCK_KEY, JSON.stringify(list)); } catch(e){} }
+  let mocks = loadMocks(); // [{id, date, name, voc, read, lis}]
+
   /* ---------- date helpers ---------- */
   function dayDiff(a, b){ return Math.round((b - a) / 86400000); }
-
   function currentWeekIndex(){
     const today = new Date();
     let idx = 0;
@@ -382,6 +489,49 @@ document.addEventListener('DOMContentLoaded', () => {
       if (wd <= today) idx = i; else break;
     }
     return idx;
+  }
+
+  /* ---------- tiny SVG line chart helper ---------- */
+  function svgLineChart(opts){
+    const w = opts.width || 860, h = opts.height || 130, pad = { l:34, r:10, t:10, b:20 };
+    const n = opts.labels.length;
+    const yMax = opts.yMax;
+    const x = i => pad.l + (i / (n - 1)) * (w - pad.l - pad.r);
+    const y = v => (h - pad.b) - (Math.min(v, yMax) / yMax) * (h - pad.t - pad.b);
+
+    function pathFor(arr){
+      let d = '';
+      arr.forEach((v, i) => {
+        if (v === null || v === undefined) return;
+        d += (d === '' ? 'M' : 'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1) + ' ';
+      });
+      return d.trim();
+    }
+
+    let svg = `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+    // gridlines
+    for (let g = 0; g <= 4; g++){
+      const gy = pad.t + (g / 4) * (h - pad.t - pad.b);
+      const val = Math.round(yMax - (g / 4) * yMax);
+      svg += `<line x1="${pad.l}" y1="${gy.toFixed(1)}" x2="${w - pad.r}" y2="${gy.toFixed(1)}" stroke="rgba(59,44,30,.10)" stroke-width="1"/>`;
+      svg += `<text x="${pad.l - 6}" y="${(gy + 3).toFixed(1)}" font-size="9" fill="var(--ink-soft)" text-anchor="end" font-family="var(--font-mono)">${val}</text>`;
+    }
+    // x labels (every ~8th)
+    opts.labels.forEach((lab, i) => {
+      if (i % opts.labelStep !== 0 && i !== n - 1) return;
+      svg += `<text x="${x(i).toFixed(1)}" y="${h - 4}" font-size="9" fill="var(--ink-soft)" text-anchor="middle" font-family="var(--font-mono)">${lab}</text>`;
+    });
+    // planned (dashed)
+    svg += `<path d="${pathFor(opts.planned)}" fill="none" stroke="${opts.plannedColor}" stroke-width="2" stroke-dasharray="5,4"/>`;
+    // actual (solid)
+    svg += `<path d="${pathFor(opts.actual)}" fill="none" stroke="${opts.actualColor}" stroke-width="2.2"/>`;
+    // reference line (optional, e.g. pass mark)
+    if (opts.refValue !== undefined){
+      const ry = y(opts.refValue);
+      svg += `<line x1="${pad.l}" y1="${ry.toFixed(1)}" x2="${w - pad.r}" y2="${ry.toFixed(1)}" stroke="var(--brick)" stroke-width="1.5" stroke-dasharray="3,3"/>`;
+    }
+    svg += `</svg>`;
+    return svg;
   }
 
   /* ---------- render: header bars + stats ---------- */
@@ -396,27 +546,38 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('time-pct').textContent = timePct + '%';
     document.getElementById('time-bar').style.width = timePct + '%';
 
-    let doneWeeks = 0;
-    let behindWeeks = 0;
-    let kanjiEarned = 0, vocabEarned = 0;
+    let doneWeeks = 0, behindWeeks = 0, kanjiEarned = 0, vocabEarned = 0, listenActual = 0, listenPlannedToDate = 0;
     const curIdx = currentWeekIndex();
 
     SCHEDULE.forEach((wk, i) => {
       const e = getEntry(wk.w);
       const complete = e.g && e.kv;
-      if (complete) doneWeeks++;
-      if (complete){ kanjiEarned += wk.k; vocabEarned += wk.v; }
+      if (complete){ doneWeeks++; kanjiEarned += wk.k; vocabEarned += wk.v; }
       if (i < curIdx && !complete) behindWeeks++;
+      listenActual += (e.lMin || 0);
+      if (i <= curIdx) listenPlannedToDate += wk.l;
     });
 
     const donePct = Math.round((doneWeeks / SCHEDULE.length) * 100);
     document.getElementById('done-pct').textContent = donePct + '%';
     document.getElementById('done-bar').style.width = donePct + '%';
 
-    document.getElementById('stat-week').textContent = (curIdx + 1) + ' / ' + SCHEDULE.length;
+    const listenPct = listenPlannedToDate > 0 ? Math.round((listenActual / listenPlannedToDate) * 100) : 0;
+    document.getElementById('listen-pct').textContent = listenPct + '%';
+    document.getElementById('listen-bar').style.width = Math.min(listenPct, 100) + '%';
+    document.getElementById('listen-note').textContent = listenPct >= 100
+      ? `Ahead of pace — ${listenActual} of ${listenPlannedToDate} target minutes logged so far.`
+      : `${listenActual} of ${listenPlannedToDate} target minutes logged for weeks elapsed so far.`;
+
+    document.getElementById('stat-week').textContent = (curIdx + 1) + '/' + SCHEDULE.length;
     document.getElementById('stat-kanji').textContent = kanjiEarned;
     document.getElementById('stat-vocab').textContent = vocabEarned;
-    document.getElementById('stat-streak').textContent = behindWeeks;
+    document.getElementById('stat-listen').textContent = (listenActual / 60).toFixed(1);
+    document.getElementById('stat-behind').textContent = behindWeeks;
+
+    const sortedMocks = [...mocks].sort((a, b) => a.date.localeCompare(b.date));
+    const last = sortedMocks[sortedMocks.length - 1];
+    document.getElementById('stat-mock').textContent = last ? (last.voc + last.read + last.lis) + '/180' : '—';
   }
 
   /* ---------- render: this week card ---------- */
@@ -438,27 +599,30 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="week-focus">${wk.f}</div>
         <div class="week-targets">
-          <span>Kanji target: <b>${wk.k}</b></span>
-          <span>Vocab target: <b>${wk.v}</b></span>
+          <span>Kanji: <b>${wk.k}</b></span>
+          <span>Vocab: <b>${wk.v}</b></span>
+          <span>Listening target: <b>${wk.l} min</b></span>
         </div>
         <div class="lesson-chips">
           <span class="lesson-chip">Lesson 1 — ${fmt(wed)}</span>
           <span class="lesson-chip">Lesson 2 — ${fmt(sat)}</span>
         </div>
         <div class="check-row">
-          <label class="check-item">
-            <input type="checkbox" id="cw-grammar" ${e.g ? 'checked' : ''}>
-            Grammar / textbook done
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="cw-kv" ${e.kv ? 'checked' : ''}>
-            Kanji &amp; vocab reviews done
-          </label>
+          <label class="check-item"><input type="checkbox" id="cw-grammar" ${e.g ? 'checked' : ''}> Grammar / textbook done</label>
+          <label class="check-item"><input type="checkbox" id="cw-kv" ${e.kv ? 'checked' : ''}> Kanji &amp; vocab reviews done</label>
+        </div>
+        <div class="listen-row">
+          <span>Listening minutes logged:</span>
+          <input type="number" id="cw-listen" min="0" max="600" value="${e.lMin || ''}" placeholder="${wk.l}">
+          <span style="color:var(--ink-soft); font-size:10.5px;">target ${wk.l} min</span>
         </div>
       </div>
     `;
     document.getElementById('cw-grammar').addEventListener('change', (ev) => setEntry(wk.w, { g: ev.target.checked }));
     document.getElementById('cw-kv').addEventListener('change', (ev) => setEntry(wk.w, { kv: ev.target.checked }));
+    document.getElementById('cw-listen').addEventListener('change', (ev) => {
+      setEntry(wk.w, { lMin: Math.max(0, parseInt(ev.target.value, 10) || 0) });
+    });
   }
 
   /* ---------- render: phases ---------- */
@@ -491,6 +655,91 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- render: charts ---------- */
+  function renderCharts(){
+    const labels = SCHEDULE.map(wk => wk.w);
+    let kPlanned = 0, vPlanned = 0, lPlanned = 0, kActual = 0, vActual = 0, lActual = 0;
+    const kP = [], vP = [], lP = [], kA = [], vA = [], lA = [];
+
+    SCHEDULE.forEach(wk => {
+      const e = getEntry(wk.w);
+      kPlanned += wk.k; vPlanned += wk.v; lPlanned += wk.l;
+      if (e.g && e.kv){ kActual += wk.k; vActual += wk.v; }
+      lActual += (e.lMin || 0);
+      kP.push(kPlanned); vP.push(vPlanned); lP.push(lPlanned);
+      kA.push(kActual); vA.push(vActual); lA.push(lActual);
+    });
+
+    document.getElementById('kanji-chart-sub').textContent = `${kA[kA.length-1]} learned of ${kPlanned} planned`;
+    document.getElementById('vocab-chart-sub').textContent = `${vA[vA.length-1]} learned of ${vPlanned} planned`;
+    document.getElementById('listen-chart-sub').textContent = `${lA[lA.length-1]} min logged of ${lPlanned} min planned (${(lPlanned/60).toFixed(0)} hrs total)`;
+
+    document.getElementById('kanji-chart').innerHTML = svgLineChart({
+      labels, labelStep: 8, yMax: Math.max(kPlanned, 10),
+      planned: kP, actual: kA, plannedColor: '#c69a3a', actualColor: '#6f7d4a'
+    });
+    document.getElementById('vocab-chart').innerHTML = svgLineChart({
+      labels, labelStep: 8, yMax: Math.max(vPlanned, 10),
+      planned: vP, actual: vA, plannedColor: '#c69a3a', actualColor: '#c1623d'
+    });
+    document.getElementById('listen-chart').innerHTML = svgLineChart({
+      labels, labelStep: 8, yMax: Math.max(lPlanned, 10),
+      planned: lP, actual: lA, plannedColor: '#c69a3a', actualColor: '#a84f2f'
+    });
+  }
+
+  /* ---------- render: mock exam log ---------- */
+  function mockPass(m){
+    const total = m.voc + m.read + m.lis;
+    return total >= N3_PASS_TOTAL && m.voc >= N3_SECTION_MIN && m.read >= N3_SECTION_MIN && m.lis >= N3_SECTION_MIN;
+  }
+
+  function renderMocks(){
+    const body = document.getElementById('mock-list-body');
+    const sorted = [...mocks].sort((a, b) => b.date.localeCompare(a.date));
+    if (sorted.length === 0){
+      body.innerHTML = `<div class="mock-empty">No mock exam scores logged yet. Add your first practice test above.</div>`;
+    } else {
+      body.innerHTML = sorted.map(m => {
+        const total = m.voc + m.read + m.lis;
+        const passed = mockPass(m);
+        return `
+          <div class="mock-row">
+            <div class="mock-date">${m.date}</div>
+            <div>${m.name || '—'}</div>
+            <div>${m.voc}</div>
+            <div>${m.read}</div>
+            <div>${m.lis}</div>
+            <div class="mock-total">${total}</div>
+            <div><span class="pass-badge ${passed ? 'pass' : 'fail'}">${passed ? 'PASS' : 'FAIL'}</span></div>
+            <button class="mock-del" data-id="${m.id}" title="Delete entry">✕</button>
+          </div>
+        `;
+      }).join('');
+      body.querySelectorAll('.mock-del').forEach(btn => {
+        btn.addEventListener('click', () => {
+          mocks = mocks.filter(m => String(m.id) !== btn.dataset.id);
+          saveMocks(mocks);
+          renderAll();
+        });
+      });
+    }
+
+    // trend chart
+    const chronological = [...mocks].sort((a, b) => a.date.localeCompare(b.date));
+    if (chronological.length === 0){
+      document.getElementById('mock-chart').innerHTML = `<div class="mock-empty">Trend chart appears once you log a score.</div>`;
+    } else {
+      const labels = chronological.map((m, i) => i + 1);
+      const totals = chronological.map(m => m.voc + m.read + m.lis);
+      document.getElementById('mock-chart').innerHTML = svgLineChart({
+        labels, labelStep: Math.max(1, Math.ceil(labels.length / 10)), yMax: 180,
+        planned: totals, actual: totals, plannedColor: 'transparent', actualColor: '#a84f2f',
+        refValue: N3_PASS_TOTAL
+      });
+    }
+  }
+
   /* ---------- render: week list ---------- */
   function renderWeekList(){
     const curIdx = currentWeekIndex();
@@ -510,14 +759,20 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="wl-focus" title="${wk.f.replace(/"/g, '&quot;')}">${wk.f}</div>
         <div class="wl-check"><input type="checkbox" data-week="${wk.w}" data-field="g" ${e.g ? 'checked' : ''} title="Grammar done"></div>
         <div class="wl-check"><input type="checkbox" data-week="${wk.w}" data-field="kv" ${e.kv ? 'checked' : ''} title="Kanji/vocab done"></div>
+        <div class="wl-listen"><input type="number" min="0" max="600" data-week="${wk.w}" data-field="lMin" value="${e.lMin || ''}" placeholder="${wk.l}" title="Listening minutes"></div>
       `;
       list.appendChild(row);
     });
     list.querySelectorAll('input[type="checkbox"]').forEach(box => {
       box.addEventListener('change', (ev) => {
         const w = parseInt(ev.target.dataset.week, 10);
-        const field = ev.target.dataset.field;
-        setEntry(w, { [field]: ev.target.checked });
+        setEntry(w, { [ev.target.dataset.field]: ev.target.checked });
+      });
+    });
+    list.querySelectorAll('input[type="number"]').forEach(inp => {
+      inp.addEventListener('change', (ev) => {
+        const w = parseInt(ev.target.dataset.week, 10);
+        setEntry(w, { lMin: Math.max(0, parseInt(ev.target.value, 10) || 0) });
       });
     });
   }
@@ -526,16 +781,31 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHeader();
     renderThisWeek();
     renderPhases();
+    renderCharts();
+    renderMocks();
     renderWeekList();
   }
 
   renderAll();
 
+  /* ---------- mock exam add ---------- */
+  document.getElementById('mock-add-btn').addEventListener('click', () => {
+    const date = document.getElementById('mock-date').value || new Date().toISOString().slice(0, 10);
+    const name = document.getElementById('mock-name').value.trim();
+    const voc = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-voc').value, 10) || 0));
+    const read = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-read').value, 10) || 0));
+    const lis = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-lis').value, 10) || 0));
+    mocks.push({ id: Date.now(), date, name, voc, read, lis });
+    saveMocks(mocks);
+    ['mock-name','mock-voc','mock-read','mock-lis'].forEach(id => document.getElementById(id).value = '');
+    renderAll();
+  });
+
   /* ---------- reset ---------- */
   document.getElementById('reset-btn').addEventListener('click', () => {
-    if (confirm('Reset all checked progress? This cannot be undone.')) {
-      state = {};
-      saveState(state);
+    if (confirm('Reset all weekly checkboxes, listening minutes, and mock exam scores? This cannot be undone.')) {
+      state = {}; mocks = [];
+      saveState(state); saveMocks(mocks);
       renderAll();
     }
   });
@@ -543,10 +813,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- clock/date ---------- */
   function updateClock(){
     const now = new Date();
-    document.getElementById('menu-clock').textContent =
-      now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    document.getElementById('menu-date').textContent =
-      now.toLocaleDateString([], { month:'short', day:'numeric' });
+    document.getElementById('menu-clock').textContent = now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    document.getElementById('menu-date').textContent = now.toLocaleDateString([], { month:'short', day:'numeric' });
   }
   updateClock();
   setInterval(updateClock, 1000);
