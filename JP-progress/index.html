@@ -413,8 +413,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return idx;
   }
   function weekRange(i){
-    const start = new Date(SCHEDULE[i].d + 'T00:00:00');
-    const end = new Date(start); end.setDate(start.getDate() + 7);
+    // Week 0's lower bound is open-ended so entries logged before the official
+    // Monday start date (e.g. the day you set this up) still count toward week 1
+    // instead of falling into a gap no week claims.
+    const start = i === 0 ? new Date('2000-01-01T00:00:00') : new Date(SCHEDULE[i].d + 'T00:00:00');
+    const end = new Date(SCHEDULE[i].d + 'T00:00:00'); end.setDate(end.getDate() + 7);
     return { start, end };
   }
   function sumWeek(i, field){
@@ -674,7 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- log today: save ---------- */
   const todayISO = fmtISO(new Date());
   document.getElementById('log-date').value = todayISO;
-  document.getElementById('log-date').min = fmtISO(START_DATE);
   document.getElementById('log-date').max = fmtISO(EXAM_DATE);
 
   document.getElementById('log-save-btn').addEventListener('click', () => {
