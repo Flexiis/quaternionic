@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- SHARED STORAGE (jsonblob.com — no signup) ----------
   // Leave as 'REPLACE_ME' to run local-only. Use the "create shared blob"
   // panel on the page once, then paste the ID it gives you in here.
-  const BLOB_ID = "019fcda1-1e79-757b-81f5-23f6e965ea9c";
+  const BLOB_ID = "REPLACE_ME";
   const SHARED_ENABLED = BLOB_ID && BLOB_ID !== "REPLACE_ME";
   const BLOB_URL = SHARED_ENABLED ? `https://jsonblob.com/api/jsonBlob/${BLOB_ID}` : null;
   // Not real security — just enough friction that a random visitor doesn't
@@ -606,8 +606,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const idx = currentWeekIndex();
     const wk = SCHEDULE[idx];
     const wd = new Date(wk.d + 'T00:00:00');
-    const wed = new Date(wd); wed.setDate(wd.getDate()+2);
-    const sat = new Date(wd); sat.setDate(wd.getDate()+5);
     const fmt = d => d.toLocaleDateString([], { weekday:'short', month:'short', day:'numeric' });
     const ka = sumWeek(idx,'k'), va = sumWeek(idx,'v'), la = sumWeek(idx,'l');
 
@@ -628,10 +626,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ${miniBar('Kanji', ka, wk.k, 'var(--olive)')}
         ${miniBar('Vocab', va, wk.v, 'var(--rust)')}
         ${miniBar('Listen', la, wk.l, 'var(--rust-dark)')}
-      </div>
-      <div class="lesson-chips">
-        <span class="lesson-chip">Lesson 1 — ${fmt(wed)}</span>
-        <span class="lesson-chip">Lesson 2 — ${fmt(sat)}</span>
       </div>
       ${canEdit
         ? `<label class="check-item"><input type="checkbox" id="cw-grammar" ${grammar[wk.w] ? 'checked' : ''}> Grammar / textbook done this week</label>`
@@ -674,22 +668,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- charts ---------- */
-  function renderCharts(){
-    const labels = SCHEDULE.map(wk => wk.w);
+  function buildDailySeries(){
+    const dayList = [];
+    const endBound = weekRange(SCHEDULE.length - 1).end; // exclusive, end of week 48
+    let d = new Date(START_DATE);
+    while (d < endBound){
+      dayList.push(fmtISO(d));
+      d = new Date(d); d.setDate(d.getDate() + 1);
+    }
+    const labels = dayList.map(ds => {
+      const dt = new Date(ds + 'T00:00:00');
+      return dt.toLocaleDateString([], { month:'short', day:'numeric' });
+    });
+
     let kPlan=0, vPlan=0, lPlan=0, kAct=0, vAct=0, lAct=0;
     const kP=[], vP=[], lP=[], kA=[], vA=[], lA=[];
-    SCHEDULE.forEach((wk, i) => {
-      kPlan += wk.k; vPlan += wk.v; lPlan += wk.l;
-      kAct += sumWeek(i,'k'); vAct += sumWeek(i,'v'); lAct += sumWeek(i,'l');
+    dayList.forEach(ds => {
+      const dt = new Date(ds + 'T00:00:00');
+      const wk = SCHEDULE[weekIndexForDate(dt)];
+      kPlan += wk.k/7; vPlan += wk.v/7; lPlan += wk.l/7;
+      const e = daily[ds];
+      if (e){ kAct += e.k||0; vAct += e.v||0; lAct += e.l||0; }
       kP.push(kPlan); vP.push(vPlan); lP.push(lPlan);
       kA.push(kAct); vA.push(vAct); lA.push(lAct);
     });
-    document.getElementById('kanji-chart-sub').textContent = `${kA[kA.length-1]} of ${kPlan} planned`;
-    document.getElementById('vocab-chart-sub').textContent = `${vA[vA.length-1]} of ${vPlan} planned`;
-    document.getElementById('listen-chart-sub').textContent = `${lA[lA.length-1]} of ${lPlan} min planned`;
-    document.getElementById('kanji-chart').innerHTML = svgLineChart({ labels, labelStep:8, yMax:Math.max(kPlan,10), planned:kP, actual:kA, plannedColor:'#c69a3a', actualColor:'#6f7d4a' });
-    document.getElementById('vocab-chart').innerHTML = svgLineChart({ labels, labelStep:8, yMax:Math.max(vPlan,10), planned:vP, actual:vA, plannedColor:'#c69a3a', actualColor:'#c1623d' });
-    document.getElementById('listen-chart').innerHTML = svgLineChart({ labels, labelStep:8, yMax:Math.max(lPlan,10), planned:lP, actual:lA, plannedColor:'#c69a3a', actualColor:'#a84f2f' });
+    return { labels, kPlan, vPlan, lPlan, kP, vP, lP, kA, vA, lA, totalDays: dayList.length };
+  }
+
+  function renderCharts(){
+    const s = buildDailySeries();
+    document.getElementById('kanji-chart-sub').textContent = `${Math.round(s.kA[s.kA.length-1])} of ${Math.round(s.kPlan)} planned`;
+    document.getElementById('vocab-chart-sub').textContent = `${Math.round(s.vA[s.vA.length-1])} of ${Math.round(s.vPlan)} planned`;
+    document.getElementById('listen-chart-sub').textContent = `${Math.round(s.lA[s.lA.length-1])} of ${Math.round(s.lPlan)} min planned`;
+    const labelStep = Math.max(1, Math.ceil(s.totalDays / 10));
+    document.getElementById('kanji-chart').innerHTML = svgLineChart({ labels:s.labels, labelStep, yMax:Math.max(s.kPlan,10), planned:s.kP, actual:s.kA, plannedColor:'#c69a3a', actualColor:'#6f7d4a' });
+    document.getElementById('vocab-chart').innerHTML = svgLineChart({ labels:s.labels, labelStep, yMax:Math.max(s.vPlan,10), planned:s.vP, actual:s.vA, plannedColor:'#c69a3a', actualColor:'#c1623d' });
+    document.getElementById('listen-chart').innerHTML = svgLineChart({ labels:s.labels, labelStep, yMax:Math.max(s.lPlan,10), planned:s.lP, actual:s.lA, plannedColor:'#c69a3a', actualColor:'#a84f2f' });
   }
 
   /* ---------- mock exams ---------- */
