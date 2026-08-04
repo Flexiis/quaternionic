@@ -56,6 +56,19 @@
   .back-link:hover{ color:var(--rust-dark); }
   .menubar-right{ display:flex; align-items:center; gap:10px; color:var(--ink); }
   .menubar-right .divider{ color:var(--border); }
+  #status-badge.live{ color:var(--olive); }
+  #status-badge.unlocked{ color:var(--rust-dark); font-weight:700; }
+
+  .edit-only{ display:none; }
+  body.can-edit .edit-only{ display:revert; }
+  body.can-edit .log-form.edit-only,
+  body.can-edit .mock-form.edit-only{ display:grid; }
+
+  .setup-box{ font-size:11.5px; line-height:1.6; }
+  .setup-box textarea{
+    width:100%; height:70px; padding:8px; border:1px solid var(--border-soft); border-radius:8px;
+    background:var(--paper); color:var(--ink); font-family:var(--font-mono); font-size:10.5px; margin-top:8px;
+  }
 
   main{ max-width:820px; margin:0 auto; padding:calc(var(--menubar-h) + 22px) 16px 50px; }
 
@@ -194,10 +207,12 @@
       <a class="back-link" href="../">← portfolio</a>
     </div>
     <div class="menubar-right">
-      <span>progress.tracker</span>
+      <span id="status-badge">progress.tracker</span>
       <span class="divider">·</span>
       <span id="menu-date">—</span>
       <span id="menu-clock">--:--</span>
+      <span class="divider">·</span>
+      <a href="#" id="edit-link" class="back-link">unlock editing</a>
     </div>
   </div>
 
@@ -235,8 +250,24 @@
       </div>
     </div>
 
+    <!-- ============ SETUP (one-time, only shown until BLOB_ID is configured) ============ -->
+    <div class="window" id="setup-window" style="display:none;">
+      <div class="win-titlebar">
+        <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
+        <div class="win-title">shared_storage.setup</div>
+      </div>
+      <div class="win-body setup-box">
+        No shared storage configured yet — running local-only for now. Click below to create one (no signup, just generates a free public JSON store):
+        <div style="margin-top:8px;"><button class="log-save" id="setup-create-btn">create shared blob</button></div>
+        <div id="setup-result" style="display:none; margin-top:10px;">
+          Created! Copy this ID into <code>BLOB_ID</code> near the top of the script, then redeploy:
+          <textarea id="setup-id-box" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
     <!-- ============ LOG TODAY (the only daily input) ============ -->
-    <div class="window">
+    <div class="window edit-only">
       <div class="win-titlebar">
         <div class="win-controls"><span class="win-btn close"></span><span class="win-btn min"></span><span class="win-btn max"></span></div>
         <div class="win-title">log_today.input</div>
@@ -292,7 +323,7 @@
       </div>
       <div class="win-body">
         <div class="chart-sub" style="margin-bottom:8px;">Pass = total ≥95/180 and every section ≥19/60.</div>
-        <div class="mock-form">
+        <div class="mock-form edit-only">
           <div class="mock-field"><label>Date</label><input type="date" id="mock-date"></div>
           <div class="mock-field"><label>Source</label><input type="text" id="mock-name" placeholder="Practice test 1"></div>
           <div class="mock-field"><label>Voc/60</label><input type="number" id="mock-voc" min="0" max="60"></div>
@@ -318,8 +349,8 @@
         <div class="week-overview" id="week-overview"><!-- filled by JS --></div>
       </div>
       <div class="win-footer">
-        <span>Saved locally in this browser only.</span>
-        <button class="reset-btn" id="reset-btn">reset all progress</button>
+        <span id="footer-note">Saved locally in this browser only.</span>
+        <button class="reset-btn edit-only" id="reset-btn">reset all progress</button>
       </div>
     </div>
 
@@ -334,6 +365,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const GRAMMAR_KEY = 'n3-weekly-grammar-v1';
   const MOCK_KEY    = 'n3-mock-exams-v1';
   const N3_PASS_TOTAL = 95, N3_SECTION_MIN = 19;
+
+  // ---------- SHARED STORAGE (jsonblob.com — no signup) ----------
+  // Leave as 'REPLACE_ME' to run local-only. Use the "create shared blob"
+  // panel on the page once, then paste the ID it gives you in here.
+  const BLOB_ID = "REPLACE_ME";
+  const SHARED_ENABLED = BLOB_ID && BLOB_ID !== "REPLACE_ME";
+  const BLOB_URL = SHARED_ENABLED ? `https://jsonblob.com/api/jsonBlob/${BLOB_ID}` : null;
+  // Not real security — just enough friction that a random visitor doesn't
+  // fat-finger your data. Change this to whatever word you like.
+  const EDIT_PASSPHRASE = "ganbatte";
+  const POLL_MS = 30000; // re-fetch shared data this often so other viewers' edits show up
+
+  let canEdit = !SHARED_ENABLED; // local-only mode: it's your browser, so editing is always on
 
   const SCHEDULE = [
   {w:1,d:'2026-08-03',ph:'Phase 1: Finish Genki I',f:'Genki I Ch.11 — close out grammar points',k:10,v:25,l:20},
@@ -393,13 +437,49 @@ document.addEventListener('DOMContentLoaded', () => {
     'Phase 6: Final taper':'var(--ink-soft)'
   };
 
-  /* ---------- storage ---------- */
+  /* ---------- storage ----------
+     Shared mode: one JSON blob at jsonblob.com holds {daily,grammar,mocks} —
+     public read, and public write once the passphrase unlocks the edit UI
+     (client-side gate only, matching "doesn't need to be secure").
+     Local mode (BLOB_ID unset): same as before, localStorage only. */
   function loadJSON(key, fallback){ try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; } catch(e){ return fallback; } }
   function saveJSON(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
 
-  let daily = loadJSON(DAILY_KEY, {});       // { 'YYYY-MM-DD': {k,v,l} }
-  let grammar = loadJSON(GRAMMAR_KEY, {});   // { weekNum: true }
-  let mocks = loadJSON(MOCK_KEY, []);        // [{id,date,name,voc,read,lis}]
+  let daily = {}, grammar = {}, mocks = [];
+
+  function persist(){
+    if (SHARED_ENABLED){
+      fetch(BLOB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ daily, grammar, mocks })
+      }).catch(err => alert('Could not save to shared storage: ' + err.message));
+    } else {
+      saveJSON(DAILY_KEY, daily); saveJSON(GRAMMAR_KEY, grammar); saveJSON(MOCK_KEY, mocks);
+    }
+    renderAll();
+  }
+
+  function fetchShared(){
+    fetch(BLOB_URL)
+      .then(r => r.ok ? r.json() : { daily:{}, grammar:{}, mocks:[] })
+      .then(data => {
+        daily = data.daily || {}; grammar = data.grammar || {}; mocks = data.mocks || [];
+        renderAll();
+      })
+      .catch(err => console.error('Shared fetch failed:', err));
+  }
+
+  if (SHARED_ENABLED){
+    fetchShared();
+    setInterval(fetchShared, POLL_MS); // so other people's edits show up without a manual reload
+    document.getElementById('setup-window').style.display = 'none';
+  } else {
+    daily = loadJSON(DAILY_KEY, {});
+    grammar = loadJSON(GRAMMAR_KEY, {});
+    mocks = loadJSON(MOCK_KEY, []);
+    document.getElementById('setup-window').style.display = 'block';
+  }
 
   /* ---------- date helpers ---------- */
   function fmtISO(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
@@ -516,8 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     box.querySelectorAll('.log-del').forEach(btn => {
       btn.addEventListener('click', () => {
         delete daily[btn.dataset.date];
-        saveJSON(DAILY_KEY, daily);
-        renderAll();
+        persist();
       });
     });
   }
@@ -554,13 +633,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="lesson-chip">Lesson 1 — ${fmt(wed)}</span>
         <span class="lesson-chip">Lesson 2 — ${fmt(sat)}</span>
       </div>
-      <label class="check-item"><input type="checkbox" id="cw-grammar" ${grammar[wk.w] ? 'checked' : ''}> Grammar / textbook done this week</label>
+      ${canEdit
+        ? `<label class="check-item"><input type="checkbox" id="cw-grammar" ${grammar[wk.w] ? 'checked' : ''}> Grammar / textbook done this week</label>`
+        : `<span class="check-item">${grammar[wk.w] ? '✓' : '—'} Grammar / textbook ${grammar[wk.w] ? 'done' : 'not yet done'} this week</span>`
+      }
     `;
-    document.getElementById('cw-grammar').addEventListener('change', (ev) => {
-      grammar[wk.w] = ev.target.checked;
-      saveJSON(GRAMMAR_KEY, grammar);
-      renderAll();
-    });
+    if (canEdit){
+      document.getElementById('cw-grammar').addEventListener('change', (ev) => {
+        grammar[wk.w] = ev.target.checked;
+        persist();
+      });
+    }
   }
 
   /* ---------- phases ---------- */
@@ -622,12 +705,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       body.innerHTML = sorted.map(m => {
         const total = m.voc+m.read+m.lis, passed = mockPass(m);
-        return `<div class="mock-row"><div>${m.name||m.date}</div><div>${m.voc}</div><div>${m.read}</div><div>${m.lis}</div><div>${total}</div><div><span class="pass-badge ${passed?'pass':'fail'}">${passed?'PASS':'FAIL'}</span></div><button class="mock-del" data-id="${m.id}">✕</button></div>`;
+        return `<div class="mock-row"><div>${m.name||m.date}</div><div>${m.voc}</div><div>${m.read}</div><div>${m.lis}</div><div>${total}</div><div><span class="pass-badge ${passed?'pass':'fail'}">${passed?'PASS':'FAIL'}</span></div><button class="mock-del edit-only" data-id="${m.id}">✕</button></div>`;
       }).join('');
       body.querySelectorAll('.mock-del').forEach(btn => btn.addEventListener('click', () => {
+        if (!canEdit) return;
         mocks = mocks.filter(m => String(m.id) !== btn.dataset.id);
-        saveJSON(MOCK_KEY, mocks);
-        renderAll();
+        persist();
       }));
     }
     const chrono = [...mocks].sort((a,b)=>a.date.localeCompare(b.date));
@@ -680,38 +763,112 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('log-date').max = fmtISO(EXAM_DATE);
 
   document.getElementById('log-save-btn').addEventListener('click', () => {
+    if (!canEdit) return;
     const dateStr = document.getElementById('log-date').value || todayISO;
     const k = Math.max(0, parseInt(document.getElementById('log-kanji').value, 10) || 0);
     const v = Math.max(0, parseInt(document.getElementById('log-vocab').value, 10) || 0);
     const l = Math.max(0, parseInt(document.getElementById('log-listen').value, 10) || 0);
     daily[dateStr] = { k, v, l };
-    saveJSON(DAILY_KEY, daily);
     ['log-kanji','log-vocab','log-listen'].forEach(id => document.getElementById(id).value = '');
-    renderAll();
+    persist();
   });
 
   /* ---------- mock exam: add ---------- */
   document.getElementById('mock-date').value = todayISO;
   document.getElementById('mock-add-btn').addEventListener('click', () => {
+    if (!canEdit) return;
     const date = document.getElementById('mock-date').value || todayISO;
     const name = document.getElementById('mock-name').value.trim();
     const voc = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-voc').value,10) || 0));
     const read = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-read').value,10) || 0));
     const lis = Math.min(60, Math.max(0, parseInt(document.getElementById('mock-lis').value,10) || 0));
     mocks.push({ id: Date.now(), date, name, voc, read, lis });
-    saveJSON(MOCK_KEY, mocks);
     ['mock-name','mock-voc','mock-read','mock-lis'].forEach(id => document.getElementById(id).value = '');
-    renderAll();
+    persist();
   });
 
   /* ---------- reset ---------- */
   document.getElementById('reset-btn').addEventListener('click', () => {
-    if (confirm('Reset all daily logs, weekly grammar checks, and mock exam scores? This cannot be undone.')) {
+    if (!canEdit) return;
+    if (confirm('Reset all daily logs, weekly grammar checks, and mock exam scores? This cannot be undone, and applies to everyone if shared storage is on.')) {
       daily = {}; grammar = {}; mocks = [];
-      saveJSON(DAILY_KEY, daily); saveJSON(GRAMMAR_KEY, grammar); saveJSON(MOCK_KEY, mocks);
-      renderAll();
+      persist();
     }
   });
+
+  /* ---------- unlock editing ---------- */
+  function applyEditState(){
+    document.body.classList.toggle('can-edit', canEdit);
+    const editLink = document.getElementById('edit-link');
+    if (!SHARED_ENABLED){
+      editLink.style.display = 'none';
+    } else {
+      editLink.style.display = '';
+      editLink.textContent = canEdit ? 'lock editing' : 'unlock editing';
+    }
+    const badge = document.getElementById('status-badge');
+    if (!SHARED_ENABLED){
+      badge.textContent = 'progress.tracker — local only';
+      badge.className = '';
+    } else if (canEdit){
+      badge.textContent = 'progress.tracker — editing unlocked';
+      badge.className = 'unlocked';
+    } else {
+      badge.textContent = 'progress.tracker — live';
+      badge.className = 'live';
+    }
+    document.getElementById('footer-note').textContent = !SHARED_ENABLED
+      ? 'Saved locally in this browser only — shared storage not configured yet.'
+      : (canEdit
+          ? 'Editing unlocked — changes save live for everyone viewing this page.'
+          : 'Live, shared view. Click "unlock editing" above and enter the passphrase to log entries.');
+  }
+  document.getElementById('edit-link').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    if (!SHARED_ENABLED) return; // local mode: always editable already
+    if (canEdit){
+      canEdit = false;
+    } else {
+      const entered = prompt('Passphrase to unlock editing:');
+      if (entered === null) return;
+      if (entered.trim().toLowerCase() === EDIT_PASSPHRASE.toLowerCase()){
+        canEdit = true;
+      } else {
+        alert('Nope, try again.');
+        return;
+      }
+    }
+    applyEditState();
+    renderAll();
+  });
+  applyEditState();
+
+  /* ---------- one-time shared blob creation ---------- */
+  const setupBtn = document.getElementById('setup-create-btn');
+  if (setupBtn){
+    setupBtn.addEventListener('click', () => {
+      setupBtn.disabled = true;
+      setupBtn.textContent = 'creating…';
+      fetch('https://jsonblob.com/api/jsonBlob', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ daily: {}, grammar: {}, mocks: [] })
+      })
+        .then(res => {
+          const location = res.headers.get('Location') || '';
+          const id = location.split('/').pop();
+          if (!id) throw new Error('No blob ID returned');
+          document.getElementById('setup-id-box').value = id;
+          document.getElementById('setup-result').style.display = 'block';
+          setupBtn.textContent = 'created ✓';
+        })
+        .catch(err => {
+          alert('Could not create shared blob: ' + err.message);
+          setupBtn.disabled = false;
+          setupBtn.textContent = 'create shared blob';
+        });
+    });
+  }
 
   /* ---------- clock ---------- */
   function updateClock(){
