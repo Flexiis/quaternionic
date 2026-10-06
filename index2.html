@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felix Douven — Mechatronics Engineer</title>
+<meta name="description" content=`Portfolio of ${CONFIG.personal.name}, a mechatronics engineer. Robotics, embedded systems, PCB design, controls, and C++/Python projects.`>
+
+<!--
+  ============================================================
+  HOW TO CUSTOMIZE THIS FILE
+  ============================================================
+  1. Search for text in [square brackets] — that's every placeholder.
+  2. Search for "IMAGE PLACEHOLDER" comments — swap those divs for <img> tags.
+  3. Project cards live in the "PROJECTS DATA" section below (~line with id="win-projects").
+     Each .project-card has data-title / data-tags / data-desc attributes used by the modal.
+  4. Colors are CSS variables at the top of <style> under :root — change the palette in one place.
+  5. Everything is one file, no build step. Rename to index.html and push to GitHub Pages, or
+     open it directly in a browser.
+  ============================================================
+-->
+  
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --desktop-bg-1:#ecdfc4;
+    --desktop-bg-2:#ddc99c;
+    --window-bg:#f6efdc;
+    --window-header:#e2ce9d;
+    --border:#a9885a;
+    --border-soft:#c7ad81;
+    --ink:#3b2c1e;
+    --ink-soft:#7d6a4e;
+    --rust:#c1623d;
+    --rust-dark:#a84f2f;
+    --olive:#6f7d4a;
+    --brick:#ab4a41;
+    --gold:#c69a3a;
+    --paper:#fbf6ea;
+
+    --menubar-h:36px;
+    --statusbar-h:28px;
+    --dock-w:56px;
+    --dock-mobile-h:44px;
+
+    --radius:10px;
+    --font-mono:'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* ============ RESET / BASE ============ */
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:var(--font-mono);
+    color:var(--ink);
+    background:var(--desktop-bg-1);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{ font-family:inherit; cursor:pointer; }
+  a{ color:var(--rust-dark); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+  h1,h2,h3,h4,p,ul{ margin:0; }
+  :focus-visible{ outline:2px solid var(--rust); outline-offset:2px; }
+
+  /* thin warm scrollbars */
+  *{ scrollbar-width:thin; scrollbar-color:var(--border-soft) transparent; }
+  *::-webkit-scrollbar{ width:8px; height:8px; }
+  *::-webkit-scrollbar-thumb{ background:var(--border-soft); border-radius:4px; }
+
+  /* ============ TOP MENU BAR ============ */
+  .menubar{
+    position:fixed; top:0; left:0; right:0; height:var(--menubar-h);
+    background:var(--window-header);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 14px; z-index:1000; font-size:12.5px;
+  }
+  .menubar-left{ display:flex; align-items:center; gap:14px; }
+  .menu-dots{ display:flex; gap:6px; margin-right:6px; }
+  .menu-dots span{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .menu-dots span:nth-child(1){ background:var(--brick); }
+  .menu-dots span:nth-child(2){ background:var(--gold); }
+  .menu-dots span:nth-child(3){ background:var(--olive); }
+  .menu-item{ color:var(--ink-soft); }
+  .menubar-right{ display:flex; align-items:center; gap:10px; color:var(--ink); }
+  .menubar-right .divider{ color:var(--border); }
+
+  /* ============ DOCK ============ */
+  .dock{
+    position:fixed; top:var(--menubar-h); bottom:var(--statusbar-h); left:0; width:var(--dock-w);
+    background:var(--window-header); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    padding:16px 0; z-index:1000;
+  }
+  .dock-icon{
+    width:36px; height:36px; border-radius:8px;
+    background:var(--paper); border:1px solid var(--border-soft);
+    color:var(--ink); font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .15s ease, background .15s ease, color .15s ease;
+  }
+  .dock-icon:hover{ background:var(--rust); color:var(--paper); transform:translateY(-2px); }
+
+  /* ============ DESKTOP ============ */
+  #desktop{
+    position:relative;
+    margin-top:var(--menubar-h);
+    margin-left:var(--dock-w);
+    margin-bottom:var(--statusbar-h);
+    min-height:1200px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(59,44,30,0.07) 1px, transparent 0) 0 0/22px 22px,
+      linear-gradient(160deg, var(--desktop-bg-1), var(--desktop-bg-2));
+  }
+  /* desktop-canvas holds all windows. Above DESKTOP_MIN it just fills #desktop (fluid %).
+     Below DESKTOP_MIN (but above the mobile breakpoint) it's forced to a fixed min-width
+     instead of shrinking — this stops window text from reflowing/growing taller and
+     overlapping neighbours; the user gets a horizontal scrollbar on #desktop instead. */
+  #desktop-canvas{ position:relative; min-height:100%; }
+
+
+  /* decorative, non-interactive */
+  .doodle{ position:absolute; pointer-events:none; opacity:.16; color:var(--ink); }
+  .doodle-gear{ top:18px; right:24px; width:130px; height:130px; animation:spin 70s linear infinite; }
+  @keyframes spin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+
+  .polaroid{
+    position:absolute; width:200px; background:var(--paper);
+    border:1px solid var(--border-soft); border-radius:6px;
+    padding:10px 10px 14px; box-shadow:0 10px 18px rgba(59,44,30,.18);
+    cursor:grab; user-select:none;
+  }
+  .polaroid-img{
+    width:100%; height:120px; border:1px dashed var(--border);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft); font-size:11px; background:rgba(255,255,255,.4);
+  }
+  .polaroid-cap{ margin-top:8px; font-size:11px; color:var(--ink-soft); font-style:italic; }
+
+  /* ============ WINDOW BASE ============ */
+  .window{
+    position:absolute; display:flex; flex-direction:column;
+    background:var(--window-bg); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:0 12px 26px rgba(59,44,30,.20);
+  }
+  .window.active{ box-shadow:0 16px 34px rgba(59,44,30,.28); }
+  .window.minimized .win-body{ display:none; }
+  .window.maximized{
+    top:8px !important; left:8px !important;
+    width:calc(100% - 16px) !important; height:calc(100% - 16px) !important;
+  }
+
+  .win-titlebar{
+    display:flex; align-items:center; gap:10px;
+    height:34px; min-height:34px; padding:0 10px;
+    background:var(--window-header); border-bottom:1px solid var(--border);
+    border-radius:var(--radius) var(--radius) 0 0;
+    cursor:grab;
+  }
+  .win-controls{ display:flex; gap:7px; }
+  .win-btn{ width:11px; height:11px; border-radius:50%; border:none; padding:0; }
+  .win-btn.close{ background:var(--brick); }
+  .win-btn.min{ background:var(--gold); }
+  .win-btn.max{ background:var(--olive); }
+  .win-title{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+
+  .win-body{ flex:1; min-height:0; overflow-y:auto; padding:16px; font-size:13px; line-height:1.55; }
+  .win-autosize{ height:auto !important; }
+  .win-autosize .win-body{ overflow:visible; flex:none; }
+  .win-footer{
+    height:24px; min-height:24px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 10px; font-size:10.5px; color:var(--ink-soft);
+    border-top:1px solid var(--border-soft); background:var(--paper);
+    border-radius:0 0 var(--radius) var(--radius);
+  }
+
+  /* ============ WHOAMI ============ */
+  .avatar-box{
+    width:76px; height:76px; border:1.5px dashed var(--border);
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft); font-size:10.5px; text-align:center; float:left;
+    margin:0 12px 8px 0; background:rgba(255,255,255,.35);
+  }
+  .who-name{ font-size:18px; font-weight:800; letter-spacing:.2px; }
+  .who-role{ color:var(--rust-dark); font-style:italic; font-size:12.5px; margin-top:2px; }
+  .who-bio{ margin-top:10px; clear:both; color:var(--ink); }
+  .pill-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .pill-link{
+    border:1px solid var(--border); border-radius:6px; padding:4px 8px;
+    font-size:11px; color:var(--ink); background:var(--paper);
+  }
+  .pill-link:hover{ background:var(--rust); color:var(--paper); border-color:var(--rust); text-decoration:none; }
+
+  /* ============ NEOFETCH ============ */
+  .fetch-wrap{ display:flex; gap:14px; }
+  .fetch-art{ font-size:11px; line-height:1.3; color:var(--rust-dark); white-space:pre; flex-shrink:0; }
+  .fetch-rows div{ font-size:11.5px; margin-bottom:4px; }
+  .fetch-rows b{ color:var(--rust-dark); }
+  .swatches{ display:flex; gap:4px; margin-top:10px; }
+  .swatches span{ width:16px; height:12px; border-radius:2px; display:inline-block; }
+
+  /* ============ SKILLS MONITOR ============ */
+  .skill-row{ margin-bottom:11px; }
+  .skill-label{ display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:4px; }
+  .skill-track{ height:8px; border-radius:4px; background:rgba(59,44,30,.12); overflow:hidden; }
+  .skill-fill{ height:100%; width:0%; border-radius:4px; transition:width 1.1s ease; }
+
+  /* ============ PROJECTS ============ */
+  .proj-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
+  .project-card{
+    border:1px solid var(--border-soft); border-radius:8px; background:var(--paper);
+    padding:10px; font-size:11.5px; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .project-card:hover{ transform:translateY(-3px); box-shadow:0 8px 16px rgba(59,44,30,.18); border-color:var(--rust); cursor:pointer; }
+  .project-card .pc-title{ font-weight:700; margin-bottom:4px; }
+  .project-card .pc-tags{ color:var(--ink-soft); font-style:italic; }
+
+  /* ============ MODAL ============ */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(59,44,30,.45);
+    display:none; align-items:center; justify-content:center; z-index:2000; padding:20px;
+  }
+  .modal-box{
+    position:relative; width:min(460px,100%); max-height:80vh; overflow-y:auto;
+    background:var(--window-bg); border:1px solid var(--border); border-radius:var(--radius);
+    padding:22px; box-shadow:0 20px 40px rgba(0,0,0,.3);
+  }
+  .modal-close{
+    position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
+    border:1px solid var(--border-soft); background:var(--paper); color:var(--ink);
+  }
+  .modal-close:hover{ background:var(--brick); color:var(--paper); }
+  .modal-box h3{ font-size:16px; margin-bottom:4px; padding-right:26px; }
+  .modal-tags{ font-size:11.5px; color:var(--ink-soft); font-style:italic; margin-bottom:12px; }
+  .modal-image{
+    width:100%; height:150px; border:1px dashed var(--border); border-radius:6px;
+    display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
+    font-size:11.5px; margin-bottom:12px; background:rgba(255,255,255,.4);
+  }
+  .modal-box p{ font-size:12.5px; line-height:1.6; }
+  .modal-links{ display:flex; gap:8px; margin-top:14px; }
+
+  /* ============ TERMINAL ============ */
+  .term-output{ font-size:11.5px; }
+  .term-output div{ margin-bottom:6px; white-space:pre-wrap; word-break:break-word; }
+  .term-output .prompt{ color:var(--rust-dark); font-weight:700; }
+  .term-line-output{ color:var(--ink); }
+  .term-inputrow{ display:flex; align-items:center; gap:6px; margin-top:6px; }
+  .term-prompt-live{ color:var(--rust-dark); font-weight:700; font-size:11.5px; white-space:nowrap; }
+  .term-input{
+    flex:1; border:none; background:transparent; font-family:inherit; font-size:11.5px;
+    color:var(--ink); outline:none;
+  }
+
+  /* ============ NOTES.MD ============ */
+  .md-h4{ color:var(--rust-dark); font-weight:800; font-size:13px; margin-bottom:8px; }
+  .md-quote{ border-left:2px solid var(--border); padding-left:10px; color:var(--ink-soft); font-style:italic; margin-bottom:10px; }
+  .md-list{ margin:0 0 10px 0; padding-left:18px; }
+  .md-list li{ margin-bottom:4px; }
+  .md-italic{ color:var(--ink-soft); font-style:italic; font-size:11.5px; }
+
+  /* ============ LOG ============ */
+  .log-line{ font-size:11px; margin-bottom:7px; display:flex; gap:6px; }
+  .log-time{ color:var(--ink-soft); flex-shrink:0; }
+  .log-lvl{ font-weight:800; flex-shrink:0; width:38px; }
+  .log-lvl.info{ color:var(--ink-soft); }
+  .log-lvl.warn{ color:var(--gold); }
+  .log-lvl.ok{ color:var(--olive); }
+
+  /* ============ STATUS BAR ============ */
+  .statusbar{
+    position:fixed; left:0; right:0; bottom:0; height:var(--statusbar-h);
+    background:var(--window-header); border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 14px; font-size:10.5px; color:var(--ink-soft); z-index:1000;
+  }
+  .statusbar span{ margin-right:16px; }
+
+  /* ============ RESPONSIVE ============ */
+  /* "Tablet zone": too narrow for the fluid % layout to stay readable, but not yet
+     mobile-stacked. Lock the canvas to its design width so windows can't reflow/grow
+     into each other — scroll horizontally instead. */
+  @media (min-width: 881px) and (max-width: 1650px){
+    #desktop{ overflow-x:auto; overflow-y:hidden; }
+    #desktop-canvas{ width:1600px; min-width:1600px; }
+  }
+
+  @media (max-width: 880px){
+    .dock{
+      top:var(--menubar-h); left:0; right:0; bottom:auto; width:100%; height:var(--dock-mobile-h);
+      flex-direction:row; overflow-x:auto; padding:8px 10px; justify-content:flex-start;
+      border-right:none; border-bottom:1px solid var(--border);
+    }
+    .dock-icon{ flex-shrink:0; }
+    #desktop{
+      margin-left:0; margin-top:calc(var(--menubar-h) + var(--dock-mobile-h));
+      min-height:auto; padding:16px; overflow:visible;
+    }
+    .window{
+      position:static !important; width:100% !important; height:auto !important;
+      max-width:520px; margin:0 auto 20px; top:auto !important; left:auto !important;
+    }
+    .window .win-body{ max-height:none; overflow-y:visible; }
+    .doodle, .polaroid{ display:none; }
+    .menu-item{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:.001ms !important; animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ TOP MENU BAR ============ -->
+  <div class="menubar">
+    <div class="menubar-left">
+      <div class="menu-dots"><span></span><span></span><span></span></div>
+      <span class="menu-item">File</span>
+      <span class="menu-item">Edit</span>
+      <span class="menu-item">View</span>
+      <span class="menu-item">Window</span>
+      <span class="menu-item">Help</span>
+    </div>
+    <div class="menubar-right">
+      <span>Felix Douven</span>
+      <span class="divider">·</span>
+      <span id="menu-date">—</span>
+      <span id="menu-clock">--:--</span>
+    </div>
+  </div>
+
+  <!-- ============ RICKROLL (hidden until triggered) ============ -->
+  <div class="window" id="win-rickroll" style="display:none; top:200px; left:35%; width:400px; z-index:9999;">
+    <div class="win-titlebar">
+      <div class="win-controls">
+        <button class="win-btn close" aria-label="Close video.exe"></button>
+        <button class="win-btn min" aria-label="Minimize video.exe"></button>
+        <button class="win-btn max" aria-label="Maximize video.exe"></button>
+      </div>
+      <div class="win-title">video.exe — never_gonna.mp4</div>
+    </div>
+    <div class="win-body" style="padding:0;">
+      <div style="position:relative; padding-bottom:56.25%; height:0;">
+        <iframe id="rickroll-frame" style="position:absolute; top:0; left:0; width:100%; height:100%;"
+          src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DOCK ============ -->
+  <div class="dock">
+    <button class="dock-icon" data-target="win-whoami" title="whoami.sh">wh</button>
+    <button class="dock-icon" data-target="win-neofetch" title="neofetch">nf</button>
+    <button class="dock-icon" data-target="win-projects" title="~/projects">pr</button>
+    <button class="dock-icon" data-target="win-skills" title="skills.monitor">sk</button>
+    <button class="dock-icon" data-target="win-terminal" title="terminal">tm</button>
+    <button class="dock-icon" data-target="win-notes" title="notes.md">nt</button>
+    <button class="dock-icon" data-target="win-log" title="experience.log">lg</button>
+  </div>
+
+  <!-- ============ DESKTOP ============ -->
+  <main id="desktop">
+   <div id="desktop-canvas">
+
+    <!-- decorative doodle, purely aesthetic -->
+    <svg class="doodle doodle-gear" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2">
+      <circle cx="50" cy="50" r="18"/>
+      <circle cx="50" cy="50" r="6"/>
+      <g>
+        <rect x="46" y="4" width="8" height="14"/>
+        <rect x="46" y="82" width="8" height="14"/>
+        <rect x="4" y="46" width="14" height="8"/>
+        <rect x="82" y="46" width="14" height="8"/>
+        <rect x="46" y="4" width="8" height="14" transform="rotate(45 50 50)"/>
+        <rect x="46" y="82" width="8" height="14" transform="rotate(45 50 50)"/>
+        <rect x="46" y="4" width="8" height="14" transform="rotate(90 50 50)"/>
+        <rect x="46" y="82" width="8" height="14" transform="rotate(90 50 50)"/>
+        <rect x="46" y="4" width="8" height="14" transform="rotate(135 50 50)"/>
+        <rect x="46" y="82" width="8" height="14" transform="rotate(135 50 50)"/>
+      </g>
+    </svg>
+
+    <!-- ============ WHOAMI ============ -->
+    <div class="window" id="win-whoami" style="top:19px; left:0.5%; width:24%; height:295px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close whoami.sh"></button>
+          <button class="win-btn min" aria-label="Minimize whoami.sh"></button>
+          <button class="win-btn max" aria-label="Maximize whoami.sh"></button>
+        </div>
+        <div class="win-title">whoami.sh</div>
+      </div>
+      <div class="win-body">
+        <img src="pictures/headshot.jpg" style="width:76px;height:76px;border-radius:8px;object-fit:cover;float:left;margin:0 12px 8px 0;">
+        <div class="who-name">Felix Douven</div>
+        <div class="who-role">// Mechatronics Engineer</div>
+        <div class="who-bio">Highly ambitious engineer who doesn't back down easily. I research everything I can and love to keep learning. Strongest in system design, CAD (SolidWorks), embedded engineering and data analysis.</div>
+        <div class="pill-row">
+          <a class="pill-link" href="https://github.com/Flexiis">[ GitHub ]</a>
+          <a class="pill-link" href="https://www.linkedin.com/in/felixdouven/">[ LinkedIn ]</a>
+          <a class="pill-link" href="mailto:felixdouven@planet.nl">[ Email ]</a>
+          <a class="pill-link" href="cv/">[ Resume ]</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ NEOFETCH ============ -->
+    <div class="window" id="win-neofetch" style="top:570px; left:60%; width:20%; height:265px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close neofetch"></button>
+          <button class="win-btn min" aria-label="Minimize neofetch"></button>
+          <button class="win-btn max" aria-label="Maximize neofetch"></button>
+        </div>
+        <div class="win-title">neofetch</div>
+      </div>
+      <div class="win-body">
+        <div class="fetch-wrap">
+          <div class="fetch-art">  ___
+ /o o \
+|  ▽  |
+ \___/
+  | |
+ _| |_</div>
+          <div class="fetch-rows">
+            <div><b>OS:</b> Mechatronics Engineer</div>
+            <div><b>Host:</b> Felix Douven</div>
+            <div><b>Languages:</b> C++, Python, MATLAB</div>
+            <div><b>Tools:</b> SolidWorks, MATLAB, Agile</div>
+            <div><b>Focus:</b> System Design · Embedded</div>
+            <div><b>Location:</b> Eindhoven, Netherlands</div>
+            <div><b>Uptime:</b> Since Sept 2024 @ ASML</div>
+            <div><b>Building:</b> <span id="now-building"></span></div>
+          </div>
+        </div>
+        <div class="swatches">
+          <span style="background:var(--rust)"></span>
+          <span style="background:var(--olive)"></span>
+          <span style="background:var(--gold)"></span>
+          <span style="background:var(--brick)"></span>
+          <span style="background:var(--ink)"></span>
+          <span style="background:var(--border)"></span>
+        </div>
+      </div>
+    </div>  
+
+    <!-- ============ MASCOT WINDOW ============ -->
+    <div class="window win-autosize" id="win-mascot" style="top:320px; left:70%; width:170px; height:auto;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close mascot"></button>
+          <button class="win-btn min" aria-label="Minimize mascot"></button>
+          <button class="win-btn max" aria-label="Maximize mascot"></button>
+        </div>
+        <div class="win-title">mascot</div>
+      </div>
+      <div class="win-body" style="font-family:var(--font-mono); white-space:pre; font-size:11px; line-height:1.25; padding:10px; color:var(--rust-dark); text-align:center; overflow:hidden;">
+   .|||||||||.
+  |||||||||||||
+ /. `|||||||||||
+o__,_||||||||||'
+      </div>
+    </div>
+
+    <!-- ============ SKILLS MONITOR ============ -->
+    <div class="window win-autosize" id="win-skills" style="top:405px; left:82.5%; width:15%; height:auto;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close skills.monitor"></button>
+          <button class="win-btn min" aria-label="Minimize skills.monitor"></button>
+          <button class="win-btn max" aria-label="Maximize skills.monitor"></button>
+        </div>
+        <div class="win-title">skills.monitor</div>
+      </div>
+      <div class="win-body">
+        <div class="skill-row"><div class="skill-label"><span>System Design</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--rust)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>C++</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--olive)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>Python</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--gold)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>SolidWorks CAD</span><span>75%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--rust)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>FEM Analysis</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--olive)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>Matlab</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--gold)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>PCCSIM & SPC</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--rust)"></div></div></div>
+        <div class="skill-row"><div class="skill-label"><span>Circuit Design</span><span>35%</span></div><div class="skill-track"><div class="skill-fill" data-value="35" style="background:var(--olive)"></div></div></div>
+      </div>
+    </div>
+
+    <!-- ============ PROJECTS ============ -->
+    <div class="window win-autosize" id="win-projects" style="top:297px; left:27.25%; width:40%; height:auto;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close projects"></button>
+          <button class="win-btn min" aria-label="Minimize projects"></button>
+          <button class="win-btn max" aria-label="Maximize projects"></button>
+        </div>
+        <div class="win-title">~/projects</div>
+      </div>
+      <div class="win-body">
+        <div class="proj-grid">
+          <div class="project-card" data-title="Image Guided Therapy System — Philips N.V." data-tags="SolidWorks · MATLAB · FEM" data-desc="Developed the first mockup of the next-gen Image Guided Therapy System, optimized for manufacturability using FEM and cost-effective parts. Led CAD assembly and MATLAB simulations, delivering a prototype used to secure early-stage stakeholder funding.">
+            <div class="pc-title">▸ Image Guided Therapy System</div><div class="pc-tags">SolidWorks · MATLAB</div>
+          </div>
+          <div class="project-card" data-title="Gas Recycler for Nanoprinter — VSParticle B.V." data-tags="Python · C++ · PCB" data-desc="Working prototype integrating Python, C++, PCB design and system architecture for an electrocatalysis nanoprinter. Reduced manual labor during tests to nearly zero with Python scripts and boosted gas reuse from 0% to 88%, saving €70K/year per unit. EMC-proof electrical design.">
+            <div class="pc-title">▸ Gas Recycler for Nanoprinter</div><div class="pc-tags">Python · C++ · PCB</div>
+          </div>
+          <div class="project-card" data-title="Autonomous Underwater Vehicle" data-tags="PCB · Electrical · Systems" data-desc="Led the AUV's electrical & system design, defining the constraints. Developed the PCB for leak detection, power electronics and sensor processing.">
+            <div class="pc-title">▸ Autonomous Underwater Vehicle</div><div class="pc-tags">PCB · Electrical</div>
+          </div>
+          <div class="project-card" data-title="Sensor Data Classification" data-tags="TensorFlow · Python" data-desc="Led machine learning model development for sensor data classification. Achieved 96.22% accuracy by optimizing SVM, Random Forest and Extra Trees models.">
+            <div class="pc-title">▸ Sensor Data Classification</div><div class="pc-tags">TensorFlow · Python</div>
+          </div>
+          <div class="project-card" data-title="Containerised Home Server" data-tags="Docker · Linux" data-desc="Built a Linux server running multiple Dockerized services. Automated home data collection for renting houses, ad-blocking, and NAS integration using docker containers">
+            <div class="pc-title">▸ 10" Containerised Home Server</div><div class="pc-tags">Docker · Linux</div>
+          </div>
+          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
+            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
+          </div>
+          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
+            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
+          </div>
+        </div>
+      </div>
+      <div class="win-footer"><span>10 items</span><span>drwx------ · ~/projects</span></div>
+    </div>
+
+    <!-- ============ TERMINAL ============ -->
+    <div class="window" id="win-terminal" style="top:400px; left:1.5%; width:20%; height:340px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close terminal"></button>
+          <button class="win-btn min" aria-label="Minimize terminal"></button>
+          <button class="win-btn max" aria-label="Maximize terminal"></button>
+        </div>
+        <div class="win-title">terminal — contact.sh</div>
+      </div>
+      <div class="win-body">
+        <div class="term-output" id="term-output"></div>
+        <div class="term-inputrow">
+          <span class="term-prompt-live">guest@portfolio ~ $</span>
+          <input class="term-input" id="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command input">
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ NOTES.MD ============ -->
+    <div class="window win-autosize" id="win-notes" style="top:35px; left:56%; width:24%; height:auto;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close notes.md"></button>
+          <button class="win-btn min" aria-label="Minimize notes.md"></button>
+          <button class="win-btn max" aria-label="Maximize notes.md"></button>
+        </div>
+        <div class="win-title">notes.md</div>
+      </div>
+      <div class="win-body">
+        <div class="md-h4">#### about.md</div>
+        <div class="md-quote">"What is happening"</div>
+        <ul class="md-list">
+          <li>Building things that get used, not just demoed</li>
+          <li>Structural improvements to existing systems</li>
+          <li>Positive attitude + critical thinking > raw hours</li>
+        </ul>
+        <div class="md-italic">Currently tinkering with: <span id="now-tinkering"></span></div>
+      </div>
+    </div>
+
+    <!-- ============ EXPERIENCE LOG ============ -->
+    <div class="window" id="win-log" style="top:590px; left:24%; width:33%; height:210px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close experience.log"></button>
+          <button class="win-btn min" aria-label="Minimize experience.log"></button>
+          <button class="win-btn max" aria-label="Maximize experience.log"></button>
+        </div>
+        <div class="win-title">experience.log</div>
+      </div>
+      <div class="win-body">
+        <div class="log-line"><span class="log-time">[2026]</span><span class="log-lvl ok">OK</span><span>Competence Engineer - Electrical Systems @ ASML Holding N.V., Eindhoven</span></div>
+        <div class="log-line"><span class="log-time">[2024]</span><span class="log-lvl info">INFO</span><span>Technical Support Engineer @ ASML Holding N.V., Eindhoven</span></div>
+        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl info">INFO</span><span>System Designer @ VSParticle B.V., Delft (Internship)</span></div>
+        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl warn">WARN</span><span>Global Management minor @ Chuo University, Tokyo</span></div>
+        <div class="log-line"><span class="log-time">[2022]</span><span class="log-lvl info">INFO</span><span>Prototype Engineer, Innovation dept. @ Philips N.V., Best (Internship)</span></div>
+        <div class="log-line"><span class="log-time">[2019]</span><span class="log-lvl info">INFO</span><span>Started B.S. Mechatronics Engineering @ Fontys University, Eindhoven</span></div>
+      </div>
+    </div>
+
+    <!-- decorative polaroids, draggable, purely aesthetic -->
+    <!-- ============ FEATURED PROJECT PHOTOS ============ -->
+    <div class="window" id="win-featured-1" style="top:15px; left:27%; width:240px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close Project 1"></button>
+          <button class="win-btn min" aria-label="Minimize Project 1"></button>
+          <button class="win-btn max" aria-label="Maximize Project 1"></button>
+        </div>
+        <div class="win-title">project_1</div>
+      </div>
+      
+      <div class="win-body">
+        <!-- Clickable Preview Area -->
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Philips_IGT-System.jpg') center/cover; border-style:solid;" id="trigger-p1"></div>
+        
+        <div class="project-card" data-title="Image Guided Therapy System — Philips N.V." data-tags="solidworks · matlab · fem" data-image="pictures/Philips_IGT-System.jpg" data-desc="First mockup of a next-gen Image Guided Therapy System at Philips, optimized for manufacturability with FEM and cost-effective parts. Led CAD assembly and MATLAB simulations to secure early-stage stakeholder funding." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+          <h4 class="pc-title">Image Guided Therapy System</h4>
+          <div class="pc-tags" style="margin-bottom: 6px;">solidworks · matlab · fem</div>
+          <p style="font-size:12px; margin-bottom: 10px;">
+          </p>
+          <div class="pill-row" style="margin-top:0;">
+            <a class="pill-link" href="#">[ GitHub ]</a>
+            <a class="pill-link" href="#">[ Demo ]</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="win-featured-2" style="top:19px; left:42%; width:240px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close Project 2"></button>
+          <button class="win-btn min" aria-label="Minimize Project 2"></button>
+          <button class="win-btn max" aria-label="Maximize Project 2"></button>
+        </div>
+        <div class="win-title">project_2</div>
+      </div>
+      
+      <div class="win-body">
+        <!-- Clickable Preview Area -->
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/VSParticle_Gas-Recycler.jpg') center/cover; border-style:solid;" id="trigger-p2"></div>
+
+        <div class="project-card" data-title="Gas Recycler for Nanoprinter — VSParticle B.V." data-tags="python · c++ · pcb" data-image="pictures/VSParticle_Gas-Recycler.jpg" data-desc="Working prototype at VSParticle integrating Python, C++, PCB design and system architecture. Boosted gas reuse from 0% to 88%, saving €70K/year per unit, with EMC-proof electrical design." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+          <h4 class="pc-title">Gas Recycler for Nanoprinter</h4>
+          <div class="pc-tags" style="margin-bottom: 6px;">python · c++ · pcb</div>
+          <p style="font-size:12px; margin-bottom: 10px;">
+          </p>
+          <div class="pill-row" style="margin-top:0;">
+            <a class="pill-link" href="#">[ GitHub ]</a>
+            <a class="pill-link" href="#">[ Demo ]</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="win-featured-3" style="top:126px; left:81%; width:240px;">
+      <div class="win-titlebar">
+        <div class="win-controls">
+          <button class="win-btn close" aria-label="Close Project 3"></button>
+          <button class="win-btn min" aria-label="Minimize Project 3"></button>
+          <button class="win-btn max" aria-label="Maximize Project 3"></button>
+        </div>
+        <div class="win-title">project_3</div>
+      </div>
+      
+      <div class="win-body">
+        <!-- Clickable Preview Area -->
+        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Data_Scatterplot.jpg') center/cover; border-style:solid;" id="trigger-p3"></div>
+        
+        <div class="project-card" data-title="Autonomous Underwater Vehicle" data-tags="pcb · electrical · systems" data-image="pictures/Data_Scatterplot.jpg" data-desc="Led the AUV’s electrical & system design, defining the constraints, and developed the PCB for leak detection, power electronics and sensor processing." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
+          <h4 class="pc-title">Autonomous Underwater Vehicle</h4>
+          <div class="pc-tags" style="margin-bottom: 6px;">pcb · electrical · systems</div>
+          <p style="font-size:12px; margin-bottom: 10px;">
+          </p>
+          <div class="pill-row" style="margin-top:0;">
+            <a class="pill-link" href="#">[ GitHub ]</a>
+            <a class="pill-link" href="#">[ Demo ]</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+   </div>
+  </main>
+
+  <!-- ============ PROJECT MODAL ============ -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close" aria-label="Close project details">✕</button>
+      <h3 id="modal-title"></h3>
+      <p class="modal-tags" id="modal-tags"></p>
+      <div class="modal-image" id="modal-image">[ project image / diagram ]</div>
+      <p id="modal-desc"></p>
+      <div class="modal-links">
+        <a class="pill-link" href="#">[ View Code ↗ ]</a>
+        <a class="pill-link" href="#">[ Live Demo ↗ ]</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STATUS BAR ============ -->
+  <div class="statusbar">
+    <div><span id="uptime">up 00:00:00</span><span>~/portfolio</span></div>
+    <div><span id="res">—</span><span>workspace 1</span></div>
+  </div>
+
+<script>
+
+/* ---------- EDIT THESE LINES TO UPDATE MULIPLE ITEMS AT ONCE ---------- */
+const CONFIG = {
+  personal: {
+    name: "Felix Douven",
+    role: "Mechatronics Engineer",
+    email: "felixdouven@planet.nl",
+    location: "Eindhoven, The Netherlands"
+  },
+  links: {
+    github: "https://github.com/Flexiis",
+    linkedin: "https://www.linkedin.com/in/felixdouven/",
+    resume: "cv/" // Update this if your resume path changes
+  },
+  status: {
+    currentlyBuilding: '10" Homelab'
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  /* ---------- AUTOMATIC DOM UPDATES ---------- */
+  // Updates the "Building:" section in neofetch
+  if (document.getElementById('now-building')) {
+    document.getElementById('now-building').textContent = "Physical setup; " + CONFIG.status.currentlyBuilding;
+  }
+  // Updates the "Currently tinkering with:" section in notes.md
+  if (document.getElementById('now-tinkering')) {
+    document.getElementById('now-tinkering').textContent = CONFIG.status.currentlyBuilding;
+  }
+
+  // ... the rest of your z-index and window drag code continues here ...
+
+  /* ---------- z-index / focus ---------- */
+  let zTop = 10;
+  function bringToFront(win){
+    zTop++;
+    win.style.zIndex = zTop;
+    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
+    win.classList.add('active');
+  }
+
+  /* ---------- drag (windows via titlebar, polaroids via whole element) ---------- */
+  function makeDraggable(el, handle){
+    handle = handle || el;
+    let dragging = false, offsetX = 0, offsetY = 0;
+    const desktop = document.getElementById('desktop');
+
+    handle.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.win-btn')) return;
+      dragging = true;
+      if (el.classList.contains('window')) bringToFront(el);
+      const rect = el.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      document.body.style.userSelect = 'none';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const deskRect = desktop.getBoundingClientRect();
+      let x = e.clientX - deskRect.left - offsetX;
+      let y = e.clientY - deskRect.top - offsetY;
+      x = Math.max(0, Math.min(x, desktop.scrollWidth - el.offsetWidth));
+      y = Math.max(0, Math.min(y, desktop.scrollHeight - el.offsetHeight));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragging = false;
+      document.body.style.userSelect = '';
+    });
+  }
+
+  document.querySelectorAll('.window').forEach(win => {
+    makeDraggable(win, win.querySelector('.win-titlebar'));
+    win.addEventListener('mousedown', () => bringToFront(win));
+  });
+  document.querySelectorAll('.polaroid').forEach(p => makeDraggable(p));
+
+  /* ---------- window controls: close / minimize / maximize ---------- */
+  document.querySelectorAll('.win-btn.close').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.target.closest('.window').style.display = 'none';
+    });
+  });
+  document.querySelectorAll('.win-btn.min').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.target.closest('.window').classList.toggle('minimized');
+    });
+  });
+  document.querySelectorAll('.win-btn.max').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const win = e.target.closest('.window');
+      if (!win.classList.contains('maximized')) {
+        win.dataset.prevTop = win.style.top;
+        win.dataset.prevLeft = win.style.left;
+        win.dataset.prevWidth = win.style.width;
+        win.dataset.prevHeight = win.style.height;
+        win.classList.add('maximized');
+      } else {
+        win.classList.remove('maximized');
+        win.style.top = win.dataset.prevTop;
+        win.style.left = win.dataset.prevLeft;
+        win.style.width = win.dataset.prevWidth;
+        win.style.height = win.dataset.prevHeight;
+      }
+      bringToFront(win);
+    });
+  });
+
+  /* ---------- dock ---------- */
+  document.querySelectorAll('.dock-icon').forEach(icon => {
+    icon.addEventListener('click', () => {
+      const win = document.getElementById(icon.dataset.target);
+      win.style.display = 'flex';
+      win.classList.remove('minimized');
+      bringToFront(win);
+      win.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+
+  /* ---------- menu bar clock/date ---------- */
+  function updateClock(){
+    const now = new Date();
+    document.getElementById('menu-clock').textContent =
+      now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('menu-date').textContent =
+      now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  /* ---------- uptime + resolution ---------- */
+  const startTime = Date.now();
+  function updateUptime(){
+    const diff = Math.floor((Date.now() - startTime) / 1000);
+    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+    const s = String(diff % 60).padStart(2, '0');
+    document.getElementById('uptime').textContent = `up ${h}:${m}:${s}`;
+  }
+  updateUptime();
+  setInterval(updateUptime, 1000);
+
+  function updateRes(){
+    document.getElementById('res').textContent = `${window.innerWidth}x${window.innerHeight}`;
+  }
+  updateRes();
+  window.addEventListener('resize', updateRes);
+
+  /* ---------- skill bars ---------- */
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.skill-fill').forEach((bar, i) => {
+      const target = bar.dataset.value;
+      setTimeout(() => { bar.style.width = target + '%'; }, 150 * i);
+    });
+  });
+
+  /* ---------- project modal ---------- */
+  const modal = document.getElementById('project-modal');
+  const modalImage = document.getElementById('modal-image');
+
+  function openProjectModal(card){
+    document.getElementById('modal-title').textContent = card.dataset.title;
+    document.getElementById('modal-tags').textContent = card.dataset.tags;
+    document.getElementById('modal-desc').textContent = card.dataset.desc;
+    if (card.dataset.image){
+      modalImage.style.backgroundImage = `url('${card.dataset.image}')`;
+      modalImage.style.backgroundSize = 'cover';
+      modalImage.style.backgroundPosition = 'center';
+      modalImage.style.borderStyle = 'solid';
+      modalImage.textContent = '';
+    } else {
+      modalImage.style.backgroundImage = 'none';
+      modalImage.style.borderStyle = 'dashed';
+      modalImage.textContent = '[ project image / diagram ]';
+    }
+    modal.style.display = 'flex';
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => openProjectModal(card));
+  });
+
+  document.querySelectorAll('.modal-image[id^="trigger-p"]').forEach(tile => {
+    tile.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = tile.parentElement.querySelector('.project-card');
+      if (card) openProjectModal(card);
+    });
+  });
+  document.getElementById('modal-close').addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.style.display = 'none'; });
+
+  /* ---------- terminal ---------- */
+  const termOutput = document.getElementById('term-output');
+  const termInput = document.getElementById('term-input');
+  const termScroll = document.querySelector('#win-terminal .win-body');
+  function scrollTermToBottom(){ termScroll.scrollTop = termScroll.scrollHeight; }
+
+  function escapeHtml(str){
+    return str.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+const commands = {
+    help: () => 'Available commands:\n  whoami     -- about me\n  projects   -- open ~/projects\n  skills     -- open skills.monitor\n  contact    -- get in touch\n  resume     -- open resume\n  ls         -- list windows\n  date       -- current date/time\n  clear      -- clear the screen\n  sudo hire-me',
+    whoami: () => `${CONFIG.personal.name} -- ${CONFIG.personal.role}\n// building things that move, sense, and (mostly) behave.`,
+    projects: () => { const w = document.getElementById('win-projects'); w.style.display = 'flex'; bringToFront(w); return 'Opening ~/projects ...'; },
+    skills: () => { const w = document.getElementById('win-skills'); w.style.display = 'flex'; bringToFront(w); return 'Opening skills.monitor ...'; },
+    contact: () => `Email: ${CONFIG.personal.email}\nLocation: ${CONFIG.personal.location}\nLinkedIn: <a href="${CONFIG.links.linkedin}" target="_blank">${CONFIG.links.linkedin}</a>\nGitHub: <a href="${CONFIG.links.github}" target="_blank">${CONFIG.links.github}</a>`,
+    resume: () => {
+      // Automatically opens the resume link in a new tab
+      window.open(CONFIG.links.resume, '_blank');
+      return `Opening ${CONFIG.links.resume} ...`;
+    },
+    ls: () => Array.from(document.querySelectorAll('.window')).map(w => w.id.replace('win-', '')).join('  '),
+    date: () => new Date().toString(),
+    clear: () => { termOutput.innerHTML = ''; return null; },
+    rick: () => {
+      const win = document.getElementById('win-rickroll');
+      const frame = document.getElementById('rickroll-frame');
+      frame.src = `https://www.youtube.com/embed/QDia3e12czc?autoplay=1`;
+      win.style.display = 'flex';
+      bringToFront(win);
+      makeDraggable(win, win.querySelector('.win-titlebar'));
+      return "You've been rick rolled.";
+    },
+    'sudo rm -rf': () => 'nice try',
+    'sudo hire-me': () => `Permission granted. ${CONFIG.personal.name} is open to opportunities.`
+  };
+
+  function printLine(html){
+    const line = document.createElement('div');
+    line.innerHTML = html;
+    termOutput.appendChild(line);
+    scrollTermToBottom();
+  }
+
+  function runCommand(raw){
+    const cmd = raw.trim().toLowerCase();
+    printLine(`<span class="prompt">guest@portfolio ~ $</span> ${escapeHtml(cmd)}`);
+    let output;
+    if (cmd === '') { output = null; }
+    else if (cmd.startsWith('echo ')) { output = cmd.slice(5); }
+    else if (commands[cmd]) { output = commands[cmd](); }
+    else { output = `command not found: ${cmd} (try 'help')`; }
+    if (output) printLine(`<span class="term-line-output">${escapeHtml(output)}</span>`);
+  }
+
+  termInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { runCommand(termInput.value); termInput.value = ''; scrollTermToBottom(); }
+  });
+  termInput.addEventListener('focus', scrollTermToBottom);
+
+  /* typewriter welcome message */
+  const welcome = `Welcome to ${CONFIG.personal.name}'s terminal.\nType 'help' to get started.`;
+  let i = 0;
+  const welcomeLine = document.createElement('div');
+  termOutput.appendChild(welcomeLine);
+  (function type(){
+    if (i <= welcome.length){
+      welcomeLine.innerHTML = `<span class="term-line-output">${escapeHtml(welcome.slice(0, i))}</span>`;
+      i += 2;
+      setTimeout(type, 12);
+    }
+  })();
+
+});
+</script>
+</body>
+</html>

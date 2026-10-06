@@ -4,979 +4,579 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Felix Douven — Mechatronics Engineer</title>
-<meta name="description" content=`Portfolio of ${CONFIG.personal.name}, a mechatronics engineer. Robotics, embedded systems, PCB design, controls, and C++/Python projects.`>
-
+<meta name="description" content="Portfolio of Felix Douven, mechatronics engineer in Eindhoven. System design, embedded electronics, CAD and data analysis.">
 <!--
-  ============================================================
-  HOW TO CUSTOMIZE THIS FILE
-  ============================================================
-  1. Search for text in [square brackets] — that's every placeholder.
-  2. Search for "IMAGE PLACEHOLDER" comments — swap those divs for <img> tags.
-  3. Project cards live in the "PROJECTS DATA" section below (~line with id="win-projects").
-     Each .project-card has data-title / data-tags / data-desc attributes used by the modal.
-  4. Colors are CSS variables at the top of <style> under :root — change the palette in one place.
-  5. Everything is one file, no build step. Rename to index.html and push to GitHub Pages, or
-     open it directly in a browser.
-  ============================================================
+  HOW TO EDIT
+  1. Projects: edit the PROJECTS list in the <script> at the bottom.
+     featured:true  → big card under "Selected work"
+     featured:false → row in the "More projects" list
+  2. Images live in /pictures next to this file (same paths as the old site).
+     A missing image shows its expected filename instead of a broken icon.
+  3. Colours: CSS variables under :root (--ac is the accent).
+  No build step — upload index.html + pictures/ (and cv/) to GitHub Pages.
 -->
-  
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ============ TOKENS ============ */
-  :root{
-    --desktop-bg-1:#ecdfc4;
-    --desktop-bg-2:#ddc99c;
-    --window-bg:#f6efdc;
-    --window-header:#e2ce9d;
-    --border:#a9885a;
-    --border-soft:#c7ad81;
-    --ink:#3b2c1e;
-    --ink-soft:#7d6a4e;
-    --rust:#c1623d;
-    --rust-dark:#a84f2f;
-    --olive:#6f7d4a;
-    --brick:#ab4a41;
-    --gold:#c69a3a;
-    --paper:#fbf6ea;
+:root{
+  --bg:#EFEEE9; --sf:#F8F7F3; --fg:#141413; --mu:#5F5E58; --ln:#D2D0C8; --ac:#E8501E;
+  --sans:'Archivo',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --pad:clamp(20px,4vw,48px); --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body.panel-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--ac)}
+::selection{background:var(--ac);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.wrap{max-width:1320px;margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.mu{color:var(--mu)}
+.sq{width:10px;height:10px;background:var(--ac);display:block;flex:none}
 
-    --menubar-h:36px;
-    --statusbar-h:28px;
-    --dock-w:56px;
-    --dock-mobile-h:44px;
+/* header */
+.site-header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--fg)}
+.site-header .wrap{padding-top:14px;padding-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 32px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-stretch:125%;font-size:15px;letter-spacing:-.01em}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;font-size:12px}
 
-    --radius:10px;
-    --font-mono:'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
+/* buttons */
+.btn{display:inline-block;padding:14px 20px;border:1px solid var(--fg);font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.btn:hover{background:var(--fg);color:var(--bg)}
+.btn--solid{background:var(--fg);color:var(--bg)}
+.btn--solid:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn--sm{padding:7px 12px;font-size:12px}
+.row{display:flex;flex-wrap:wrap;gap:12px}
 
-  /* ============ RESET / BASE ============ */
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; }
-  body{
-    font-family:var(--font-mono);
-    color:var(--ink);
-    background:var(--desktop-bg-1);
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-  }
-  button{ font-family:inherit; cursor:pointer; }
-  a{ color:var(--rust-dark); text-decoration:none; }
-  a:hover{ text-decoration:underline; }
-  h1,h2,h3,h4,p,ul{ margin:0; }
-  :focus-visible{ outline:2px solid var(--rust); outline-offset:2px; }
+/* hero */
+.hero{padding-top:clamp(48px,8vw,112px)}
+.hero-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font-size:12px;letter-spacing:.08em;margin-bottom:clamp(20px,3vw,36px)}
+.hero h1{margin:0;font-weight:800;font-stretch:125%;font-size:clamp(64px,16.5vw,236px);line-height:.84;letter-spacing:-.035em}
+.hero h1 span{display:block}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(36px,5vw,80px);align-items:end;margin-top:clamp(40px,6vw,80px);padding-bottom:clamp(40px,6vw,72px)}
+.lede{margin:0 0 32px;font-size:clamp(22px,2.4vw,32px);line-height:1.28;letter-spacing:-.01em;max-width:24em;text-wrap:pretty}
+.tblock{margin:0;border:1px solid var(--fg);font-size:15px;line-height:1.4}
+.tblock > div{display:grid;grid-template-columns:118px minmax(0,1fr)}
+.tblock > div + div{border-top:1px solid var(--fg)}
+.tblock dt{padding:12px 14px;border-right:1px solid var(--fg);font-size:11px;letter-spacing:.08em}
+.tblock dd{margin:0;padding:12px 14px}
+.tblock-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;padding:8px 14px;border:1px solid var(--fg);border-top:0;font-size:10.5px;letter-spacing:.08em}
+.ruler{height:14px;border-bottom:1px solid var(--fg);background-image:repeating-linear-gradient(to right,var(--fg) 0 1px,transparent 1px 100px),repeating-linear-gradient(to right,var(--fg) 0 1px,transparent 1px 10px);background-size:100% 14px,100% 6px;background-repeat:no-repeat;background-position:0 100%,0 100%}
 
-  /* thin warm scrollbars */
-  *{ scrollbar-width:thin; scrollbar-color:var(--border-soft) transparent; }
-  *::-webkit-scrollbar{ width:8px; height:8px; }
-  *::-webkit-scrollbar-thumb{ background:var(--border-soft); border-radius:4px; }
+/* sections */
+.section{scroll-margin-top:72px;padding-top:clamp(80px,11vw,160px)}
+#work{padding-top:clamp(64px,9vw,128px)}
+#about{padding-bottom:clamp(80px,11vw,160px)}
+.shead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px 32px;border-top:1px solid var(--fg);padding-top:18px;margin-bottom:clamp(32px,5vw,56px)}
+.shead-l{display:flex;align-items:baseline;gap:18px}
+.num{font-family:var(--mono);font-size:13px}
+.shead h2{margin:0;font-weight:700;font-stretch:125%;font-size:clamp(30px,4.2vw,56px);letter-spacing:-.025em;line-height:1}
+.shead-r{font-size:12px;letter-spacing:.08em}
 
-  /* ============ TOP MENU BAR ============ */
-  .menubar{
-    position:fixed; top:0; left:0; right:0; height:var(--menubar-h);
-    background:var(--window-header);
-    border-bottom:1px solid var(--border);
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 14px; z-index:1000; font-size:12.5px;
-  }
-  .menubar-left{ display:flex; align-items:center; gap:14px; }
-  .menu-dots{ display:flex; gap:6px; margin-right:6px; }
-  .menu-dots span{ width:10px; height:10px; border-radius:50%; display:inline-block; }
-  .menu-dots span:nth-child(1){ background:var(--brick); }
-  .menu-dots span:nth-child(2){ background:var(--gold); }
-  .menu-dots span:nth-child(3){ background:var(--olive); }
-  .menu-item{ color:var(--ink-soft); }
-  .menubar-right{ display:flex; align-items:center; gap:10px; color:var(--ink); }
-  .menubar-right .divider{ color:var(--border); }
+/* figures */
+.fig{position:relative;margin:0;aspect-ratio:4/3;background:var(--sf);overflow:hidden}
+.fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+.fig-tag{position:absolute;top:12px;left:12px;z-index:1;background:var(--bg);color:var(--fg);padding:4px 7px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em}
+.fig.is-empty img{display:none}
+.fig.is-empty::after{content:attr(data-ph);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;border:1px dashed var(--ln);font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--mu);word-break:break-all}
 
-  /* ============ DOCK ============ */
-  .dock{
-    position:fixed; top:var(--menubar-h); bottom:var(--statusbar-h); left:0; width:var(--dock-w);
-    background:var(--window-header); border-right:1px solid var(--border);
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-    padding:16px 0; z-index:1000;
-  }
-  .dock-icon{
-    width:36px; height:36px; border-radius:8px;
-    background:var(--paper); border:1px solid var(--border-soft);
-    color:var(--ink); font-size:11px; font-weight:700;
-    display:flex; align-items:center; justify-content:center;
-    transition:transform .15s ease, background .15s ease, color .15s ease;
-  }
-  .dock-icon:hover{ background:var(--rust); color:var(--paper); transform:translateY(-2px); }
+/* featured cards */
+.work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:clamp(48px,6vw,72px) clamp(24px,3vw,40px)}
+.card{display:flex;flex-direction:column;gap:16px}
+.card:hover{color:inherit}
+.card:hover .fig img{transform:scale(1.025)}
+.card:hover .card-title,.card:hover .card-go{color:var(--ac)}
+.card-body{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--fg);padding-top:14px}
+.card-meta{display:flex;justify-content:space-between;gap:16px;font-size:12px}
+.card-title{font-weight:700;font-stretch:115%;font-size:clamp(24px,2.4vw,32px);line-height:1.08;letter-spacing:-.02em;transition:color .2s}
+.card-sum{font-size:17px;line-height:1.45;max-width:34em;text-wrap:pretty}
+.card-tags{font-size:12px}
 
-  /* ============ DESKTOP ============ */
-  #desktop{
-    position:relative;
-    margin-top:var(--menubar-h);
-    margin-left:var(--dock-w);
-    margin-bottom:var(--statusbar-h);
-    min-height:1200px;
-    overflow:hidden;
-    background:
-      radial-gradient(circle at 1px 1px, rgba(59,44,30,0.07) 1px, transparent 0) 0 0/22px 22px,
-      linear-gradient(160deg, var(--desktop-bg-1), var(--desktop-bg-2));
-  }
-  /* desktop-canvas holds all windows. Above DESKTOP_MIN it just fills #desktop (fluid %).
-     Below DESKTOP_MIN (but above the mobile breakpoint) it's forced to a fixed min-width
-     instead of shrinking — this stops window text from reflowing/growing taller and
-     overlapping neighbours; the user gets a horizontal scrollbar on #desktop instead. */
-  #desktop-canvas{ position:relative; min-height:100%; }
+/* more projects */
+.more{margin-top:clamp(64px,8vw,104px);border-top:1px solid var(--fg);border-bottom:1px solid var(--fg)}
+.more-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0}
+.more-toggle-l{display:flex;align-items:baseline;gap:18px}
+.more-toggle h3{margin:0;font-weight:700;font-stretch:125%;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.02em;transition:color .2s}
+.more-toggle:hover h3{color:var(--ac)}
+.more-toggle-r{display:flex;align-items:center;gap:16px;font-size:12px}
+.more-sign{width:40px;height:40px;border:1px solid var(--fg);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:20px;transition:transform .35s var(--ease),background .2s,color .2s}
+.more-toggle:hover .more-sign{background:var(--fg);color:var(--bg)}
+.more.is-open .more-sign{transform:rotate(45deg)}
+.more-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.more.is-open .more-panel{grid-template-rows:1fr}
+.more-inner{overflow:hidden;min-height:0}
+.reg{list-style:none;margin:0;padding:0}
+.reg-row{display:grid;grid-template-columns:56px minmax(0,1.5fr) minmax(0,1fr) 72px;gap:8px 24px;align-items:baseline;padding:22px 0;border-top:1px solid var(--ln)}
+.reg-row:hover{color:inherit}
+.reg-row:hover .reg-title,.reg-row:hover .reg-go{color:var(--ac)}
+.reg-title{display:block;font-size:clamp(19px,1.8vw,24px);font-weight:600;letter-spacing:-.01em;transition:color .2s}
+.reg-sum{display:block;margin-top:6px;font-size:16px;line-height:1.45;color:var(--mu);text-wrap:pretty}
+.reg-tags{font-size:12px}
+.reg-go{font-size:12px;text-align:right}
+.more-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;padding:20px 0 24px;border-top:1px solid var(--ln);font-size:12px;letter-spacing:.06em}
+@media (max-width:760px){
+  .reg-row{grid-template-columns:40px minmax(0,1fr)}
+  .reg-tags,.reg-go{grid-column:2;text-align:left}
+  .more-toggle-r .label{display:none}
+}
 
+/* experience */
+.xp{border-bottom:1px solid var(--fg)}
+.xp-row{display:grid;grid-template-columns:clamp(64px,10vw,140px) minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid var(--ln)}
+.xp-yr{display:flex;align-items:center;gap:8px;align-self:start;font-family:var(--mono);font-size:14px;padding-top:4px;padding-left:16px}
+.xp-yr--now{padding-left:0}
+.xp-yr--now .sq{width:8px;height:8px}
+.xp-main{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 32px}
+.xp-role{flex:1 1 340px;font-size:clamp(19px,1.8vw,24px);font-weight:600;letter-spacing:-.01em}
+.xp-role em{font-style:normal;font-weight:400;color:var(--mu)}
+.xp-org{flex:1 1 220px;font-size:17px}
+.xp-loc{flex:0 0 120px;font-size:12px}
 
-  /* decorative, non-interactive */
-  .doodle{ position:absolute; pointer-events:none; opacity:.16; color:var(--ink); }
-  .doodle-gear{ top:18px; right:24px; width:130px; height:130px; animation:spin 70s linear infinite; }
-  @keyframes spin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:40px clamp(24px,3vw,40px)}
+.sk{border-top:3px solid var(--fg)}
+.sk-h{display:flex;align-items:baseline;gap:12px;padding:16px 0 14px}
+.sk-h span{font-family:var(--mono);font-size:12px;color:var(--mu)}
+.sk-h h3{margin:0;font-weight:700;font-stretch:125%;font-size:22px;letter-spacing:-.015em}
+.sk ul{list-style:none;margin:0;padding:0;font-size:17px}
+.sk li{padding:11px 0;border-top:1px solid var(--ln)}
 
-  .polaroid{
-    position:absolute; width:200px; background:var(--paper);
-    border:1px solid var(--border-soft); border-radius:6px;
-    padding:10px 10px 14px; box-shadow:0 10px 18px rgba(59,44,30,.18);
-    cursor:grab; user-select:none;
-  }
-  .polaroid-img{
-    width:100%; height:120px; border:1px dashed var(--border);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--ink-soft); font-size:11px; background:rgba(255,255,255,.4);
-  }
-  .polaroid-cap{ margin-top:8px; font-size:11px; color:var(--ink-soft); font-style:italic; }
+/* about */
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(36px,5vw,80px);align-items:start}
+.about .fig{aspect-ratio:4/5;max-width:440px;width:100%}
+.about-copy{display:flex;flex-direction:column;gap:28px;max-width:640px}
+.about-lede{margin:0;font-size:clamp(24px,2.6vw,34px);line-height:1.25;letter-spacing:-.015em;text-wrap:pretty}
+.about-body{margin:0;font-size:18px;line-height:1.6;text-wrap:pretty}
+.principles{border-top:1px solid var(--fg);padding-top:16px}
+.principles > span{display:block;font-size:12px;letter-spacing:.08em;margin-bottom:8px}
+.principles ol{list-style:none;margin:0;padding:0}
+.principles li{display:grid;grid-template-columns:40px minmax(0,1fr);padding:12px 0;border-bottom:1px solid var(--ln);font-size:18px}
+.principles li span{font-family:var(--mono);font-size:13px;padding-top:3px;color:var(--mu)}
 
-  /* ============ WINDOW BASE ============ */
-  .window{
-    position:absolute; display:flex; flex-direction:column;
-    background:var(--window-bg); border:1px solid var(--border);
-    border-radius:var(--radius); box-shadow:0 12px 26px rgba(59,44,30,.20);
-  }
-  .window.active{ box-shadow:0 16px 34px rgba(59,44,30,.28); }
-  .window.minimized .win-body{ display:none; }
-  .window.maximized{
-    top:8px !important; left:8px !important;
-    width:calc(100% - 16px) !important; height:calc(100% - 16px) !important;
-  }
+/* contact */
+.contact{scroll-margin-top:72px;background:var(--fg);color:var(--bg)}
+.contact .wrap{padding-top:clamp(72px,10vw,140px);padding-bottom:28px}
+.contact-k{display:flex;align-items:baseline;gap:18px;margin-bottom:clamp(24px,4vw,40px);font-size:12px;letter-spacing:.08em}
+.contact h2{margin:0;font-weight:800;font-stretch:125%;font-size:clamp(52px,11vw,168px);line-height:.88;letter-spacing:-.035em}
+.contact-mail{display:inline-block;margin-top:clamp(28px,4vw,48px);font-size:clamp(22px,3vw,40px);letter-spacing:-.01em;border-bottom:2px solid var(--ac);padding-bottom:6px;word-break:break-all}
+.contact .row{margin-top:40px}
+.contact .btn{border-color:var(--bg)}
+.contact .btn:hover{background:var(--bg);color:var(--fg)}
+.contact-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin-top:clamp(72px,10vw,140px);padding-top:18px;border-top:1px solid var(--bg);font-size:11.5px;letter-spacing:.08em}
 
-  .win-titlebar{
-    display:flex; align-items:center; gap:10px;
-    height:34px; min-height:34px; padding:0 10px;
-    background:var(--window-header); border-bottom:1px solid var(--border);
-    border-radius:var(--radius) var(--radius) 0 0;
-    cursor:grab;
-  }
-  .win-controls{ display:flex; gap:7px; }
-  .win-btn{ width:11px; height:11px; border-radius:50%; border:none; padding:0; }
-  .win-btn.close{ background:var(--brick); }
-  .win-btn.min{ background:var(--gold); }
-  .win-btn.max{ background:var(--olive); }
-  .win-title{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+/* project panel */
+.scrim{position:fixed;inset:0;z-index:50;background:rgba(10,10,9,.5);opacity:0;pointer-events:none;transition:opacity .35s ease}
+.panel{position:fixed;top:0;right:0;bottom:0;z-index:60;width:min(700px,100vw);background:var(--bg);color:var(--fg);border-left:1px solid var(--fg);overflow-y:auto;overscroll-behavior:contain;transform:translateX(101%);visibility:hidden;transition:transform .5s var(--ease),visibility 0s .5s}
+body.panel-open .scrim{opacity:1;pointer-events:auto}
+body.panel-open .panel{transform:none;visibility:visible;transition:transform .5s var(--ease),visibility 0s}
+.pbar{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--fg);display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding-left:clamp(20px,4vw,40px);font-size:12px}
+.pbar-btns{display:flex;height:100%}
+.pbtn{width:56px;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--fg);font-size:16px}
+.pbtn:hover{background:var(--fg);color:var(--bg)}
+.pclose{display:flex;align-items:center;padding:0 20px;border-left:1px solid var(--fg);font-size:12px}
+.pclose:hover{background:var(--ac);color:#fff}
+.pbody{padding:clamp(28px,5vw,48px) clamp(20px,4vw,40px) 64px;display:flex;flex-direction:column;gap:28px}
+.p-meta{display:block;font-size:12px;margin-bottom:14px}
+.pbody h2{margin:0;font-weight:800;font-stretch:125%;font-size:clamp(32px,5vw,52px);line-height:.95;letter-spacing:-.03em}
+.pbody .fig{aspect-ratio:16/10}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px}
+.stat{border-top:3px solid var(--ac);padding-top:12px}
+.stat b{display:block;font-weight:800;font-stretch:125%;font-size:clamp(40px,6vw,64px);line-height:1;letter-spacing:-.03em}
+.stat span{display:block;margin-top:8px;font-size:16px;color:var(--mu)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--fg);border:1px solid var(--fg)}
+.fact{background:var(--bg);padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:16px}
+.fact span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu)}
+.prow{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 20px;border-top:1px solid var(--ln);padding-top:16px}
+.prow > span{font-size:12px;padding-top:4px}
+.prow p{margin:0;font-size:17px;line-height:1.6;text-wrap:pretty}
+@media (max-width:520px){.prow{grid-template-columns:1fr}}
 
-  .win-body{ flex:1; min-height:0; overflow-y:auto; padding:16px; font-size:13px; line-height:1.55; }
-  .win-autosize{ height:auto !important; }
-  .win-autosize .win-body{ overflow:visible; flex:none; }
-  .win-footer{
-    height:24px; min-height:24px; display:flex; align-items:center; justify-content:space-between;
-    padding:0 10px; font-size:10.5px; color:var(--ink-soft);
-    border-top:1px solid var(--border-soft); background:var(--paper);
-    border-radius:0 0 var(--radius) var(--radius);
-  }
-
-  /* ============ WHOAMI ============ */
-  .avatar-box{
-    width:76px; height:76px; border:1.5px dashed var(--border);
-    border-radius:8px; display:flex; align-items:center; justify-content:center;
-    color:var(--ink-soft); font-size:10.5px; text-align:center; float:left;
-    margin:0 12px 8px 0; background:rgba(255,255,255,.35);
-  }
-  .who-name{ font-size:18px; font-weight:800; letter-spacing:.2px; }
-  .who-role{ color:var(--rust-dark); font-style:italic; font-size:12.5px; margin-top:2px; }
-  .who-bio{ margin-top:10px; clear:both; color:var(--ink); }
-  .pill-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
-  .pill-link{
-    border:1px solid var(--border); border-radius:6px; padding:4px 8px;
-    font-size:11px; color:var(--ink); background:var(--paper);
-  }
-  .pill-link:hover{ background:var(--rust); color:var(--paper); border-color:var(--rust); text-decoration:none; }
-
-  /* ============ NEOFETCH ============ */
-  .fetch-wrap{ display:flex; gap:14px; }
-  .fetch-art{ font-size:11px; line-height:1.3; color:var(--rust-dark); white-space:pre; flex-shrink:0; }
-  .fetch-rows div{ font-size:11.5px; margin-bottom:4px; }
-  .fetch-rows b{ color:var(--rust-dark); }
-  .swatches{ display:flex; gap:4px; margin-top:10px; }
-  .swatches span{ width:16px; height:12px; border-radius:2px; display:inline-block; }
-
-  /* ============ SKILLS MONITOR ============ */
-  .skill-row{ margin-bottom:11px; }
-  .skill-label{ display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:4px; }
-  .skill-track{ height:8px; border-radius:4px; background:rgba(59,44,30,.12); overflow:hidden; }
-  .skill-fill{ height:100%; width:0%; border-radius:4px; transition:width 1.1s ease; }
-
-  /* ============ PROJECTS ============ */
-  .proj-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; }
-  .project-card{
-    border:1px solid var(--border-soft); border-radius:8px; background:var(--paper);
-    padding:10px; font-size:11.5px; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  .project-card:hover{ transform:translateY(-3px); box-shadow:0 8px 16px rgba(59,44,30,.18); border-color:var(--rust); cursor:pointer; }
-  .project-card .pc-title{ font-weight:700; margin-bottom:4px; }
-  .project-card .pc-tags{ color:var(--ink-soft); font-style:italic; }
-
-  /* ============ MODAL ============ */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(59,44,30,.45);
-    display:none; align-items:center; justify-content:center; z-index:2000; padding:20px;
-  }
-  .modal-box{
-    position:relative; width:min(460px,100%); max-height:80vh; overflow-y:auto;
-    background:var(--window-bg); border:1px solid var(--border); border-radius:var(--radius);
-    padding:22px; box-shadow:0 20px 40px rgba(0,0,0,.3);
-  }
-  .modal-close{
-    position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
-    border:1px solid var(--border-soft); background:var(--paper); color:var(--ink);
-  }
-  .modal-close:hover{ background:var(--brick); color:var(--paper); }
-  .modal-box h3{ font-size:16px; margin-bottom:4px; padding-right:26px; }
-  .modal-tags{ font-size:11.5px; color:var(--ink-soft); font-style:italic; margin-bottom:12px; }
-  .modal-image{
-    width:100%; height:150px; border:1px dashed var(--border); border-radius:6px;
-    display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
-    font-size:11.5px; margin-bottom:12px; background:rgba(255,255,255,.4);
-  }
-  .modal-box p{ font-size:12.5px; line-height:1.6; }
-  .modal-links{ display:flex; gap:8px; margin-top:14px; }
-
-  /* ============ TERMINAL ============ */
-  .term-output{ font-size:11.5px; }
-  .term-output div{ margin-bottom:6px; white-space:pre-wrap; word-break:break-word; }
-  .term-output .prompt{ color:var(--rust-dark); font-weight:700; }
-  .term-line-output{ color:var(--ink); }
-  .term-inputrow{ display:flex; align-items:center; gap:6px; margin-top:6px; }
-  .term-prompt-live{ color:var(--rust-dark); font-weight:700; font-size:11.5px; white-space:nowrap; }
-  .term-input{
-    flex:1; border:none; background:transparent; font-family:inherit; font-size:11.5px;
-    color:var(--ink); outline:none;
-  }
-
-  /* ============ NOTES.MD ============ */
-  .md-h4{ color:var(--rust-dark); font-weight:800; font-size:13px; margin-bottom:8px; }
-  .md-quote{ border-left:2px solid var(--border); padding-left:10px; color:var(--ink-soft); font-style:italic; margin-bottom:10px; }
-  .md-list{ margin:0 0 10px 0; padding-left:18px; }
-  .md-list li{ margin-bottom:4px; }
-  .md-italic{ color:var(--ink-soft); font-style:italic; font-size:11.5px; }
-
-  /* ============ LOG ============ */
-  .log-line{ font-size:11px; margin-bottom:7px; display:flex; gap:6px; }
-  .log-time{ color:var(--ink-soft); flex-shrink:0; }
-  .log-lvl{ font-weight:800; flex-shrink:0; width:38px; }
-  .log-lvl.info{ color:var(--ink-soft); }
-  .log-lvl.warn{ color:var(--gold); }
-  .log-lvl.ok{ color:var(--olive); }
-
-  /* ============ STATUS BAR ============ */
-  .statusbar{
-    position:fixed; left:0; right:0; bottom:0; height:var(--statusbar-h);
-    background:var(--window-header); border-top:1px solid var(--border);
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 14px; font-size:10.5px; color:var(--ink-soft); z-index:1000;
-  }
-  .statusbar span{ margin-right:16px; }
-
-  /* ============ RESPONSIVE ============ */
-  /* "Tablet zone": too narrow for the fluid % layout to stay readable, but not yet
-     mobile-stacked. Lock the canvas to its design width so windows can't reflow/grow
-     into each other — scroll horizontally instead. */
-  @media (min-width: 881px) and (max-width: 1650px){
-    #desktop{ overflow-x:auto; overflow-y:hidden; }
-    #desktop-canvas{ width:1600px; min-width:1600px; }
-  }
-
-  @media (max-width: 880px){
-    .dock{
-      top:var(--menubar-h); left:0; right:0; bottom:auto; width:100%; height:var(--dock-mobile-h);
-      flex-direction:row; overflow-x:auto; padding:8px 10px; justify-content:flex-start;
-      border-right:none; border-bottom:1px solid var(--border);
-    }
-    .dock-icon{ flex-shrink:0; }
-    #desktop{
-      margin-left:0; margin-top:calc(var(--menubar-h) + var(--dock-mobile-h));
-      min-height:auto; padding:16px; overflow:visible;
-    }
-    .window{
-      position:static !important; width:100% !important; height:auto !important;
-      max-width:520px; margin:0 auto 20px; top:auto !important; left:auto !important;
-    }
-    .window .win-body{ max-height:none; overflow-y:visible; }
-    .doodle, .polaroid{ display:none; }
-    .menu-item{ display:none; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *, *::before, *::after{
-      animation-duration:.001ms !important; animation-iteration-count:1 !important;
-      transition-duration:.001ms !important;
-    }
-  }
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.001ms!important}
+}
 </style>
 </head>
 <body>
 
-  <!-- ============ TOP MENU BAR ============ -->
-  <div class="menubar">
-    <div class="menubar-left">
-      <div class="menu-dots"><span></span><span></span><span></span></div>
-      <span class="menu-item">File</span>
-      <span class="menu-item">Edit</span>
-      <span class="menu-item">View</span>
-      <span class="menu-item">Window</span>
-      <span class="menu-item">Help</span>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="sq"></span><span>Felix Douven</span></a>
+    <nav class="nav mono" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a class="btn btn--sm" href="cv/">CV ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="top" class="hero wrap">
+    <div class="hero-top mono mu"><span>Mechatronics engineer</span><span>Eindhoven, NL</span></div>
+    <h1><span>Felix</span><span>Douven</span></h1>
+    <div class="hero-grid">
+      <div>
+        <p class="lede">I design the systems where mechanics, electronics and code meet — and make sure they still work after they leave the lab.</p>
+        <div class="row">
+          <a class="btn btn--solid" href="#work">See selected work ↓</a>
+          <a class="btn" href="cv/">Open CV ↗</a>
+        </div>
+      </div>
+      <div>
+        <dl class="tblock">
+          <div><dt class="mono mu">Role</dt><dd>Competence Engineer, Electrical Systems</dd></div>
+          <div><dt class="mono mu">Company</dt><dd>ASML, Eindhoven</dd></div>
+          <div><dt class="mono mu">Education</dt><dd>BSc Mechatronics, Fontys</dd></div>
+          <div><dt class="mono mu">Focus</dt><dd>System design, embedded, CAD</dd></div>
+        </dl>
+        <div class="tblock-foot mono mu"><span>Drawn by F. Douven</span><span>Scale 1:1</span><span>Rev. 2026</span></div>
+      </div>
     </div>
-    <div class="menubar-right">
-      <span>Felix Douven</span>
-      <span class="divider">·</span>
-      <span id="menu-date">—</span>
-      <span id="menu-clock">--:--</span>
+  </section>
+
+  <div class="wrap"><div class="ruler"></div></div>
+
+  <section id="work" class="section wrap">
+    <div class="shead">
+      <div class="shead-l"><span class="num">01</span><h2>Selected work</h2></div>
+      <span class="shead-r mono mu">Select a project for detail</span>
+    </div>
+    <div class="work-grid" id="featured"></div>
+
+    <div class="more" id="more">
+      <button class="more-toggle" id="more-toggle" aria-expanded="false" aria-controls="more-panel">
+        <span class="more-toggle-l"><span class="num" id="more-count"></span><h3>More projects</h3></span>
+        <span class="more-toggle-r mono mu"><span class="label" id="more-label">Show all</span><span class="more-sign" aria-hidden="true">+</span></span>
+      </button>
+      <div class="more-panel" id="more-panel" inert>
+        <div class="more-inner">
+          <ul class="reg" id="register"></ul>
+          <div class="more-foot mono mu">
+            <span>Code &amp; smaller experiments</span>
+            <a href="https://github.com/Flexiis" target="_blank" rel="noopener">github.com/Flexiis ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="section wrap">
+    <div class="shead">
+      <div class="shead-l"><span class="num">02</span><h2>Experience</h2></div>
+      <span class="shead-r mono mu">2019 — now</span>
+    </div>
+    <div class="xp">
+      <div class="xp-row">
+        <span class="xp-yr xp-yr--now"><span class="sq"></span>2026</span>
+        <div class="xp-main"><span class="xp-role">Competence Engineer, Electrical Systems</span><span class="xp-org">ASML</span><span class="xp-loc mono mu">Eindhoven</span></div>
+      </div>
+      <div class="xp-row">
+        <span class="xp-yr">2024</span>
+        <div class="xp-main"><span class="xp-role">Technical Support Engineer</span><span class="xp-org">ASML</span><span class="xp-loc mono mu">Eindhoven</span></div>
+      </div>
+      <div class="xp-row">
+        <span class="xp-yr">2023</span>
+        <div class="xp-main"><span class="xp-role">System Designer <em>— internship</em></span><span class="xp-org">VSParticle</span><span class="xp-loc mono mu">Delft</span></div>
+      </div>
+      <div class="xp-row">
+        <span class="xp-yr">2023</span>
+        <div class="xp-main"><span class="xp-role">Minor, Global Management</span><span class="xp-org">Chuo University</span><span class="xp-loc mono mu">Tokyo</span></div>
+      </div>
+      <div class="xp-row">
+        <span class="xp-yr">2022</span>
+        <div class="xp-main"><span class="xp-role">Prototype Engineer, Innovation <em>— internship</em></span><span class="xp-org">Philips</span><span class="xp-loc mono mu">Best</span></div>
+      </div>
+      <div class="xp-row">
+        <span class="xp-yr">2019</span>
+        <div class="xp-main"><span class="xp-role">BSc Mechatronics Engineering</span><span class="xp-org">Fontys University of Applied Sciences</span><span class="xp-loc mono mu">Eindhoven</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="section wrap">
+    <div class="shead"><div class="shead-l"><span class="num">03</span><h2>Skills</h2></div></div>
+    <div class="skills">
+      <div class="sk"><div class="sk-h"><span>A</span><h3>Design</h3></div>
+        <ul><li>System architecture</li><li>SolidWorks CAD</li><li>FEM analysis</li><li>Design for manufacture</li></ul></div>
+      <div class="sk"><div class="sk-h"><span>B</span><h3>Embedded</h3></div>
+        <ul><li>PCB design</li><li>Circuit design</li><li>Power electronics</li><li>EMC-aware layout</li></ul></div>
+      <div class="sk"><div class="sk-h"><span>C</span><h3>Software</h3></div>
+        <ul><li>C++</li><li>Python</li><li>Linux &amp; Docker</li><li>TensorFlow</li></ul></div>
+      <div class="sk"><div class="sk-h"><span>D</span><h3>Analysis</h3></div>
+        <ul><li>MATLAB</li><li>PCCSIM &amp; SPC</li><li>Machine learning</li><li>Data analysis</li></ul></div>
+    </div>
+  </section>
+
+  <section id="about" class="section wrap">
+    <div class="shead"><div class="shead-l"><span class="num">04</span><h2>About</h2></div></div>
+    <div class="about">
+      <figure class="fig" data-ph="pictures/headshot.jpg">
+        <img src="pictures/headshot.jpg" alt="Felix Douven" loading="lazy" onerror="this.parentNode.classList.add('is-empty')">
+      </figure>
+      <div class="about-copy">
+        <p class="about-lede">I like the hard part of a project: deciding what the system has to do before anyone starts drawing it.</p>
+        <p class="about-body">I'm a mechatronics engineer at ASML in Eindhoven, working on electrical systems. Before that I built prototypes at Philips and VSParticle, studied at Fontys, and spent a semester in Tokyo on global management. I'm strongest in system design, CAD, embedded engineering and data analysis — and I don't let go of a problem until I understand it.</p>
+        <div class="principles">
+          <span class="mono mu">How I work</span>
+          <ol>
+            <li><span>i.</span>Build things that get used, not just demoed.</li>
+            <li><span>ii.</span>Fix the structure, not the symptom.</li>
+            <li><span>iii.</span>Clear thinking beats raw hours.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="contact-k mono"><span class="num">05</span><span>Contact</span></div>
+      <h2>Let's talk.</h2>
+      <a class="contact-mail" href="mailto:felixdouven@planet.nl">felixdouven@planet.nl</a>
+      <div class="row">
+        <a class="btn" href="https://www.linkedin.com/in/felixdouven/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="https://github.com/Flexiis" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="cv/">CV ↗</a>
+      </div>
+      <div class="contact-foot mono"><span>© 2026 Felix Douven</span><span>Drawn in Eindhoven · Rev. 2026.10</span></div>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title">
+  <div class="pbar mono">
+    <span id="panel-count"></span>
+    <div class="pbar-btns">
+      <button class="pbtn" id="panel-prev" aria-label="Previous project">←</button>
+      <button class="pbtn" id="panel-next" aria-label="Next project">→</button>
+      <button class="pclose mono" id="panel-close">Close ✕</button>
     </div>
   </div>
-
-  <!-- ============ RICKROLL (hidden until triggered) ============ -->
-  <div class="window" id="win-rickroll" style="display:none; top:200px; left:35%; width:400px; z-index:9999;">
-    <div class="win-titlebar">
-      <div class="win-controls">
-        <button class="win-btn close" aria-label="Close video.exe"></button>
-        <button class="win-btn min" aria-label="Minimize video.exe"></button>
-        <button class="win-btn max" aria-label="Maximize video.exe"></button>
-      </div>
-      <div class="win-title">video.exe — never_gonna.mp4</div>
-    </div>
-    <div class="win-body" style="padding:0;">
-      <div style="position:relative; padding-bottom:56.25%; height:0;">
-        <iframe id="rickroll-frame" style="position:absolute; top:0; left:0; width:100%; height:100%;"
-          src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ DOCK ============ -->
-  <div class="dock">
-    <button class="dock-icon" data-target="win-whoami" title="whoami.sh">wh</button>
-    <button class="dock-icon" data-target="win-neofetch" title="neofetch">nf</button>
-    <button class="dock-icon" data-target="win-projects" title="~/projects">pr</button>
-    <button class="dock-icon" data-target="win-skills" title="skills.monitor">sk</button>
-    <button class="dock-icon" data-target="win-terminal" title="terminal">tm</button>
-    <button class="dock-icon" data-target="win-notes" title="notes.md">nt</button>
-    <button class="dock-icon" data-target="win-log" title="experience.log">lg</button>
-  </div>
-
-  <!-- ============ DESKTOP ============ -->
-  <main id="desktop">
-   <div id="desktop-canvas">
-
-    <!-- decorative doodle, purely aesthetic -->
-    <svg class="doodle doodle-gear" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2">
-      <circle cx="50" cy="50" r="18"/>
-      <circle cx="50" cy="50" r="6"/>
-      <g>
-        <rect x="46" y="4" width="8" height="14"/>
-        <rect x="46" y="82" width="8" height="14"/>
-        <rect x="4" y="46" width="14" height="8"/>
-        <rect x="82" y="46" width="14" height="8"/>
-        <rect x="46" y="4" width="8" height="14" transform="rotate(45 50 50)"/>
-        <rect x="46" y="82" width="8" height="14" transform="rotate(45 50 50)"/>
-        <rect x="46" y="4" width="8" height="14" transform="rotate(90 50 50)"/>
-        <rect x="46" y="82" width="8" height="14" transform="rotate(90 50 50)"/>
-        <rect x="46" y="4" width="8" height="14" transform="rotate(135 50 50)"/>
-        <rect x="46" y="82" width="8" height="14" transform="rotate(135 50 50)"/>
-      </g>
-    </svg>
-
-    <!-- ============ WHOAMI ============ -->
-    <div class="window" id="win-whoami" style="top:19px; left:0.5%; width:24%; height:295px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close whoami.sh"></button>
-          <button class="win-btn min" aria-label="Minimize whoami.sh"></button>
-          <button class="win-btn max" aria-label="Maximize whoami.sh"></button>
-        </div>
-        <div class="win-title">whoami.sh</div>
-      </div>
-      <div class="win-body">
-        <img src="pictures/headshot.jpg" style="width:76px;height:76px;border-radius:8px;object-fit:cover;float:left;margin:0 12px 8px 0;">
-        <div class="who-name">Felix Douven</div>
-        <div class="who-role">// Mechatronics Engineer</div>
-        <div class="who-bio">Highly ambitious engineer who doesn't back down easily. I research everything I can and love to keep learning. Strongest in system design, CAD (SolidWorks), embedded engineering and data analysis.</div>
-        <div class="pill-row">
-          <a class="pill-link" href="https://github.com/Flexiis">[ GitHub ]</a>
-          <a class="pill-link" href="https://www.linkedin.com/in/felixdouven/">[ LinkedIn ]</a>
-          <a class="pill-link" href="mailto:felixdouven@planet.nl">[ Email ]</a>
-          <a class="pill-link" href="cv/">[ Resume ]</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============ NEOFETCH ============ -->
-    <div class="window" id="win-neofetch" style="top:570px; left:60%; width:20%; height:265px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close neofetch"></button>
-          <button class="win-btn min" aria-label="Minimize neofetch"></button>
-          <button class="win-btn max" aria-label="Maximize neofetch"></button>
-        </div>
-        <div class="win-title">neofetch</div>
-      </div>
-      <div class="win-body">
-        <div class="fetch-wrap">
-          <div class="fetch-art">  ___
- /o o \
-|  ▽  |
- \___/
-  | |
- _| |_</div>
-          <div class="fetch-rows">
-            <div><b>OS:</b> Mechatronics Engineer</div>
-            <div><b>Host:</b> Felix Douven</div>
-            <div><b>Languages:</b> C++, Python, MATLAB</div>
-            <div><b>Tools:</b> SolidWorks, MATLAB, Agile</div>
-            <div><b>Focus:</b> System Design · Embedded</div>
-            <div><b>Location:</b> Eindhoven, Netherlands</div>
-            <div><b>Uptime:</b> Since Sept 2024 @ ASML</div>
-            <div><b>Building:</b> <span id="now-building"></span></div>
-          </div>
-        </div>
-        <div class="swatches">
-          <span style="background:var(--rust)"></span>
-          <span style="background:var(--olive)"></span>
-          <span style="background:var(--gold)"></span>
-          <span style="background:var(--brick)"></span>
-          <span style="background:var(--ink)"></span>
-          <span style="background:var(--border)"></span>
-        </div>
-      </div>
-    </div>  
-
-    <!-- ============ MASCOT WINDOW ============ -->
-    <div class="window win-autosize" id="win-mascot" style="top:320px; left:70%; width:170px; height:auto;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close mascot"></button>
-          <button class="win-btn min" aria-label="Minimize mascot"></button>
-          <button class="win-btn max" aria-label="Maximize mascot"></button>
-        </div>
-        <div class="win-title">mascot</div>
-      </div>
-      <div class="win-body" style="font-family:var(--font-mono); white-space:pre; font-size:11px; line-height:1.25; padding:10px; color:var(--rust-dark); text-align:center; overflow:hidden;">
-   .|||||||||.
-  |||||||||||||
- /. `|||||||||||
-o__,_||||||||||'
-      </div>
-    </div>
-
-    <!-- ============ SKILLS MONITOR ============ -->
-    <div class="window win-autosize" id="win-skills" style="top:405px; left:82.5%; width:15%; height:auto;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close skills.monitor"></button>
-          <button class="win-btn min" aria-label="Minimize skills.monitor"></button>
-          <button class="win-btn max" aria-label="Maximize skills.monitor"></button>
-        </div>
-        <div class="win-title">skills.monitor</div>
-      </div>
-      <div class="win-body">
-        <div class="skill-row"><div class="skill-label"><span>System Design</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--rust)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>C++</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--olive)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>Python</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" data-value="90" style="background:var(--gold)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>SolidWorks CAD</span><span>75%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--rust)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>FEM Analysis</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--olive)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>Matlab</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--gold)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>PCCSIM & SPC</span><span>65%</span></div><div class="skill-track"><div class="skill-fill" data-value="65" style="background:var(--rust)"></div></div></div>
-        <div class="skill-row"><div class="skill-label"><span>Circuit Design</span><span>35%</span></div><div class="skill-track"><div class="skill-fill" data-value="35" style="background:var(--olive)"></div></div></div>
-      </div>
-    </div>
-
-    <!-- ============ PROJECTS ============ -->
-    <div class="window win-autosize" id="win-projects" style="top:297px; left:27.25%; width:40%; height:auto;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close projects"></button>
-          <button class="win-btn min" aria-label="Minimize projects"></button>
-          <button class="win-btn max" aria-label="Maximize projects"></button>
-        </div>
-        <div class="win-title">~/projects</div>
-      </div>
-      <div class="win-body">
-        <div class="proj-grid">
-          <div class="project-card" data-title="Image Guided Therapy System — Philips N.V." data-tags="SolidWorks · MATLAB · FEM" data-desc="Developed the first mockup of the next-gen Image Guided Therapy System, optimized for manufacturability using FEM and cost-effective parts. Led CAD assembly and MATLAB simulations, delivering a prototype used to secure early-stage stakeholder funding.">
-            <div class="pc-title">▸ Image Guided Therapy System</div><div class="pc-tags">SolidWorks · MATLAB</div>
-          </div>
-          <div class="project-card" data-title="Gas Recycler for Nanoprinter — VSParticle B.V." data-tags="Python · C++ · PCB" data-desc="Working prototype integrating Python, C++, PCB design and system architecture for an electrocatalysis nanoprinter. Reduced manual labor during tests to nearly zero with Python scripts and boosted gas reuse from 0% to 88%, saving €70K/year per unit. EMC-proof electrical design.">
-            <div class="pc-title">▸ Gas Recycler for Nanoprinter</div><div class="pc-tags">Python · C++ · PCB</div>
-          </div>
-          <div class="project-card" data-title="Autonomous Underwater Vehicle" data-tags="PCB · Electrical · Systems" data-desc="Led the AUV's electrical & system design, defining the constraints. Developed the PCB for leak detection, power electronics and sensor processing.">
-            <div class="pc-title">▸ Autonomous Underwater Vehicle</div><div class="pc-tags">PCB · Electrical</div>
-          </div>
-          <div class="project-card" data-title="Sensor Data Classification" data-tags="TensorFlow · Python" data-desc="Led machine learning model development for sensor data classification. Achieved 96.22% accuracy by optimizing SVM, Random Forest and Extra Trees models.">
-            <div class="pc-title">▸ Sensor Data Classification</div><div class="pc-tags">TensorFlow · Python</div>
-          </div>
-          <div class="project-card" data-title="Containerised Home Server" data-tags="Docker · Linux" data-desc="Built a Linux server running multiple Dockerized services. Automated home data collection for renting houses, ad-blocking, and NAS integration using docker containers">
-            <div class="pc-title">▸ 10" Containerised Home Server</div><div class="pc-tags">Docker · Linux</div>
-          </div>
-          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
-            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
-          </div>
-          <div class="project-card" data-title="Automated Housing Scraper" data-tags="Python · Web Scraping · Automation · Telegram/Discord" data-desc="Developed an autonomous real-time housing scraper that monitors multiple rental sites. Filters listings based on custom criteria and instantly dispatches push notifications to mobile for first-mover advantage.">
-            <div class="pc-title">▸ Automated Housing Scraper</div><div class="pc-tags">Python · Web Scraping</div>
-          </div>
-        </div>
-      </div>
-      <div class="win-footer"><span>10 items</span><span>drwx------ · ~/projects</span></div>
-    </div>
-
-    <!-- ============ TERMINAL ============ -->
-    <div class="window" id="win-terminal" style="top:400px; left:1.5%; width:20%; height:340px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close terminal"></button>
-          <button class="win-btn min" aria-label="Minimize terminal"></button>
-          <button class="win-btn max" aria-label="Maximize terminal"></button>
-        </div>
-        <div class="win-title">terminal — contact.sh</div>
-      </div>
-      <div class="win-body">
-        <div class="term-output" id="term-output"></div>
-        <div class="term-inputrow">
-          <span class="term-prompt-live">guest@portfolio ~ $</span>
-          <input class="term-input" id="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command input">
-        </div>
-      </div>
-    </div>
-
-    <!-- ============ NOTES.MD ============ -->
-    <div class="window win-autosize" id="win-notes" style="top:35px; left:56%; width:24%; height:auto;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close notes.md"></button>
-          <button class="win-btn min" aria-label="Minimize notes.md"></button>
-          <button class="win-btn max" aria-label="Maximize notes.md"></button>
-        </div>
-        <div class="win-title">notes.md</div>
-      </div>
-      <div class="win-body">
-        <div class="md-h4">#### about.md</div>
-        <div class="md-quote">"What is happening"</div>
-        <ul class="md-list">
-          <li>Building things that get used, not just demoed</li>
-          <li>Structural improvements to existing systems</li>
-          <li>Positive attitude + critical thinking > raw hours</li>
-        </ul>
-        <div class="md-italic">Currently tinkering with: <span id="now-tinkering"></span></div>
-      </div>
-    </div>
-
-    <!-- ============ EXPERIENCE LOG ============ -->
-    <div class="window" id="win-log" style="top:590px; left:24%; width:33%; height:210px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close experience.log"></button>
-          <button class="win-btn min" aria-label="Minimize experience.log"></button>
-          <button class="win-btn max" aria-label="Maximize experience.log"></button>
-        </div>
-        <div class="win-title">experience.log</div>
-      </div>
-      <div class="win-body">
-        <div class="log-line"><span class="log-time">[2026]</span><span class="log-lvl ok">OK</span><span>Competence Engineer - Electrical Systems @ ASML Holding N.V., Eindhoven</span></div>
-        <div class="log-line"><span class="log-time">[2024]</span><span class="log-lvl info">INFO</span><span>Technical Support Engineer @ ASML Holding N.V., Eindhoven</span></div>
-        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl info">INFO</span><span>System Designer @ VSParticle B.V., Delft (Internship)</span></div>
-        <div class="log-line"><span class="log-time">[2023]</span><span class="log-lvl warn">WARN</span><span>Global Management minor @ Chuo University, Tokyo</span></div>
-        <div class="log-line"><span class="log-time">[2022]</span><span class="log-lvl info">INFO</span><span>Prototype Engineer, Innovation dept. @ Philips N.V., Best (Internship)</span></div>
-        <div class="log-line"><span class="log-time">[2019]</span><span class="log-lvl info">INFO</span><span>Started B.S. Mechatronics Engineering @ Fontys University, Eindhoven</span></div>
-      </div>
-    </div>
-
-    <!-- decorative polaroids, draggable, purely aesthetic -->
-    <!-- ============ FEATURED PROJECT PHOTOS ============ -->
-    <div class="window" id="win-featured-1" style="top:15px; left:27%; width:240px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close Project 1"></button>
-          <button class="win-btn min" aria-label="Minimize Project 1"></button>
-          <button class="win-btn max" aria-label="Maximize Project 1"></button>
-        </div>
-        <div class="win-title">project_1</div>
-      </div>
-      
-      <div class="win-body">
-        <!-- Clickable Preview Area -->
-        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Philips_IGT-System.jpg') center/cover; border-style:solid;" id="trigger-p1"></div>
-        
-        <div class="project-card" data-title="Image Guided Therapy System — Philips N.V." data-tags="solidworks · matlab · fem" data-image="pictures/Philips_IGT-System.jpg" data-desc="First mockup of a next-gen Image Guided Therapy System at Philips, optimized for manufacturability with FEM and cost-effective parts. Led CAD assembly and MATLAB simulations to secure early-stage stakeholder funding." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
-          <h4 class="pc-title">Image Guided Therapy System</h4>
-          <div class="pc-tags" style="margin-bottom: 6px;">solidworks · matlab · fem</div>
-          <p style="font-size:12px; margin-bottom: 10px;">
-          </p>
-          <div class="pill-row" style="margin-top:0;">
-            <a class="pill-link" href="#">[ GitHub ]</a>
-            <a class="pill-link" href="#">[ Demo ]</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="window" id="win-featured-2" style="top:19px; left:42%; width:240px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close Project 2"></button>
-          <button class="win-btn min" aria-label="Minimize Project 2"></button>
-          <button class="win-btn max" aria-label="Maximize Project 2"></button>
-        </div>
-        <div class="win-title">project_2</div>
-      </div>
-      
-      <div class="win-body">
-        <!-- Clickable Preview Area -->
-        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/VSParticle_Gas-Recycler.jpg') center/cover; border-style:solid;" id="trigger-p2"></div>
-
-        <div class="project-card" data-title="Gas Recycler for Nanoprinter — VSParticle B.V." data-tags="python · c++ · pcb" data-image="pictures/VSParticle_Gas-Recycler.jpg" data-desc="Working prototype at VSParticle integrating Python, C++, PCB design and system architecture. Boosted gas reuse from 0% to 88%, saving €70K/year per unit, with EMC-proof electrical design." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
-          <h4 class="pc-title">Gas Recycler for Nanoprinter</h4>
-          <div class="pc-tags" style="margin-bottom: 6px;">python · c++ · pcb</div>
-          <p style="font-size:12px; margin-bottom: 10px;">
-          </p>
-          <div class="pill-row" style="margin-top:0;">
-            <a class="pill-link" href="#">[ GitHub ]</a>
-            <a class="pill-link" href="#">[ Demo ]</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="window" id="win-featured-3" style="top:126px; left:81%; width:240px;">
-      <div class="win-titlebar">
-        <div class="win-controls">
-          <button class="win-btn close" aria-label="Close Project 3"></button>
-          <button class="win-btn min" aria-label="Minimize Project 3"></button>
-          <button class="win-btn max" aria-label="Maximize Project 3"></button>
-        </div>
-        <div class="win-title">project_3</div>
-      </div>
-      
-      <div class="win-body">
-        <!-- Clickable Preview Area -->
-        <div class="modal-image" style="cursor:pointer; height:110px; margin-bottom:8px; background:url('pictures/Data_Scatterplot.jpg') center/cover; border-style:solid;" id="trigger-p3"></div>
-        
-        <div class="project-card" data-title="Autonomous Underwater Vehicle" data-tags="pcb · electrical · systems" data-image="pictures/Data_Scatterplot.jpg" data-desc="Led the AUV’s electrical & system design, defining the constraints, and developed the PCB for leak detection, power electronics and sensor processing." style="cursor:default; transform:none; box-shadow:none; border:none; padding:0;">
-          <h4 class="pc-title">Autonomous Underwater Vehicle</h4>
-          <div class="pc-tags" style="margin-bottom: 6px;">pcb · electrical · systems</div>
-          <p style="font-size:12px; margin-bottom: 10px;">
-          </p>
-          <div class="pill-row" style="margin-top:0;">
-            <a class="pill-link" href="#">[ GitHub ]</a>
-            <a class="pill-link" href="#">[ Demo ]</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    </div>
-
-   </div>
-  </main>
-
-  <!-- ============ PROJECT MODAL ============ -->
-  <div class="modal-overlay" id="project-modal">
-    <div class="modal-box">
-      <button class="modal-close" id="modal-close" aria-label="Close project details">✕</button>
-      <h3 id="modal-title"></h3>
-      <p class="modal-tags" id="modal-tags"></p>
-      <div class="modal-image" id="modal-image">[ project image / diagram ]</div>
-      <p id="modal-desc"></p>
-      <div class="modal-links">
-        <a class="pill-link" href="#">[ View Code ↗ ]</a>
-        <a class="pill-link" href="#">[ Live Demo ↗ ]</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ STATUS BAR ============ -->
-  <div class="statusbar">
-    <div><span id="uptime">up 00:00:00</span><span>~/portfolio</span></div>
-    <div><span id="res">—</span><span>workspace 1</span></div>
-  </div>
+  <div class="pbody" id="panel-body"></div>
+</aside>
 
 <script>
-
-/* ---------- EDIT THESE LINES TO UPDATE MULIPLE ITEMS AT ONCE ---------- */
-const CONFIG = {
-  personal: {
-    name: "Felix Douven",
-    role: "Mechatronics Engineer",
-    email: "felixdouven@planet.nl",
-    location: "Eindhoven, The Netherlands"
+/* ============ EDIT YOUR PROJECTS HERE ============
+   featured  true = big card in "Selected work", false = row in "More projects"
+   image     path relative to this file ("" = no image)
+   stats     big numbers shown in the detail panel (optional)
+   links     e.g. [["GitHub", "https://github.com/..."], ["Demo", "https://..."]] (optional)
+   Panel order and ← → navigation follow this list. */
+const PROJECTS = [
+  {
+    id: "igt", featured: true,
+    title: "Image Guided Therapy System",
+    cardMeta: "Philips N.V. · 2022",
+    meta: "Philips N.V. · Innovation · Best · 2022",
+    summary: "First physical mockup of Philips' next-generation IGT system — used to secure early-stage funding.",
+    tags: ["SolidWorks", "MATLAB", "FEM"],
+    image: "pictures/Philips_IGT-System.jpg",
+    facts: { Role: "Prototype engineer, internship", Tools: "SolidWorks, MATLAB, FEM" },
+    sections: [
+      ["Context", "Philips' innovation department needed a first physical mockup of its next-generation Image Guided Therapy system — something stakeholders could see and judge before committing budget."],
+      ["What I did", "Led the CAD assembly in SolidWorks and ran the MATLAB simulations. Used FEM to optimise the structure for manufacturability, and chose cost-effective parts wherever the loads allowed."],
+      ["Result", "A working prototype that was used to secure early-stage stakeholder funding."]
+    ]
   },
-  links: {
-    github: "https://github.com/Flexiis",
-    linkedin: "https://www.linkedin.com/in/felixdouven/",
-    resume: "cv/" // Update this if your resume path changes
+  {
+    id: "gas-recycler", featured: true,
+    title: "Gas Recycler for a Nanoprinter",
+    cardMeta: "VSParticle B.V. · 2023",
+    meta: "VSParticle B.V. · Delft · 2023",
+    summary: "Closed-loop recycling for an electrocatalysis nanoprinter. Gas reuse went from 0% to 88%.",
+    tags: ["Python", "C++", "PCB"],
+    image: "pictures/VSParticle_Gas-Recycler.jpg",
+    stats: [["88%", "gas reuse, up from 0%"], ["€70K", "saved per unit, per year"]],
+    facts: { Role: "System designer, internship", Tools: "Python, C++, PCB design" },
+    sections: [
+      ["Context", "VSParticle's nanoprinter uses process gas for electrocatalysis — and none of it was being reused."],
+      ["What I did", "Designed the system architecture for a closed-loop recycler and built the working prototype: PCB design with an EMC-proof electrical layout, C++ on the embedded side, and Python scripts that automated the test procedure."],
+      ["Result", "Gas reuse went from 0% to 88%, saving around €70K per unit per year. Manual work during testing dropped to nearly zero."]
+    ]
   },
-  status: {
-    currentlyBuilding: '10" Homelab'
+  {
+    id: "auv", featured: true,
+    title: "Autonomous Underwater Vehicle",
+    cardMeta: "Team project",
+    meta: "Team project",
+    summary: "Led electrical and system design — power, sensing and leak detection on a single PCB.",
+    tags: ["PCB", "Power electronics", "Systems"],
+    image: "pictures/Data_Scatterplot.jpg",
+    facts: { Role: "Electrical & system design lead", Tools: "PCB design, power electronics" },
+    sections: [
+      ["Context", "An underwater vehicle has to manage power, sensing and water ingress inside a sealed hull, with nobody on board to intervene."],
+      ["What I did", "Led the electrical and system design, and defined the constraints the rest of the team designed against. Designed the PCB that handles leak detection, power electronics and sensor processing."]
+    ]
+  },
+  {
+    id: "home-server", featured: true,
+    title: "Containerised Home Server",
+    cardMeta: "Personal · Ongoing",
+    meta: "Personal project · Ongoing",
+    summary: "Self-hosted Linux services in Docker, now moving into a 10-inch rack.",
+    tags: ["Linux", "Docker", "Networking"],
+    image: "pictures/Home-Server.jpg",
+    facts: { Role: "Solo build", Tools: "Linux, Docker, Python" },
+    sections: [
+      ["What I did", "Built a Linux server running multiple Docker services: a scraper that watches rental sites and pushes matching listings to my phone the moment they appear, network-wide ad-blocking, and NAS storage."],
+      ["Now", "Moving the whole setup into a 10-inch rack."]
+    ]
+  },
+  {
+    id: "sensor-classification", featured: false,
+    title: "Sensor Data Classification",
+    meta: "Machine learning project",
+    summary: "Machine-learning models that classify sensor data — 96.22% accuracy.",
+    tags: ["Python", "TensorFlow", "ML"],
+    image: "",
+    stats: [["96.22%", "classification accuracy"]],
+    facts: { Role: "Led model development", Tools: "Python, TensorFlow" },
+    sections: [
+      ["What I did", "Led the development of machine-learning models for sensor data classification. Compared and tuned SVM, Random Forest and Extra Trees classifiers."],
+      ["Result", "96.22% accuracy on the classification task."]
+    ]
+  },
+  {
+    id: "housing-scraper", featured: false,
+    title: "Automated Housing Scraper",
+    meta: "Personal project",
+    summary: "Real-time rental-site monitor that pushes matching listings straight to my phone.",
+    tags: ["Python", "Web scraping", "Automation"],
+    image: "",
+    facts: { Role: "Solo build", Tools: "Python, Telegram / Discord" },
+    sections: [
+      ["What I did", "Built an autonomous, real-time scraper that monitors multiple rental sites and filters new listings against custom criteria."],
+      ["Result", "Matching listings are pushed to my phone via Telegram/Discord the moment they appear — a first-mover advantage in a tight rental market."]
+    ]
   }
-};
+];
 
-document.addEventListener('DOMContentLoaded', () => {
-  
-  /* ---------- AUTOMATIC DOM UPDATES ---------- */
-  // Updates the "Building:" section in neofetch
-  if (document.getElementById('now-building')) {
-    document.getElementById('now-building').textContent = "Physical setup; " + CONFIG.status.currentlyBuilding;
-  }
-  // Updates the "Currently tinkering with:" section in notes.md
-  if (document.getElementById('now-tinkering')) {
-    document.getElementById('now-tinkering').textContent = CONFIG.status.currentlyBuilding;
-  }
+(() => {
+  const N = PROJECTS.length;
+  const pad = n => String(n).padStart(2, "0");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fig = (p, tag) => p.image
+    ? `<figure class="fig" data-ph="${esc(p.image)}">${tag ? `<span class="fig-tag">${tag}</span>` : ""}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" onerror="this.parentNode.classList.add('is-empty')"></figure>`
+    : "";
 
-  // ... the rest of your z-index and window drag code continues here ...
+  /* featured cards */
+  const featured = PROJECTS.map((p, i) => ({ p, i })).filter(x => x.p.featured);
+  document.getElementById("featured").innerHTML = featured.map(({ p, i }, k) => `
+    <a class="card" href="#${p.id}" data-project="${i}">
+      ${fig(p, `FIG. ${pad(k + 1)}`) || `<figure class="fig is-empty" data-ph="Image coming soon"><span class="fig-tag">FIG. ${pad(k + 1)}</span></figure>`}
+      <span class="card-body">
+        <span class="card-meta mono mu"><span>${pad(k + 1)} · ${esc(p.cardMeta || p.meta)}</span><span class="card-go">View →</span></span>
+        <span class="card-title">${esc(p.title)}</span>
+        <span class="card-sum">${esc(p.summary)}</span>
+        <span class="card-tags mono mu">${p.tags.map(esc).join(" / ")}</span>
+      </span>
+    </a>`).join("");
 
-  /* ---------- z-index / focus ---------- */
-  let zTop = 10;
-  function bringToFront(win){
-    zTop++;
-    win.style.zIndex = zTop;
-    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
-    win.classList.add('active');
-  }
-
-  /* ---------- drag (windows via titlebar, polaroids via whole element) ---------- */
-  function makeDraggable(el, handle){
-    handle = handle || el;
-    let dragging = false, offsetX = 0, offsetY = 0;
-    const desktop = document.getElementById('desktop');
-
-    handle.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.win-btn')) return;
-      dragging = true;
-      if (el.classList.contains('window')) bringToFront(el);
-      const rect = el.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      document.body.style.userSelect = 'none';
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!dragging) return;
-      const deskRect = desktop.getBoundingClientRect();
-      let x = e.clientX - deskRect.left - offsetX;
-      let y = e.clientY - deskRect.top - offsetY;
-      x = Math.max(0, Math.min(x, desktop.scrollWidth - el.offsetWidth));
-      y = Math.max(0, Math.min(y, desktop.scrollHeight - el.offsetHeight));
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-    });
-
-    window.addEventListener('mouseup', () => {
-      dragging = false;
-      document.body.style.userSelect = '';
-    });
+  /* more projects register */
+  const others = PROJECTS.map((p, i) => ({ p, i })).filter(x => !x.p.featured);
+  const more = document.getElementById("more");
+  if (!others.length) more.remove();
+  else {
+    document.getElementById("more-count").textContent = pad(others.length);
+    document.getElementById("register").innerHTML = others.map(({ p, i }, k) => `
+      <li><a class="reg-row" href="#${p.id}" data-project="${i}">
+        <span class="num">${pad(featured.length + k + 1)}</span>
+        <span><span class="reg-title">${esc(p.title)}</span><span class="reg-sum">${esc(p.summary)}</span></span>
+        <span class="reg-tags mono mu">${p.tags.map(esc).join(" / ")}</span>
+        <span class="reg-go mono mu">View →</span>
+      </a></li>`).join("");
+    const toggle = document.getElementById("more-toggle");
+    const panelEl = document.getElementById("more-panel");
+    const label = document.getElementById("more-label");
+    const setMore = open => {
+      more.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open);
+      panelEl.inert = !open;
+      label.textContent = open ? "Hide" : "Show all";
+    };
+    toggle.addEventListener("click", () => setMore(!more.classList.contains("is-open")));
   }
 
-  document.querySelectorAll('.window').forEach(win => {
-    makeDraggable(win, win.querySelector('.win-titlebar'));
-    win.addEventListener('mousedown', () => bringToFront(win));
-  });
-  document.querySelectorAll('.polaroid').forEach(p => makeDraggable(p));
+  /* detail panel */
+  const body = document.body;
+  const panel = document.getElementById("panel");
+  const pbody = document.getElementById("panel-body");
+  const count = document.getElementById("panel-count");
+  const closeBtn = document.getElementById("panel-close");
+  let cur = -1, lastFocus = null;
 
-  /* ---------- window controls: close / minimize / maximize ---------- */
-  document.querySelectorAll('.win-btn.close').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.target.closest('.window').style.display = 'none';
-    });
-  });
-  document.querySelectorAll('.win-btn.min').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.target.closest('.window').classList.toggle('minimized');
-    });
-  });
-  document.querySelectorAll('.win-btn.max').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const win = e.target.closest('.window');
-      if (!win.classList.contains('maximized')) {
-        win.dataset.prevTop = win.style.top;
-        win.dataset.prevLeft = win.style.left;
-        win.dataset.prevWidth = win.style.width;
-        win.dataset.prevHeight = win.style.height;
-        win.classList.add('maximized');
-      } else {
-        win.classList.remove('maximized');
-        win.style.top = win.dataset.prevTop;
-        win.style.left = win.dataset.prevLeft;
-        win.style.width = win.dataset.prevWidth;
-        win.style.height = win.dataset.prevHeight;
-      }
-      bringToFront(win);
-    });
-  });
-
-  /* ---------- dock ---------- */
-  document.querySelectorAll('.dock-icon').forEach(icon => {
-    icon.addEventListener('click', () => {
-      const win = document.getElementById(icon.dataset.target);
-      win.style.display = 'flex';
-      win.classList.remove('minimized');
-      bringToFront(win);
-      win.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  });
-
-  /* ---------- menu bar clock/date ---------- */
-  function updateClock(){
-    const now = new Date();
-    document.getElementById('menu-clock').textContent =
-      now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('menu-date').textContent =
-      now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  function render(p) {
+    const stats = (p.stats || []).map(([v, l]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("");
+    const facts = Object.entries(p.facts || {}).map(([k, v]) => `<div class="fact"><span>${esc(k)}</span>${esc(v)}</div>`).join("");
+    const rows = (p.sections || []).map(([k, v]) => `<div class="prow"><span class="mono mu">${esc(k)}</span><p>${esc(v)}</p></div>`).join("");
+    const links = (p.links || []).map(([k, u]) => `<a class="btn" href="${esc(u)}" target="_blank" rel="noopener">${esc(k)} ↗</a>`).join("");
+    pbody.innerHTML = `
+      <div><span class="p-meta mono mu">${esc(p.meta)}</span><h2 id="panel-title">${esc(p.title)}</h2></div>
+      ${fig(p)}
+      ${stats ? `<div class="stats">${stats}</div>` : ""}
+      ${facts ? `<div class="facts">${facts}</div>` : ""}
+      ${rows}
+      ${links ? `<div class="row">${links}</div>` : ""}`;
   }
-  updateClock();
-  setInterval(updateClock, 1000);
 
-  /* ---------- uptime + resolution ---------- */
-  const startTime = Date.now();
-  function updateUptime(){
-    const diff = Math.floor((Date.now() - startTime) / 1000);
-    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-    const s = String(diff % 60).padStart(2, '0');
-    document.getElementById('uptime').textContent = `up ${h}:${m}:${s}`;
-  }
-  updateUptime();
-  setInterval(updateUptime, 1000);
-
-  function updateRes(){
-    document.getElementById('res').textContent = `${window.innerWidth}x${window.innerHeight}`;
-  }
-  updateRes();
-  window.addEventListener('resize', updateRes);
-
-  /* ---------- skill bars ---------- */
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.skill-fill').forEach((bar, i) => {
-      const target = bar.dataset.value;
-      setTimeout(() => { bar.style.width = target + '%'; }, 150 * i);
-    });
-  });
-
-  /* ---------- project modal ---------- */
-  const modal = document.getElementById('project-modal');
-  const modalImage = document.getElementById('modal-image');
-
-  function openProjectModal(card){
-    document.getElementById('modal-title').textContent = card.dataset.title;
-    document.getElementById('modal-tags').textContent = card.dataset.tags;
-    document.getElementById('modal-desc').textContent = card.dataset.desc;
-    if (card.dataset.image){
-      modalImage.style.backgroundImage = `url('${card.dataset.image}')`;
-      modalImage.style.backgroundSize = 'cover';
-      modalImage.style.backgroundPosition = 'center';
-      modalImage.style.borderStyle = 'solid';
-      modalImage.textContent = '';
-    } else {
-      modalImage.style.backgroundImage = 'none';
-      modalImage.style.borderStyle = 'dashed';
-      modalImage.textContent = '[ project image / diagram ]';
+  function open(i) {
+    const wasOpen = body.classList.contains("panel-open");
+    cur = (i + N) % N;
+    const p = PROJECTS[cur];
+    render(p);
+    count.textContent = `Project ${pad(cur + 1)} / ${pad(N)}`;
+    panel.scrollTop = 0;
+    history.replaceState(null, "", "#" + p.id);
+    if (!wasOpen) {
+      lastFocus = document.activeElement;
+      body.classList.add("panel-open");
+      closeBtn.focus({ preventScroll: true });
     }
-    modal.style.display = 'flex';
+  }
+  function close() {
+    if (!body.classList.contains("panel-open")) return;
+    body.classList.remove("panel-open");
+    history.replaceState(null, "", location.pathname + location.search);
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
   }
 
-  document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => openProjectModal(card));
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-project]");
+    if (!t) return;
+    e.preventDefault();
+    open(+t.dataset.project);
   });
+  document.getElementById("scrim").addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
+  document.getElementById("panel-prev").addEventListener("click", () => open(cur - 1));
+  document.getElementById("panel-next").addEventListener("click", () => open(cur + 1));
 
-  document.querySelectorAll('.modal-image[id^="trigger-p"]').forEach(tile => {
-    tile.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const card = tile.parentElement.querySelector('.project-card');
-      if (card) openProjectModal(card);
-    });
-  });
-  document.getElementById('modal-close').addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.style.display = 'none'; });
-
-  /* ---------- terminal ---------- */
-  const termOutput = document.getElementById('term-output');
-  const termInput = document.getElementById('term-input');
-  const termScroll = document.querySelector('#win-terminal .win-body');
-  function scrollTermToBottom(){ termScroll.scrollTop = termScroll.scrollHeight; }
-
-  function escapeHtml(str){
-    return str.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-  }
-
-const commands = {
-    help: () => 'Available commands:\n  whoami     -- about me\n  projects   -- open ~/projects\n  skills     -- open skills.monitor\n  contact    -- get in touch\n  resume     -- open resume\n  ls         -- list windows\n  date       -- current date/time\n  clear      -- clear the screen\n  sudo hire-me',
-    whoami: () => `${CONFIG.personal.name} -- ${CONFIG.personal.role}\n// building things that move, sense, and (mostly) behave.`,
-    projects: () => { const w = document.getElementById('win-projects'); w.style.display = 'flex'; bringToFront(w); return 'Opening ~/projects ...'; },
-    skills: () => { const w = document.getElementById('win-skills'); w.style.display = 'flex'; bringToFront(w); return 'Opening skills.monitor ...'; },
-    contact: () => `Email: ${CONFIG.personal.email}\nLocation: ${CONFIG.personal.location}\nLinkedIn: <a href="${CONFIG.links.linkedin}" target="_blank">${CONFIG.links.linkedin}</a>\nGitHub: <a href="${CONFIG.links.github}" target="_blank">${CONFIG.links.github}</a>`,
-    resume: () => {
-      // Automatically opens the resume link in a new tab
-      window.open(CONFIG.links.resume, '_blank');
-      return `Opening ${CONFIG.links.resume} ...`;
-    },
-    ls: () => Array.from(document.querySelectorAll('.window')).map(w => w.id.replace('win-', '')).join('  '),
-    date: () => new Date().toString(),
-    clear: () => { termOutput.innerHTML = ''; return null; },
-    rick: () => {
-      const win = document.getElementById('win-rickroll');
-      const frame = document.getElementById('rickroll-frame');
-      frame.src = `https://www.youtube.com/embed/QDia3e12czc?autoplay=1`;
-      win.style.display = 'flex';
-      bringToFront(win);
-      makeDraggable(win, win.querySelector('.win-titlebar'));
-      return "You've been rick rolled.";
-    },
-    'sudo rm -rf': () => 'nice try',
-    'sudo hire-me': () => `Permission granted. ${CONFIG.personal.name} is open to opportunities.`
-  };
-
-  function printLine(html){
-    const line = document.createElement('div');
-    line.innerHTML = html;
-    termOutput.appendChild(line);
-    scrollTermToBottom();
-  }
-
-  function runCommand(raw){
-    const cmd = raw.trim().toLowerCase();
-    printLine(`<span class="prompt">guest@portfolio ~ $</span> ${escapeHtml(cmd)}`);
-    let output;
-    if (cmd === '') { output = null; }
-    else if (cmd.startsWith('echo ')) { output = cmd.slice(5); }
-    else if (commands[cmd]) { output = commands[cmd](); }
-    else { output = `command not found: ${cmd} (try 'help')`; }
-    if (output) printLine(`<span class="term-line-output">${escapeHtml(output)}</span>`);
-  }
-
-  termInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { runCommand(termInput.value); termInput.value = ''; scrollTermToBottom(); }
-  });
-  termInput.addEventListener('focus', scrollTermToBottom);
-
-  /* typewriter welcome message */
-  const welcome = `Welcome to ${CONFIG.personal.name}'s terminal.\nType 'help' to get started.`;
-  let i = 0;
-  const welcomeLine = document.createElement('div');
-  termOutput.appendChild(welcomeLine);
-  (function type(){
-    if (i <= welcome.length){
-      welcomeLine.innerHTML = `<span class="term-line-output">${escapeHtml(welcome.slice(0, i))}</span>`;
-      i += 2;
-      setTimeout(type, 12);
+  document.addEventListener("keydown", e => {
+    if (!body.classList.contains("panel-open")) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight") open(cur + 1);
+    else if (e.key === "ArrowLeft") open(cur - 1);
+    else if (e.key === "Tab") {
+      const f = [...panel.querySelectorAll("a[href],button")];
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
-  })();
+  });
 
-});
+  /* deep link: index.html#gas-recycler opens that project */
+  const start = PROJECTS.findIndex(p => "#" + p.id === location.hash);
+  if (start >= 0) open(start);
+})();
 </script>
 </body>
 </html>
