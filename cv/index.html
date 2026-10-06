@@ -4,88 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Felix Douven — CV</title>
-
+<meta name="description" content="CV of Felix Douven, mechatronics engineer in Eindhoven.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --desktop-bg-1:#ecdfc4;
-    --desktop-bg-2:#ddc99c;
-    --window-bg:#f6efdc;
-    --window-header:#e2ce9d;
-    --border:#a9885a;
-    --ink:#3b2c1e;
-    --ink-soft:#7d6a4e;
-    --rust:#c1623d;
-    --brick:#ab4a41;
-    --gold:#c69a3a;
-    --olive:#6f7d4a;
-    --paper:#fbf6ea;
-    --radius:10px;
-    --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; height:100%; }
-  body{
-    font-family:var(--font-mono); color:var(--ink);
-    background:
-      radial-gradient(circle at 1px 1px, rgba(59,44,30,0.07) 1px, transparent 0) 0 0/22px 22px,
-      linear-gradient(160deg, var(--desktop-bg-1), var(--desktop-bg-2));
-    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
-  }
-  .window{
-    width:100%; max-width:900px; height:88vh;
-    display:flex; flex-direction:column;
-    background:var(--window-bg); border:1px solid var(--border);
-    border-radius:var(--radius); box-shadow:0 16px 34px rgba(59,44,30,.28);
-    overflow:hidden;
-  }
-  .win-titlebar{
-    display:flex; align-items:center; gap:10px; height:38px; min-height:38px; padding:0 12px;
-    background:var(--window-header); border-bottom:1px solid var(--border);
-  }
-  .win-controls{ display:flex; gap:7px; }
-  .win-btn{ width:11px; height:11px; border-radius:50%; }
-  .win-btn.close{ background:var(--brick); }
-  .win-btn.min{ background:var(--gold); }
-  .win-btn.max{ background:var(--olive); }
-  .win-title{ font-size:12.5px; color:var(--ink-soft); font-weight:600; }
-  .win-toolbar{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:10px 14px; border-bottom:1px solid var(--border); background:var(--paper); flex-wrap:wrap;
-  }
-  .pill-link{
-    border:1px solid var(--border); border-radius:6px; padding:5px 10px;
-    font-size:12px; color:var(--ink); background:var(--paper); text-decoration:none;
-  }
-  .pill-link:hover{ background:var(--rust); color:var(--paper); border-color:var(--rust); }
-  .pdf-wrap{ flex:1; background:#5b503d; }
-  .pdf-wrap embed{ width:100%; height:100%; border:none; display:block; }
+:root{--bg:#EFEEE9;--sf:#F8F7F3;--fg:#141413;--mu:#5F5E58;--ac:#E8501E;--mono:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding:12px clamp(16px,3vw,32px);border-bottom:1px solid var(--fg);font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Archivo',system-ui,sans-serif;font-weight:700;font-stretch:125%;font-size:15px;text-transform:none;letter-spacing:-.01em}
+.sq{width:10px;height:10px;background:var(--ac);display:block}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px}
+.btn{padding:7px 12px;border:1px solid var(--fg)}
+.btn:hover{background:var(--fg);color:var(--bg)}
+.doc{flex:1;min-height:0;background:var(--sf)}
+.doc object{display:block;width:100%;height:100%;border:0}
+.fallback{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px;text-align:center}
+.fallback p{margin:0;font-size:18px;max-width:22em}
+.fallback .btn{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em;padding:14px 20px;background:var(--fg);color:var(--bg)}
+.fallback .btn:hover{background:var(--ac);border-color:var(--ac);color:#fff}
 </style>
 </head>
 <body>
-
-  <div class="window">
-    <div class="win-titlebar">
-      <div class="win-controls">
-        <span class="win-btn close"></span>
-        <span class="win-btn min"></span>
-        <span class="win-btn max"></span>
+  <header class="bar">
+    <a class="brand" href="../index.html"><span class="sq"></span><span>Felix Douven</span></a>
+    <nav class="actions" aria-label="CV">
+      <a href="../index.html">← Portfolio</a>
+      <a class="btn" href="../pictures/FelixDouvenCVInternational2026_Website.pdf" download>Download PDF ↓</a>
+    </nav>
+  </header>
+  <main class="doc">
+    <object data="../pictures/Felix_CV_Redacted_2026.pdf#view=FitH" type="application/pdf" aria-label="Felix Douven CV">
+      <div class="fallback">
+        <p>Your browser can't show the PDF inline.</p>
+        <a class="btn" href="../pictures/Felix_CV_Redacted_2026.pdf" target="_blank" rel="noopener">Open CV ↗</a>
       </div>
-      <div class="win-title">cv.pdf — Felix Douven</div>
-    </div>
-
-    <div class="win-toolbar">
-      <a class="pill-link" href="../index.html">[ ← Back to portfolio ]</a>
-      <a class="pill-link" href="../pictures/FelixDouvenCVInternational2026_Website.pdf" download>[ ⬇ Download PDF ]</a>
-    </div>
-
-    <div class="pdf-wrap">
-      <embed src="../pictures/Felix_CV_Redacted_2026.pdf" type="application/pdf">
-    </div>
-  </div>
-
+    </object>
+  </main>
 </body>
 </html>
